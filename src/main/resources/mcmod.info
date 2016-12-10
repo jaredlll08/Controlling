@@ -1,0 +1,16 @@
+[
+{
+  "modid": "controlling",
+  "name": "Controlling",
+  "description": "Gives people more Control of the key binding screen.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Jaredlll08"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

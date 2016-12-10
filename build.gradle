@@ -1,0 +1,51 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+version = "1.0.1"
+group= "us.getfluxed.controlling" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "Controlling"
+
+sourceCompatibility = targetCompatibility = "1.8"
+compileJava {
+    sourceCompatibility = targetCompatibility = "1.8"
+}
+jar {
+    manifest {
+        attributes 'FMLAT': 'fluxedcore_at.cfg'
+    }
+}
+minecraft {
+    version = "1.10.2-12.18.1.2075"
+    runDir = "run"
+    mappings = "snapshot_20160518"
+}
+
+dependencies {
+
+}
+
+processResources
+{
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+        
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}

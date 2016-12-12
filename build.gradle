@@ -12,7 +12,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.0.1"
+version = "1.0.2"
 group= "us.getfluxed.controlling" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Controlling"
 
@@ -22,7 +22,7 @@ compileJava {
 }
 jar {
     manifest {
-        attributes 'FMLAT': 'fluxedcore_at.cfg'
+        attributes 'FMLAT': 'controlling_at.cfg'
     }
 }
 minecraft {

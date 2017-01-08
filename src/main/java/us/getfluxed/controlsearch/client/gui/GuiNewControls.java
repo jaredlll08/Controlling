@@ -67,7 +67,7 @@ public class GuiNewControls extends GuiControls {
 		search.setCanLoseFocus(true);
 		conflictsButton = new GuiButton(2906, this.width / 2 - 155 + 160, this.height - 29 - 29, 150, 20, I18n.format("options.showConflicts"));
 		this.buttonList.add(conflictsButton);
-		
+		this.conflicts = false;
 	}
 	
 	@Override

@@ -49,7 +49,7 @@ public class GuiNewControls extends GuiControls {
     public void initGui() {
         this.keyBindingList = new GuiNewKeyBindingList(this, this.mc);
         this.buttonList.add(new GuiButton(200, this.width / 2 - 155, this.height - 29, 150, 20, I18n.format("gui.done")));
-        this.buttonReset = this.func_189646_b(new GuiButton(201, this.width / 2 - 155 + 160, this.height - 29, 150, 20, I18n.format("controls.resetAll")));
+        this.buttonReset = this.addButton(new GuiButton(201, this.width / 2 - 155 + 160, this.height - 29, 150, 20, I18n.format("controls.resetAll")));
         this.screenTitle = I18n.format("controls.title");
         int i = 0;
         

@@ -177,11 +177,11 @@ public class GuiNewControls extends GuiControls {
             availableTime = 0;
             if(!conflicts) {
                 conflicts = true;
-                conflictsButton.displayString = "Show All";
+                conflictsButton.displayString = I18n.format("options.showAll");
                 reloadKeys(1);
             } else {
                 conflicts = false;
-                conflictsButton.displayString = "Show Conflicts";
+                conflictsButton.displayString = I18n.format("options.showConflicts");
                 reloadKeys(1);
             }
             
@@ -345,7 +345,7 @@ public class GuiNewControls extends GuiControls {
             final int[] x = {0};
             final int[] y = {0};
             final int[] count = {0};
-            fontRendererObj.drawString("Available Keys:", width / 2, keyBindingList.top + 2, 0xFFFFFF);
+            fontRendererObj.drawString(I18n.format("options.availableKeys") + ":", width / 2, keyBindingList.top + 2, 0xFFFFFF);
             List<String> codes = new ArrayList<>();
             keyCodes.forEach(key -> {
                 if(key >= 0) {

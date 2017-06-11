@@ -7,12 +7,12 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "2.0.4"
+version = "3.0.0"
 group= "us.getfluxed.controlling" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Controlling"
 
@@ -26,7 +26,7 @@ jar {
     }
 }
 minecraft {
-    version = "1.11.2-13.20.0.2233"
+    version = "1.12-14.21.0.2322"
     runDir = "run"
     mappings = "snapshot_20161220"
 }

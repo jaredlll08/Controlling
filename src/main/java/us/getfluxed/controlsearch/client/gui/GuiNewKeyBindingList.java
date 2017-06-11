@@ -87,16 +87,21 @@ public class GuiNewKeyBindingList extends GuiListExtended {
 		public CategoryEntry(String name) {
 			this.labelText = I18n.format(name, new Object[0]);
 			this.labelWidth = GuiNewKeyBindingList.this.mc.fontRendererObj.getStringWidth(this.labelText);
-		}
-		
-		public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
-			GuiNewKeyBindingList.this.mc.fontRendererObj.drawString(this.labelText, GuiNewKeyBindingList.this.mc.currentScreen.width / 2 - this.labelWidth / 2, y + slotHeight - GuiNewKeyBindingList.this.mc.fontRendererObj.FONT_HEIGHT - 1, 16777215);
-		}
-		
-		/**
-		 * Called when the mouse is clicked within this entry. Returning true means that something within this entry was
-		 * clicked and the list should not be dragged.
-		 */
+        }
+        
+        @Override
+        public void func_192633_a(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_) {
+        }
+        
+        @Override
+        public void func_192634_a(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float p_192634_9_) {
+            GuiNewKeyBindingList.this.mc.fontRendererObj.drawString(this.labelText, GuiNewKeyBindingList.this.mc.currentScreen.width / 2 - this.labelWidth / 2, y + slotHeight - GuiNewKeyBindingList.this.mc.fontRendererObj.FONT_HEIGHT - 1, 16777215);
+        }
+        
+        /**
+         * Called when the mouse is clicked within this entry. Returning true means that something within this entry was
+         * clicked and the list should not be dragged.
+         */
 		public boolean mousePressed(int slotIndex, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {
 			return false;
 		}
@@ -107,8 +112,6 @@ public class GuiNewKeyBindingList extends GuiListExtended {
 		public void mouseReleased(int slotIndex, int x, int y, int mouseEvent, int relativeX, int relativeY) {
 		}
 		
-		public void setSelected(int p_178011_1_, int p_178011_2_, int p_178011_3_) {
-		}
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -131,40 +134,45 @@ public class GuiNewKeyBindingList extends GuiListExtended {
 			this.btnChangeKeyBinding = new GuiButton(0, 0, 0, 95, 20, I18n.format(name.getKeyDescription(), new Object[0]));
 			this.btnReset = new GuiButton(0, 0, 0, 50, 20, I18n.format("controls.reset", new Object[0]));
 		}
-		
-		public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
-			boolean flag = GuiNewKeyBindingList.this.controlsScreen.buttonId == this.keybinding;
-			GuiNewKeyBindingList.this.mc.fontRendererObj.drawString(this.keyDesc, x + 90 - GuiNewKeyBindingList.this.maxListLabelWidth, y + slotHeight / 2 - GuiNewKeyBindingList.this.mc.fontRendererObj.FONT_HEIGHT / 2, 16777215);
-			this.btnReset.xPosition = x + 210;
-			this.btnReset.yPosition = y;
-			this.btnReset.enabled = !this.keybinding.isSetToDefaultValue();
-			this.btnReset.drawButton(GuiNewKeyBindingList.this.mc, mouseX, mouseY);
-			this.btnChangeKeyBinding.xPosition = x + 105;
-			this.btnChangeKeyBinding.yPosition = y;
-			this.btnChangeKeyBinding.displayString = this.keybinding.getDisplayName();
-			boolean flag1 = false;
-			boolean keyCodeModifierConflict = true; // less severe form of conflict, like SHIFT conflicting with SHIFT+G
-			
-			if(this.keybinding.getKeyCode() != 0) {
-				for(KeyBinding keybinding : GuiNewKeyBindingList.this.mc.gameSettings.keyBindings) {
-					if(keybinding != this.keybinding && keybinding.conflicts(this.keybinding)) {
-						flag1 = true;
-						keyCodeModifierConflict &= keybinding.hasKeyCodeModifierConflict(this.keybinding);
-					}
-				}
-			}
-			
-			if(flag) {
-				this.btnChangeKeyBinding.displayString = TextFormatting.WHITE + "> " + TextFormatting.YELLOW + this.btnChangeKeyBinding.displayString + TextFormatting.WHITE + " <";
-			} else if(flag1) {
-				this.btnChangeKeyBinding.displayString = (keyCodeModifierConflict ? TextFormatting.GOLD : TextFormatting.RED) + this.btnChangeKeyBinding.displayString;
-			}
-			
-			this.btnChangeKeyBinding.drawButton(GuiNewKeyBindingList.this.mc, mouseX, mouseY);
-		}
-		
-		/**
-		 * Called when the mouse is clicked within this entry. Returning true means that something within this entry was
+        
+        @Override
+        public void func_192633_a(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_) {
+        }
+        
+        @Override
+        public void func_192634_a(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float p_192634_9_) {
+            boolean flag = GuiNewKeyBindingList.this.controlsScreen.buttonId == this.keybinding;
+            GuiNewKeyBindingList.this.mc.fontRendererObj.drawString(this.keyDesc, x + 90 - GuiNewKeyBindingList.this.maxListLabelWidth, y + slotHeight / 2 - GuiNewKeyBindingList.this.mc.fontRendererObj.FONT_HEIGHT / 2, 16777215);
+            this.btnReset.xPosition = x + 210;
+            this.btnReset.yPosition = y;
+            this.btnReset.enabled = !this.keybinding.isSetToDefaultValue();
+            this.btnReset.func_191745_a(GuiNewKeyBindingList.this.mc, mouseX, mouseY, p_192634_9_);
+            this.btnChangeKeyBinding.xPosition = x + 105;
+            this.btnChangeKeyBinding.yPosition = y;
+            this.btnChangeKeyBinding.displayString = this.keybinding.getDisplayName();
+            boolean flag1 = false;
+            boolean keyCodeModifierConflict = true; // less severe form of conflict, like SHIFT conflicting with SHIFT+G
+            
+            if(this.keybinding.getKeyCode() != 0) {
+                for(KeyBinding keybinding : GuiNewKeyBindingList.this.mc.gameSettings.keyBindings) {
+                    if(keybinding != this.keybinding && keybinding.conflicts(this.keybinding)) {
+                        flag1 = true;
+                        keyCodeModifierConflict &= keybinding.hasKeyCodeModifierConflict(this.keybinding);
+                    }
+                }
+            }
+            
+            if(flag) {
+                this.btnChangeKeyBinding.displayString = TextFormatting.WHITE + "> " + TextFormatting.YELLOW + this.btnChangeKeyBinding.displayString + TextFormatting.WHITE + " <";
+            } else if(flag1) {
+                this.btnChangeKeyBinding.displayString = (keyCodeModifierConflict ? TextFormatting.GOLD : TextFormatting.RED) + this.btnChangeKeyBinding.displayString;
+            }
+            
+            this.btnChangeKeyBinding.func_191745_a(GuiNewKeyBindingList.this.mc, mouseX, mouseY, p_192634_9_);
+        }
+        
+        /**
+         * Called when the mouse is clicked within this entry. Returning true means that something within this entry was
 		 * clicked and the list should not be dragged.
 		 */
 		public boolean mousePressed(int slotIndex, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {
@@ -187,9 +195,6 @@ public class GuiNewKeyBindingList extends GuiListExtended {
 		public void mouseReleased(int slotIndex, int x, int y, int mouseEvent, int relativeX, int relativeY) {
 			this.btnChangeKeyBinding.mouseReleased(x, y);
 			this.btnReset.mouseReleased(x, y);
-		}
-		
-		public void setSelected(int p_178011_1_, int p_178011_2_, int p_178011_3_) {
 		}
 		
 		public KeyBinding getKeybinding() {

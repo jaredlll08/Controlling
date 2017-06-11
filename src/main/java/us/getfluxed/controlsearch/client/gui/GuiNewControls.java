@@ -379,7 +379,7 @@ public class GuiNewControls extends GuiControls {
     
     public void superSuperDrawScreen(int mouseX, int mouseY, float partialTicks) {
         for(GuiButton aButtonList : this.buttonList) {
-            aButtonList.drawButton(this.mc, mouseX, mouseY);
+            aButtonList.func_191745_a(this.mc, mouseX, mouseY, partialTicks);
         }
         
         for(GuiLabel aLabelList : this.labelList) {

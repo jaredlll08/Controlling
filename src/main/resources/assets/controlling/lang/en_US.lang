@@ -1,4 +1,5 @@
 options.search=Search
 options.showAll=Show All
 options.showConflicts=Show Conflicts
+options.showNone=Show None
 options.availableKeys=Available Keys

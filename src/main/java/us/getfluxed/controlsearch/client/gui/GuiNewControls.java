@@ -31,10 +31,13 @@ public class GuiNewControls extends GuiControls {
     private String lastFilterText = "";
     
     private boolean conflicts = false;
+    private boolean none = false;
     
     public int availableTime;
     
     public GuiButton conflictsButton;
+    public GuiButton noneButton;
+    
     
     public GuiNewControls(GuiScreen screen, GameSettings settings) {
         super(screen, settings);
@@ -65,8 +68,11 @@ public class GuiNewControls extends GuiControls {
         
         search = new GuiTextField(0, mc.fontRendererObj, this.width / 2 - 155, this.height - 29 - 28, 150, 18);
         search.setCanLoseFocus(true);
-        conflictsButton = new GuiButton(2906, this.width / 2 - 155 + 160, this.height - 29 - 29, 150, 20, I18n.format("options.showConflicts"));
+        conflictsButton = new GuiButton(2906, this.width / 2 - 155 + 160, this.height - 29 - 29, 150 / 2, 20, I18n.format("options.showConflicts"));
+        noneButton = new GuiButton(2907, this.width / 2 - 155 + 160 + 80, this.height - 29 - 29, 150 / 2, 20, I18n.format("options.showNone"));
         this.buttonList.add(conflictsButton);
+        this.buttonList.add(noneButton);
+        
         this.conflicts = false;
     }
     
@@ -99,10 +105,16 @@ public class GuiNewControls extends GuiControls {
             for(GuiListExtended.IGuiListEntry entry : keyBindingList.getListEntriesAll()) {
                 if(entry instanceof GuiNewKeyBindingList.KeyEntry) {
                     GuiNewKeyBindingList.KeyEntry ent = (GuiNewKeyBindingList.KeyEntry) entry;
+                    if(ent.getKeybinding().getKeyCode() == 0) {
+                        continue;
+                    }
                     for(GuiListExtended.IGuiListEntry entry1 : keyBindingList.getListEntriesAll()) {
                         if(!entry.equals(entry1))
                             if(entry1 instanceof GuiNewKeyBindingList.KeyEntry) {
                                 GuiNewKeyBindingList.KeyEntry ent1 = (GuiNewKeyBindingList.KeyEntry) entry1;
+                                if(ent1.getKeybinding().getKeyCode() == 0) {
+                                    continue;
+                                }
                                 if(ent.getKeybinding().conflicts(ent1.getKeybinding())) {
                                     if(!conflicts.contains(ent))
                                         conflicts.add(ent);
@@ -115,7 +127,22 @@ public class GuiNewControls extends GuiControls {
                 }
             }
             keyBindingList.setListEntries(conflicts);
-            if(conflicts.isEmpty() || !this.conflicts) {
+            if(!this.conflicts) {
+                keyBindingList.setListEntries(keyBindingList.getListEntriesAll());
+            }
+        } else if(type == 2) {
+            LinkedList<GuiListExtended.IGuiListEntry> none = new LinkedList<>();
+            for(GuiListExtended.IGuiListEntry entry : keyBindingList.getListEntriesAll()) {
+                if(entry instanceof GuiNewKeyBindingList.KeyEntry) {
+                    GuiNewKeyBindingList.KeyEntry ent = (GuiNewKeyBindingList.KeyEntry) entry;
+                    System.out.println(ent.getKeybinding().getKeyCode());
+                    if(ent.getKeybinding().getKeyCode() == 0) {
+                        none.add(ent);
+                    }
+                }
+            }
+            keyBindingList.setListEntries(none);
+            if(!this.none) {
                 keyBindingList.setListEntries(keyBindingList.getListEntriesAll());
             }
         }
@@ -175,6 +202,8 @@ public class GuiNewControls extends GuiControls {
             button.displayString = this.options.getKeyBinding(GameSettings.Options.getEnumOptions(button.id));
         } else if(button.id == 2906) {
             availableTime = 0;
+            none = false;
+            noneButton.displayString = none ? I18n.format("options.showAll") : I18n.format("options.showNone");
             if(!conflicts) {
                 conflicts = true;
                 conflictsButton.displayString = I18n.format("options.showAll");
@@ -184,8 +213,19 @@ public class GuiNewControls extends GuiControls {
                 conflictsButton.displayString = I18n.format("options.showConflicts");
                 reloadKeys(1);
             }
-            
-            
+        } else if(button.id == 2907) {
+            availableTime = 0;
+            conflicts = false;
+            conflictsButton.displayString = conflicts ? I18n.format("options.showAll") : I18n.format("options.showConflicts");
+            if(!none) {
+                none = true;
+                noneButton.displayString = I18n.format("options.showAll");
+                reloadKeys(2);
+            } else {
+                none = false;
+                noneButton.displayString = I18n.format("options.showNone");
+                reloadKeys(2);
+            }
         }
     }
     
@@ -271,7 +311,7 @@ public class GuiNewControls extends GuiControls {
             if(search.isFocused())
                 search.textboxKeyTyped(typedChar, keyCode);
             else if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
-                if(availableTime > 0 && availableTime<40) {
+                if(availableTime > 0 && availableTime < 40) {
                     availableTime = 0;
                 } else {
                     availableTime = 40;

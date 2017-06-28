@@ -135,7 +135,6 @@ public class GuiNewControls extends GuiControls {
             for(GuiListExtended.IGuiListEntry entry : keyBindingList.getListEntriesAll()) {
                 if(entry instanceof GuiNewKeyBindingList.KeyEntry) {
                     GuiNewKeyBindingList.KeyEntry ent = (GuiNewKeyBindingList.KeyEntry) entry;
-                    System.out.println(ent.getKeybinding().getKeyCode());
                     if(ent.getKeybinding().getKeyCode() == 0) {
                         none.add(ent);
                     }

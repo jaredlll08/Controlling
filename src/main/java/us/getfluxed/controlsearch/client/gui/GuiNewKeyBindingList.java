@@ -85,7 +85,7 @@ public class GuiNewKeyBindingList extends GuiListExtended {
 		private final int labelWidth;
 		
 		public CategoryEntry(String name) {
-			this.labelText = I18n.format(name, new Object[0]);
+			this.labelText = I18n.format(name);
 			this.labelWidth = GuiNewKeyBindingList.this.mc.fontRendererObj.getStringWidth(this.labelText);
         }
         

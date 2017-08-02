@@ -66,7 +66,7 @@ public class GuiNewControls extends GuiControls {
             ++i;
         }
         
-        search = new GuiTextField(0, mc.fontRendererObj, this.width / 2 - 155, this.height - 29 - 28, 150, 18);
+        search = new GuiTextField(0, mc.fontRendererObj, this.width / 2 - 154, this.height - 29 - 28, 148, 18);
         search.setCanLoseFocus(true);
         conflictsButton = new GuiButton(2906, this.width / 2 - 155 + 160, this.height - 29 - 29, 150 / 2, 20, I18n.format("options.showConflicts"));
         noneButton = new GuiButton(2907, this.width / 2 - 155 + 160 + 80, this.height - 29 - 29, 150 / 2, 20, I18n.format("options.showNone"));

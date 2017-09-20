@@ -13,8 +13,7 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void guiInit(GuiOpenEvent e) {
-        if (e.getGui() instanceof GuiControls) {
-//            GuiModList
+        if (e.getGui() instanceof GuiControls && !(e.getGui() instanceof GuiNewControls)) {
             e.setGui(new GuiNewControls(Minecraft.getMinecraft().currentScreen, Minecraft.getMinecraft().gameSettings));
         }
     }

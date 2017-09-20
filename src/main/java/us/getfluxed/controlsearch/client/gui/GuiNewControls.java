@@ -5,6 +5,7 @@ import net.minecraft.client.gui.*;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.*;
 import net.minecraftforge.client.settings.KeyModifier;
+import net.minecraftforge.fml.client.config.GuiCheckBox;
 import org.lwjgl.input.*;
 
 import javax.swing.*;
@@ -39,6 +40,8 @@ public class GuiNewControls extends GuiControls {
     public GuiButton buttonConflict;
     public GuiButton buttonNone;
     public GuiButton buttonSorting;
+    public GuiCheckBox boxSearchCategory;
+    public GuiCheckBox boxSearchKey;
     
     
     public GuiNewControls(GuiScreen screen, GameSettings settings) {
@@ -76,10 +79,15 @@ public class GuiNewControls extends GuiControls {
         buttonConflict = new GuiButton(2906, this.width / 2 - 155 + 160, this.height - 29 - 24, 150 / 2, 20, I18n.format("options.showConflicts"));
         buttonNone = new GuiButton(2907, this.width / 2 - 155 + 160 + 80, this.height - 29 - 24, 150 / 2, 20, I18n.format("options.showNone"));
         buttonSorting = new GuiButton(2908, this.width / 2 - 155 + 160 + 80, this.height - 29 - 24 - 24, 150 / 2, 20, I18n.format("options.sort") + ": " + sortingType.getName());
+        boxSearchCategory = new GuiCheckBox(2909, this.width / 2 - (155 / 2) + 20, this.height - 29 - 37, I18n.format("options.category"), false);
+        boxSearchKey = new GuiCheckBox(2910, this.width / 2 - (155 / 2) + 20, this.height - 29 - 50, I18n.format("options.key"), false);
         
         this.buttonList.add(buttonConflict);
         this.buttonList.add(buttonNone);
         this.buttonList.add(buttonSorting);
+        this.buttonList.add(boxSearchCategory);
+        this.buttonList.add(boxSearchKey);
+        
     }
     
     @Override
@@ -134,7 +142,7 @@ public class GuiNewControls extends GuiControls {
     }
     
     public LinkedList<GuiListExtended.IGuiListEntry> sortKeys(LinkedList<GuiListExtended.IGuiListEntry> list, EnumSortingType type) {
-        if(type == EnumSortingType.DEFAULT){
+        if(type == EnumSortingType.DEFAULT) {
             return list;
         }
         LinkedList<GuiListExtended.IGuiListEntry> sorted = new LinkedList<>();
@@ -173,8 +181,18 @@ public class GuiNewControls extends GuiControls {
             for(GuiListExtended.IGuiListEntry entry : list) {
                 if(entry instanceof GuiNewKeyBindingList.KeyEntry) {
                     GuiNewKeyBindingList.KeyEntry ent = (GuiNewKeyBindingList.KeyEntry) entry;
-                    if(translate(ent.getKeybinding().getKeyDescription()).toLowerCase().contains(search.getText().toLowerCase())) {
-                        newList.add(entry);
+                    if(boxSearchCategory.isChecked()) {
+                        if(translate(ent.getKeybinding().getKeyCategory()).toLowerCase().contains(search.getText().toLowerCase())) {
+                            newList.add(entry);
+                        }
+                    } else if(boxSearchKey.isChecked()) {
+                        if(translate(ent.getKeybinding().getDisplayName()).toLowerCase().contains(search.getText().toLowerCase())) {
+                            newList.add(entry);
+                        }
+                    } else {
+                        if(translate(ent.getKeybinding().getKeyDescription()).toLowerCase().contains(search.getText().toLowerCase())) {
+                            newList.add(entry);
+                        }
                     }
                 }
             }
@@ -331,6 +349,14 @@ public class GuiNewControls extends GuiControls {
             sortingType = sortingType.cycle();
             buttonSorting.displayString = I18n.format("options.sort") + ": " + sortingType.getName();
             reloadKeys(3);
+        } else if(button.id == 2909) {
+            availableTime = 0;
+            boxSearchKey.setIsChecked(false);
+            reloadKeys(0);
+        } else if(button.id == 2910) {
+            availableTime = 0;
+            boxSearchCategory.setIsChecked(false);
+            reloadKeys(0);
         }
     }
     

@@ -149,6 +149,11 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
             boolean flag = GuiNewKeyBindingList.this.controlsScreen.buttonId == this.keybinding;
             GuiNewKeyBindingList.this.mc.fontRendererObj.drawString(this.keyDesc, x + 90 - GuiNewKeyBindingList.this.maxListLabelWidth, y + slotHeight / 2 - GuiNewKeyBindingList.this.mc.fontRendererObj.FONT_HEIGHT / 2, 16777215);
             GuiNewKeyBindingList.this.mc.fontRendererObj.drawString(String.format("(%s)", I18n.format(keybinding.getKeyCategory())), x - 45 - GuiNewKeyBindingList.this.maxListLabelWidth, y + slotHeight / 2 - GuiNewKeyBindingList.this.mc.fontRendererObj.FONT_HEIGHT / 2, 16777215);
+            if(keybinding.isSetToDefaultValue()) {
+                btnReset.visible = false;
+            } else {
+                btnReset.visible = true;
+            }
             this.btnReset.xPosition = x + 210;
             this.btnReset.yPosition = y;
             this.btnReset.enabled = !this.keybinding.isSetToDefaultValue();
@@ -156,11 +161,7 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
             this.btnChangeKeyBinding.xPosition = x + 105;
             this.btnChangeKeyBinding.yPosition = y;
             this.btnChangeKeyBinding.displayString = this.keybinding.getDisplayName();
-            if(keybinding.isSetToDefaultValue()) {
-                btnReset.visible = false;
-            } else {
-                btnReset.visible = true;
-            }
+            
             boolean flag1 = false;
             boolean keyCodeModifierConflict = true; // less severe form of conflict, like SHIFT conflicting with SHIFT+G
             

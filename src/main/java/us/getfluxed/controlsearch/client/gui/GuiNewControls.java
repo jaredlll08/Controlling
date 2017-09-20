@@ -204,6 +204,7 @@ public class GuiNewControls extends GuiControls {
                     ((GuiNewKeyBindingList) keyBindingList).setListEntries(((GuiNewKeyBindingList) keyBindingList).getListEntriesAll());
                 else
                     reloadKeys(conflicts ? 1 : 2);
+                reloadKeys(3);
             }
         } else if(type == 1) {
             ((GuiNewKeyBindingList) keyBindingList).setListEntries(getConflictingEntries());

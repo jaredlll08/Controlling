@@ -12,7 +12,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "3.0.1"
+version = "3.0.3"
 group= "us.getfluxed.controlling" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Controlling"
 
@@ -26,7 +26,7 @@ jar {
     }
 }
 minecraft {
-    version = "1.12-14.21.0.2322"
+    version = "1.12-14.21.1.2387"
     runDir = "run"
     mappings = "snapshot_20161220"
 }

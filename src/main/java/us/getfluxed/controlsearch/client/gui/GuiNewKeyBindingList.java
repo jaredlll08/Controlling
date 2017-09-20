@@ -177,6 +177,11 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
 					String.format("(%s)", I18n.format(this.keybinding.getKeyCategory())),
 					x - 45 - GuiNewKeyBindingList.this.maxListLabelWidth,
 					y + slotHeight / 2 - GuiNewKeyBindingList.this.mc.fontRendererObj.FONT_HEIGHT / 2, 16777215);
+			if (this.keybinding.isSetToDefaultValue()) {
+				this.btnReset.visible = false;
+			} else {
+				this.btnReset.visible = true;
+			}
 			this.btnReset.xPosition = x + 210;
 			this.btnReset.yPosition = y;
 			this.btnReset.enabled = !this.keybinding.isSetToDefaultValue();
@@ -184,11 +189,6 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
 			this.btnChangeKeyBinding.xPosition = x + 105;
 			this.btnChangeKeyBinding.yPosition = y;
 			this.btnChangeKeyBinding.displayString = this.keybinding.getDisplayName();
-			if (this.keybinding.isSetToDefaultValue()) {
-				this.btnReset.visible = false;
-			} else {
-				this.btnReset.visible = true;
-			}
 			boolean flag1 = false;
 			boolean keyCodeModifierConflict = true; // less severe form of conflict, like
 													// SHIFT conflicting with SHIFT+G

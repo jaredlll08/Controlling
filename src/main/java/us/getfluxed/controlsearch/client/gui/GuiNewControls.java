@@ -141,26 +141,32 @@ public class GuiNewControls extends GuiControls {
         return none;
     }
     
+    public void sort(LinkedList<GuiListExtended.IGuiListEntry> list, EnumSortingType type) {
+        if(sortingType != EnumSortingType.DEFAULT)
+            list.sort((o1, o2) -> {
+                if(o1 instanceof GuiNewKeyBindingList.KeyEntry && o2 instanceof GuiNewKeyBindingList.KeyEntry) {
+                    GuiNewKeyBindingList.KeyEntry ent1 = (GuiNewKeyBindingList.KeyEntry) o1;
+                    GuiNewKeyBindingList.KeyEntry ent2 = (GuiNewKeyBindingList.KeyEntry) o2;
+                    if(type == EnumSortingType.AZ) {
+                        return translate(ent1.getKeybinding().getKeyDescription()).compareTo(I18n.format(ent2.getKeybinding().getKeyDescription()));
+                    } else if(type == EnumSortingType.ZA) {
+                        return translate(ent2.getKeybinding().getKeyDescription()).compareTo(I18n.format(ent1.getKeybinding().getKeyDescription()));
+                    }
+                    
+                }
+                return -1;
+            });
+    }
+    
+    
     public LinkedList<GuiListExtended.IGuiListEntry> sortKeys(LinkedList<GuiListExtended.IGuiListEntry> list, EnumSortingType type) {
         if(type == EnumSortingType.DEFAULT) {
             return list;
         }
         LinkedList<GuiListExtended.IGuiListEntry> sorted = new LinkedList<>();
         sorted.addAll(list);
+        sort(list, type);
         
-        sorted.sort((o1, o2) -> {
-            if(o1 instanceof GuiNewKeyBindingList.KeyEntry && o2 instanceof GuiNewKeyBindingList.KeyEntry) {
-                GuiNewKeyBindingList.KeyEntry ent1 = (GuiNewKeyBindingList.KeyEntry) o1;
-                GuiNewKeyBindingList.KeyEntry ent2 = (GuiNewKeyBindingList.KeyEntry) o2;
-                if(type == EnumSortingType.AZ) {
-                    return translate(ent1.getKeybinding().getKeyDescription()).compareTo(I18n.format(ent2.getKeybinding().getKeyDescription()));
-                } else if(type == EnumSortingType.ZA) {
-                    return translate(ent2.getKeybinding().getKeyDescription()).compareTo(I18n.format(ent1.getKeybinding().getKeyDescription()));
-                }
-                
-            }
-            return -1;
-        });
         return sorted;
     }
     
@@ -237,20 +243,8 @@ public class GuiNewControls extends GuiControls {
                     sorted.add(entry);
                 }
             }
-            if(sortingType != EnumSortingType.DEFAULT)
-                sorted.sort((o1, o2) -> {
-                    if(o1 instanceof GuiNewKeyBindingList.KeyEntry && o2 instanceof GuiNewKeyBindingList.KeyEntry) {
-                        GuiNewKeyBindingList.KeyEntry ent1 = (GuiNewKeyBindingList.KeyEntry) o1;
-                        GuiNewKeyBindingList.KeyEntry ent2 = (GuiNewKeyBindingList.KeyEntry) o2;
-                        if(sortingType == EnumSortingType.AZ) {
-                            return translate(ent1.getKeybinding().getKeyDescription()).compareTo(I18n.format(ent2.getKeybinding().getKeyDescription()));
-                        } else if(sortingType == EnumSortingType.ZA) {
-                            return translate(ent2.getKeybinding().getKeyDescription()).compareTo(I18n.format(ent1.getKeybinding().getKeyDescription()));
-                        }
-                        
-                    }
-                    return -1;
-                });
+            
+            sort(list, sortingType);
             
             ((GuiNewKeyBindingList) keyBindingList).setListEntries(sorted);
             

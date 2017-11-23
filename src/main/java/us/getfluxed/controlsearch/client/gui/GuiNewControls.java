@@ -154,7 +154,10 @@ public class GuiNewControls extends GuiControls {
                     }
                     
                 }
-                return -1;
+                if(o1.equals(o2)) {
+                    return 0;
+                }
+                return o1.toString().compareTo(o2.toString());
             });
     }
     

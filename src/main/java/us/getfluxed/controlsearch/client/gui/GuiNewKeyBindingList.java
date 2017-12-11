@@ -37,8 +37,6 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
 		this.listEntries = new LinkedList<>();
 		this.listEntriesAll = new LinkedList<>();
 
-		// this.listEntries = new GuiListExtended.IGuiListEntry[akeybinding.length +
-		// KeyBinding.getKeybinds().size()];
 		Arrays.sort(akeybinding);
 		final int i = 0;
 		String s = null;
@@ -52,11 +50,9 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
 					this.listEntries.add(new GuiNewKeyBindingList.CategoryEntry(s1));
 					this.listEntriesAll.add(new GuiNewKeyBindingList.CategoryEntry(s1));
 				}
-				// this.listEntries[i++] = new GuiNewKeyBindingList.CategoryEntry(s1);
 			}
 
-			final int j = mcIn.fontRendererObj
-					.getStringWidth(I18n.format(keybinding.getKeyDescription()));
+			final int j = mcIn.fontRendererObj.getStringWidth(I18n.format(keybinding.getKeyDescription()));
 
 			if (j > this.maxListLabelWidth) {
 				this.maxListLabelWidth = j;
@@ -97,7 +93,7 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
 	@SideOnly(Side.CLIENT)
 	public class CategoryEntry implements GuiListExtended.IGuiListEntry {
 
-		private final String labelText;
+		public final String labelText;
 		private final int labelWidth;
 
 		public CategoryEntry(String name) {
@@ -156,8 +152,7 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
 		private KeyEntry(KeyBinding name) {
 			this.keybinding = name;
 			this.keyDesc = I18n.format(name.getKeyDescription());
-			this.btnChangeKeyBinding = new GuiButton(0, 0, 0, 95, 20,
-					I18n.format(name.getKeyDescription()));
+			this.btnChangeKeyBinding = new GuiButton(0, 0, 0, 95, 20, I18n.format(name.getKeyDescription()));
 			this.btnReset = new GuiButton(0, 0, 0, 50, 20, I18n.format("controls.reset"));
 		}
 
@@ -177,11 +172,10 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
 //					String.format("(%s)", I18n.format(this.keybinding.getKeyCategory())),
 //					x - 45 - GuiNewKeyBindingList.this.maxListLabelWidth,
 //					y + slotHeight / 2 - GuiNewKeyBindingList.this.mc.fontRendererObj.FONT_HEIGHT / 2, 16777215);
-			btnReset.visible = !keybinding.isSetToDefaultValue();
+			this.btnReset.visible = !this.keybinding.isSetToDefaultValue();
 			this.btnReset.xPosition = x + 210;
 			this.btnReset.yPosition = y;
 			this.btnReset.enabled = !this.keybinding.isSetToDefaultValue();
-			this.btnReset.drawButton(GuiNewKeyBindingList.this.mc, mouseX, mouseY);
 			this.btnChangeKeyBinding.xPosition = x + 105;
 			this.btnChangeKeyBinding.yPosition = y;
 			this.btnChangeKeyBinding.displayString = this.keybinding.getDisplayName();
@@ -206,14 +200,16 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
 						? TextFormatting.GOLD
 						: TextFormatting.RED) + this.btnChangeKeyBinding.displayString;
 			}
-//            if(mouseX >= x + 90 - GuiNewKeyBindingList.this.maxListLabelWidth && mouseX <= x + listWidth) {
-                if(mouseY >= y && mouseY <= y + slotHeight) {
-//                    Gui.drawRect(mouseX + 8, mouseY - 2, mouseX + mc.fontRendererObj.getStringWidth(I18n.format(keybinding.getKeyCategory())), mouseY + mc.fontRendererObj.FONT_HEIGHT, 0xFF000000);
-                    mc.fontRendererObj.drawString(I18n.format(keybinding.getKeyCategory()), mouseX + 10, mouseY, 0xFFFFFF);
-                }
-//            }
-
 			this.btnChangeKeyBinding.drawButton(GuiNewKeyBindingList.this.mc, mouseX, mouseY);
+			this.btnReset.drawButton(GuiNewKeyBindingList.this.mc, mouseX, mouseY);
+			// if(mouseX >= x + 90 - GuiNewKeyBindingList.this.maxListLabelWidth && mouseX
+			// <= x + listWidth) {
+			if (mouseY >= y && mouseY <= y + slotHeight) {
+				GuiNewKeyBindingList.this.mc.fontRendererObj.drawString(I18n.format(this.keybinding.getKeyCategory()),
+						mouseX + 10, mouseY, 0xFFFFFF);
+			}
+			// }
+
 		}
 
 		/**

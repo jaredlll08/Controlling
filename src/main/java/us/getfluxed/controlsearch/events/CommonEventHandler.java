@@ -8,10 +8,4 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
  */
 public class CommonEventHandler {
 
-    @SubscribeEvent
-    public void join(TickEvent.RenderTickEvent e) {
-    }
-
-
-
 }

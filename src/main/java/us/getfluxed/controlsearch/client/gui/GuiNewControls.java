@@ -32,13 +32,15 @@ public class GuiNewControls extends GuiControls {
     
     private boolean conflicts = false;
     private boolean none = false;
-    private EnumSortingType sortingType = EnumSortingType.DEFAULT;
+    private boolean toggleFreeKeys = false;
     
-    public int availableTime;
+    private EnumSortingType sortingType = EnumSortingType.DEFAULT;
     
     public GuiButton buttonConflict;
     public GuiButton buttonNone;
     public GuiButton buttonSorting;
+    public GuiButton buttonToggleKeys;
+    
     public GuiCheckBox boxSearchCategory;
     public GuiCheckBox boxSearchKey;
     
@@ -79,11 +81,14 @@ public class GuiNewControls extends GuiControls {
         buttonSorting = new GuiButton(2908, this.width / 2 - 155 + 160 + 80, this.height - 29 - 24 - 24, 150 / 2, 20, translate("options.sort") + ": " + sortingType.getName());
         boxSearchCategory = new GuiCheckBox(2909, this.width / 2 - (155 / 2) + 20, this.height - 29 - 37, translate("options.category"), false);
         boxSearchKey = new GuiCheckBox(2910, this.width / 2 - (155 / 2) + 20, this.height - 29 - 50, translate("options.key"), false);
+        buttonToggleKeys = new GuiButton(2911, this.width / 2 - 155 + 160, this.height - 29 - 24 - 24, 150 / 2, 20, translate("options.toggleFree"));
         this.buttonList.add(buttonConflict);
         this.buttonList.add(buttonNone);
         this.buttonList.add(buttonSorting);
         this.buttonList.add(boxSearchCategory);
         this.buttonList.add(boxSearchKey);
+        this.buttonList.add(buttonToggleKeys);
+    
     }
     
     @Override
@@ -227,7 +232,7 @@ public class GuiNewControls extends GuiControls {
     /**
      * Handles mouse input.
      */
-    public void superSuperHandleMouseInput() throws IOException {
+    public void superSuperHandleMouseInput() {
         int i = Mouse.getEventX() * this.width / this.mc.displayWidth;
         int j = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
         int k = Mouse.getEventButton();
@@ -264,12 +269,12 @@ public class GuiNewControls extends GuiControls {
                 keybinding.setToDefault();
             }
             KeyBinding.resetKeyBindingArrayAndHash();
-            availableTime = 0;
+            toggleFreeKeys = false;
         } else if(button.id < 100 && button instanceof GuiOptionButton) {
             this.options.setOptionValue(((GuiOptionButton) button).returnEnumOptions(), 1);
             button.displayString = this.options.getKeyBinding(GameSettings.Options.getEnumOptions(button.id));
         } else if(button.id == 2906) {
-            availableTime = 0;
+            toggleFreeKeys = false;
             none = false;
             buttonNone.displayString = translate("options.showNone");
             if(!conflicts) {
@@ -282,7 +287,7 @@ public class GuiNewControls extends GuiControls {
                 refreshKeys();
             }
         } else if(button.id == 2907) {
-            availableTime = 0;
+            toggleFreeKeys = false;
             conflicts = false;
             buttonConflict.displayString = translate("options.showConflicts");
             if(!none) {
@@ -295,25 +300,28 @@ public class GuiNewControls extends GuiControls {
                 refreshKeys();
             }
         } else if(button.id == 2908) {
-            availableTime = 0;
+            toggleFreeKeys = false;
             sortingType = sortingType.cycle();
             buttonSorting.displayString = translate("options.sort") + ": " + sortingType.getName();
             refreshKeys();
         } else if(button.id == 2909) {
-            availableTime = 0;
+            toggleFreeKeys = false;
             boxSearchKey.setIsChecked(false);
             refreshKeys();
         } else if(button.id == 2910) {
-            availableTime = 0;
+            toggleFreeKeys = false;
             boxSearchCategory.setIsChecked(false);
             refreshKeys();
+        } else if(button.id == 2911) {
+            buttonToggleKeys.displayString = translate("options.toggleFree");
+            toggleFreeKeys = !toggleFreeKeys;
         }
     }
     
     /**
      * Called when the mouse is clicked. Args : mouseX, mouseY, clickedButton
      */
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if(this.buttonId != null) {
             this.buttonId.setKeyModifierAndCode(net.minecraftforge.client.settings.KeyModifier.getActiveModifier(), -100 + mouseButton);
             this.options.setOptionKeyBinding(this.buttonId, -100 + mouseButton);
@@ -391,13 +399,7 @@ public class GuiNewControls extends GuiControls {
         } else {
             if(search.isFocused())
                 search.textboxKeyTyped(typedChar, keyCode);
-            else if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
-                if(availableTime > 0 && availableTime < 40) {
-                    availableTime = 0;
-                } else {
-                    availableTime = 40;
-                }
-            } else {
+            else {
                 superSuperKeyTyped(typedChar, keyCode);
             }
         }
@@ -434,8 +436,8 @@ public class GuiNewControls extends GuiControls {
         superSuperDrawScreen(mouseX, mouseY, partialTicks);
         search.drawTextBox();
         
-        if(availableTime > 0) {
-            drawRect(keyBindingList.left, keyBindingList.top, keyBindingList.right, keyBindingList.bottom + 18, 0xFF000000);
+        if(toggleFreeKeys) {
+            drawRect(keyBindingList.left, keyBindingList.top, keyBindingList.right, keyBindingList.bottom , 0xFF000000);
             LinkedList<Integer> keyCodes = new LinkedList<>();
             for(int i = 2; i < 219; i++) {
                 keyCodes.add(i);
@@ -467,13 +469,10 @@ public class GuiNewControls extends GuiControls {
             final int[] y = {0};
             final int[] count = {0};
             fontRendererObj.drawString(translate("options.availableKeys") + ":", width / 2, keyBindingList.top + 2, 0xFFFFFF);
-            List<String> codes = new ArrayList<>();
             keyCodes.forEach(key -> {
                 if(key >= 0) {
-                    codes.add(Keyboard.getKeyName(key));
                     fontRendererObj.drawString(Keyboard.getKeyName(key), keyBindingList.left + (x[0] * 65), keyBindingList.top + 12 + (y[0]++ * fontRendererObj.FONT_HEIGHT), 0xFF55FF);
                 } else {
-                    codes.add(Mouse.getButtonName(key + 100));
                     switch(key + 100) {
                         case 0:
                             fontRendererObj.drawString("Button 1", keyBindingList.left + (x[0] * 65), keyBindingList.top + 12 + (y[0]++ * fontRendererObj.FONT_HEIGHT), 0x55FF55);
@@ -494,7 +493,6 @@ public class GuiNewControls extends GuiControls {
                     y[0] = 0;
                 }
             });
-            availableTime--;
         }
     }
     

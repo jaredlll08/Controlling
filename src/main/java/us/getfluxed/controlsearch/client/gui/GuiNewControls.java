@@ -439,7 +439,7 @@ public class GuiNewControls extends GuiControls {
         if(toggleFreeKeys) {
             drawRect(keyBindingList.left, keyBindingList.top, keyBindingList.right, keyBindingList.bottom , 0xFF000000);
             LinkedList<Integer> keyCodes = new LinkedList<>();
-            for(int i = 2; i < 219; i++) {
+            for(int i = 2; i < 256; i++) {
                 keyCodes.add(i);
             }
             keyCodes.add(-98);

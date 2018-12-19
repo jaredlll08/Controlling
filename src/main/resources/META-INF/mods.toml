@@ -1,0 +1,40 @@
+# This is an example mods.toml file. It contains the data relating to the loading mods.
+# There are several mandatory fields (#mandatory), and many more that are optional (#optional).
+# The overall format is standard TOML format, v0.5.0.
+# Note that there are a couple of TOML lists in this file.
+# Find more information on toml format here:  https://github.com/toml-lang/toml
+# The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
+modLoader="javafml" #mandatory
+# A version range to match for said mod loader - for regular FML @Mod it will be the minecraft version (without the 1.)
+loaderVersion="[13,)" #mandatory
+# A URL to refer people to when problems occur with this mod
+issueTrackerURL="https://github.com/jaredlll08/Controlling/issues" #optional
+# A URL for the "homepage" for this mod, displayed in the mod UI
+displayURL="https://minecraft.curseforge.com/projects/controlling" #optional
+# A text field displayed in the mod UI
+authors="Jaredlll08" #optional
+# A list of mods - how many allowed here is determined by the individual mod loader
+[[mods]] #mandatory
+# The modid of the mod
+modId="controlling" #mandatory
+# The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
+version="4.0.0" #mandatory
+ # A display name for the mod
+displayName="Controlling" #mandatory
+# The description text for the mod (multi line!) (#mandatory)
+description='''
+Adds the ability to search for keybinds using their name in the KeyBinding menu, this allows players to easily find a key binding in the menu.
+'''
+
+# A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
+[[dependencies.controlling]] #optional
+    # the modid of the dependency
+    modId="forge" #mandatory
+    # Does this dependency have to exist - if not, ordering below must be specified
+    mandatory=true #mandatory
+    # The version range of the dependency
+    versionRange="[14.23.2.0,)" #mandatory
+    # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
+    ordering="NONE"
+    # Side this dependency is applied on - BOTH, CLIENT or SERVER
+    side="BOTH"

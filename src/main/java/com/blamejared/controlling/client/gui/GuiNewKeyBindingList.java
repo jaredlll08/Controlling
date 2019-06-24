@@ -15,7 +15,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.*;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiNewKeyBindingList extends AbstractOptionList<GuiNewKeyBindingList.Entry> {
+public class GuiNewKeyBindingList extends KeyBindingList {
     
     private final ControlsScreen controlsScreen;
     private final Minecraft mc;
@@ -23,7 +23,12 @@ public class GuiNewKeyBindingList extends AbstractOptionList<GuiNewKeyBindingLis
     public List<Entry> allEntries;
     
     public GuiNewKeyBindingList(ControlsScreen controls, Minecraft mcIn) {
-        super(mcIn, controls.width + 45, controls.height, 43, controls.height - 80, 20);
+        super(controls, mcIn);
+        this.width = controls.width + 45;
+        this.height = controls.height;
+        this.y0 = 43;
+        this.y1 = controls.height - 80;
+        this.x1 = controls.width + 45;
         this.controlsScreen = controls;
         this.mc = mcIn;
         allEntries = new ArrayList<>();
@@ -57,7 +62,7 @@ public class GuiNewKeyBindingList extends AbstractOptionList<GuiNewKeyBindingLis
     }
     
     public void add(Entry ent) {
-        this.addEntry(ent);
+        children().add(ent);
         allEntries.add(ent);
     }
     
@@ -70,7 +75,7 @@ public class GuiNewKeyBindingList extends AbstractOptionList<GuiNewKeyBindingLis
     }
     
     @OnlyIn(Dist.CLIENT)
-    public class CategoryEntry extends GuiNewKeyBindingList.Entry {
+    public class CategoryEntry extends KeyBindingList.Entry {
         
         private final String labelText;
         private final int labelWidth;
@@ -92,10 +97,7 @@ public class GuiNewKeyBindingList extends AbstractOptionList<GuiNewKeyBindingLis
     }
     
     @OnlyIn(Dist.CLIENT)
-    public abstract static class Entry extends AbstractOptionList.Entry<GuiNewKeyBindingList.Entry> {}
-    
-    @OnlyIn(Dist.CLIENT)
-    public class KeyEntry extends GuiNewKeyBindingList.Entry {
+    public class KeyEntry extends KeyBindingList.Entry {
         
         /**
          * The keybinding specified for this KeyEntry

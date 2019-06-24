@@ -16,7 +16,6 @@ import java.util.function.Predicate;
 @OnlyIn(Dist.CLIENT)
 public class GuiNewControls extends ControlsScreen {
     
-    private GuiNewKeyBindingList keyBindingList;
     private Button buttonReset;
     private final Screen parentScreen;
     private final GameSettings options;
@@ -32,8 +31,6 @@ public class GuiNewControls extends ControlsScreen {
     private Button buttonConflicting;
     private GuiCheckBox buttonKey;
     private GuiCheckBox buttonCat;
-    
-    private Button buttonSort;
     
     public GuiNewControls(Screen screen, GameSettings settings) {
         super(screen, settings);
@@ -52,9 +49,9 @@ public class GuiNewControls extends ControlsScreen {
         }));
         this.addButton(AbstractOption.field_216719_z.func_216586_a(this.minecraft.gameSettings, this.width / 2 - 155 + 160, 18, 150));
         
-        this.keyBindingList = new GuiNewKeyBindingList(this, this.minecraft);
-        this.children.add(this.keyBindingList);
-        this.setFocused(this.keyBindingList);
+        this.field_146494_r = new GuiNewKeyBindingList(this, this.minecraft);
+        this.children.add(this.field_146494_r);
+        this.setFocused(this.field_146494_r);
         this.addButton(new Button(this.width / 2 - 155 + 160, this.height - 29, 150, 20, I18n.format("gui.done"), (p_213126_1_) -> GuiNewControls.this.minecraft.displayGuiScreen(GuiNewControls.this.parentScreen)));
         
         this.buttonReset = this.addButton(new Button(this.width / 2 - 155, this.height - 29, 150, 20, I18n.format("controls.resetAll"), (p_213126_1_) -> {
@@ -107,7 +104,7 @@ public class GuiNewControls extends ControlsScreen {
             }
         });
         sortOrder = SortOrder.NONE;
-        this.buttonSort = this.addButton(new Button(this.width / 2 - 155 + 160 + 76, this.height - 29 - 24 - 24, 150 / 2, 20, I18n.format("options.sort") + ": " + sortOrder.getName(), (p_213126_1_) -> {
+        Button buttonSort = this.addButton(new Button(this.width / 2 - 155 + 160 + 76, this.height - 29 - 24 - 24, 150 / 2, 20, I18n.format("options.sort") + ": " + sortOrder.getName(), (p_213126_1_) -> {
             sortOrder = sortOrder.cycle();
             p_213126_1_.setMessage(I18n.format("options.sort") + ": " + sortOrder.getName());
             filterKeys();
@@ -132,9 +129,9 @@ public class GuiNewControls extends ControlsScreen {
     
     public void filterKeys() {
         lastSearch = search.getText();
-        keyBindingList.children().clear();
+        field_146494_r.children().clear();
         if(lastSearch.isEmpty() && displayMode == DisplayMode.ALL && sortOrder == SortOrder.NONE) {
-            keyBindingList.children().addAll(keyBindingList.getAllEntries());
+            field_146494_r.children().addAll(((GuiNewKeyBindingList) field_146494_r).getAllEntries());
             return;
         }
         Predicate<GuiNewKeyBindingList.KeyEntry> filters = displayMode.getPredicate();
@@ -152,15 +149,15 @@ public class GuiNewControls extends ControlsScreen {
                 break;
         }
         
-        for(GuiNewKeyBindingList.Entry entry : keyBindingList.getAllEntries()) {
+        for(GuiNewKeyBindingList.Entry entry : ((GuiNewKeyBindingList) field_146494_r).getAllEntries()) {
             if(entry instanceof GuiNewKeyBindingList.KeyEntry) {
                 GuiNewKeyBindingList.KeyEntry keyEntry = (GuiNewKeyBindingList.KeyEntry) entry;
                 if(filters.test(keyEntry)) {
-                    keyBindingList.children().add(entry);
+                    field_146494_r.children().add(entry);
                 }
             }
         }
-        sortOrder.sort(keyBindingList.children());
+        sortOrder.sort(field_146494_r.children());
         
         
     }
@@ -170,7 +167,7 @@ public class GuiNewControls extends ControlsScreen {
      */
     public void render(int mouseX, int mouseY, float partialTicks) {
         this.renderBackground();
-        this.keyBindingList.render(mouseX, mouseY, partialTicks);
+        this.field_146494_r.render(mouseX, mouseY, partialTicks);
         this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 8, 16777215);
         boolean flag = false;
         
@@ -198,9 +195,9 @@ public class GuiNewControls extends ControlsScreen {
             KeyBinding.resetKeyBindingArrayAndHash();
             valid = true;
             search.setFocused(false);
-        } else if(mb == 0 && this.keyBindingList.mouseClicked(mx, my, mb)) {
+        } else if(mb == 0 && this.field_146494_r.mouseClicked(mx, my, mb)) {
             this.setDragging(true);
-            this.setFocused(this.keyBindingList);
+            this.setFocused(this.field_146494_r);
             valid = true;
             search.setFocused(false);
         } else {
@@ -232,7 +229,7 @@ public class GuiNewControls extends ControlsScreen {
     }
     
     public boolean mouseReleased(double mx, double my, int mb) {
-        if(mb == 0 && this.keyBindingList.mouseReleased(mx, my, mb)) {
+        if(mb == 0 && this.field_146494_r.mouseReleased(mx, my, mb)) {
             this.setDragging(false);
             return true;
         } else if(search.isFocused()) {

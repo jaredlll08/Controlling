@@ -14,7 +14,8 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-version = '5.0.0'
+version = '5.0.1' +
+        ''
 group = 'com.blamejared.controlling'
 archivesBaseName = 'Controlling'
 

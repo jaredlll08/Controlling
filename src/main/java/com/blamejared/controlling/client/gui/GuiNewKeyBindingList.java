@@ -35,15 +35,18 @@ public class GuiNewKeyBindingList extends AbstractOptionList<GuiNewKeyBindingLis
             String s1 = keybinding.getKeyCategory();
             if(!s1.equals(s)) {
                 s = s1;
-                add(new GuiNewKeyBindingList.CategoryEntry(s1));
+                if(!s1.endsWith(".hidden")) {
+                    add(new GuiNewKeyBindingList.CategoryEntry(s1));
+                }
             }
             
             int i = mcIn.fontRenderer.getStringWidth(I18n.format(keybinding.getKeyDescription()));
             if(i > this.maxListLabelWidth) {
                 this.maxListLabelWidth = i;
             }
-            
-            add(new GuiNewKeyBindingList.KeyEntry(keybinding));
+            if(!s1.endsWith(".hidden")) {
+                add(new GuiNewKeyBindingList.KeyEntry(keybinding));
+            }
         }
         
     }
@@ -132,7 +135,7 @@ public class GuiNewKeyBindingList extends AbstractOptionList<GuiNewKeyBindingLis
             int i = p_render_2_;
             int j = p_render_3_;
             boolean flag = GuiNewKeyBindingList.this.controlsScreen.buttonId == this.keybinding;
-            GuiNewKeyBindingList.this.mc.fontRenderer.drawString(this.keyDesc, (float) (j + 90 - GuiNewKeyBindingList.this.maxListLabelWidth), (float)(p_render_2_ + p_render_5_ / 2 - 9 / 2), 16777215);
+            GuiNewKeyBindingList.this.mc.fontRenderer.drawString(this.keyDesc, (float) (j + 90 - GuiNewKeyBindingList.this.maxListLabelWidth), (float) (p_render_2_ + p_render_5_ / 2 - 9 / 2), 16777215);
             this.btnResetKeyBinding.x = p_render_3_ + 190 + 20;
             this.btnResetKeyBinding.y = p_render_2_;
             this.btnResetKeyBinding.active = !this.keybinding.isDefault();

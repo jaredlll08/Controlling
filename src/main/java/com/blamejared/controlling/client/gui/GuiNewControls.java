@@ -247,6 +247,12 @@ public class GuiNewControls extends ControlsScreen {
         if(search.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_)) {
             return true;
         }
+        if(search.isFocused()) {
+            if(p_keyPressed_1_ == 256) {
+                search.setFocused(false);
+                return true;
+            }
+        }
         if(this.buttonId != null) {
             if(p_keyPressed_1_ == 256) {
                 this.buttonId.setKeyModifierAndCode(net.minecraftforge.client.settings.KeyModifier.getActiveModifier(), InputMappings.INPUT_INVALID);

@@ -47,11 +47,11 @@ public class GuiNewControls extends ControlsScreen {
         this.addButton(new Button(this.width / 2 - 155, 18, 150, 20, I18n.format("options.mouse_settings"), (p_213126_1_) -> {
             this.minecraft.displayGuiScreen(new MouseSettingsScreen(this));
         }));
-        this.addButton(AbstractOption.field_216719_z.func_216586_a(this.minecraft.gameSettings, this.width / 2 - 155 + 160, 18, 150));
+        this.addButton(AbstractOption.AUTO_JUMP.createWidget(this.minecraft.gameSettings, this.width / 2 - 155 + 160, 18, 150));
         
-        this.field_146494_r = new GuiNewKeyBindingList(this, this.minecraft);
-        this.children.add(this.field_146494_r);
-        this.setFocused(this.field_146494_r);
+        this.keyBindingList = new GuiNewKeyBindingList(this, this.minecraft);
+        this.children.add(this.keyBindingList);
+        this.setFocused(this.keyBindingList);
         this.addButton(new Button(this.width / 2 - 155 + 160, this.height - 29, 150, 20, I18n.format("gui.done"), (p_213126_1_) -> GuiNewControls.this.minecraft.displayGuiScreen(GuiNewControls.this.parentScreen)));
         
         this.buttonReset = this.addButton(new Button(this.width / 2 - 155, this.height - 29, 150, 20, I18n.format("controls.resetAll"), (p_213126_1_) -> {
@@ -128,12 +128,14 @@ public class GuiNewControls extends ControlsScreen {
     }
     
     public void filterKeys() {
+        
         lastSearch = search.getText();
-        field_146494_r.children().clear();
+        keyBindingList.children().clear();
         if(lastSearch.isEmpty() && displayMode == DisplayMode.ALL && sortOrder == SortOrder.NONE) {
-            field_146494_r.children().addAll(((GuiNewKeyBindingList) field_146494_r).getAllEntries());
+            keyBindingList.children().addAll(((GuiNewKeyBindingList) keyBindingList).getAllEntries());
             return;
         }
+        this.keyBindingList.setScrollAmount(0);
         Predicate<GuiNewKeyBindingList.KeyEntry> filters = displayMode.getPredicate();
         
         
@@ -149,15 +151,15 @@ public class GuiNewControls extends ControlsScreen {
                 break;
         }
         
-        for(GuiNewKeyBindingList.Entry entry : ((GuiNewKeyBindingList) field_146494_r).getAllEntries()) {
+        for(GuiNewKeyBindingList.Entry entry : ((GuiNewKeyBindingList) keyBindingList).getAllEntries()) {
             if(entry instanceof GuiNewKeyBindingList.KeyEntry) {
                 GuiNewKeyBindingList.KeyEntry keyEntry = (GuiNewKeyBindingList.KeyEntry) entry;
                 if(filters.test(keyEntry)) {
-                    field_146494_r.children().add(entry);
+                    keyBindingList.children().add(entry);
                 }
             }
         }
-        sortOrder.sort(field_146494_r.children());
+        sortOrder.sort(keyBindingList.children());
         
         
     }
@@ -167,7 +169,7 @@ public class GuiNewControls extends ControlsScreen {
      */
     public void render(int mouseX, int mouseY, float partialTicks) {
         this.renderBackground();
-        this.field_146494_r.render(mouseX, mouseY, partialTicks);
+        this.keyBindingList.render(mouseX, mouseY, partialTicks);
         this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 8, 16777215);
         boolean flag = false;
         
@@ -194,12 +196,12 @@ public class GuiNewControls extends ControlsScreen {
             this.buttonId = null;
             KeyBinding.resetKeyBindingArrayAndHash();
             valid = true;
-            search.setFocused(false);
-        } else if(mb == 0 && this.field_146494_r.mouseClicked(mx, my, mb)) {
+            search.setFocused2(false);
+        } else if(mb == 0 && this.keyBindingList.mouseClicked(mx, my, mb)) {
             this.setDragging(true);
-            this.setFocused(this.field_146494_r);
+            this.setFocused(this.keyBindingList);
             valid = true;
-            search.setFocused(false);
+            search.setFocused2(false);
         } else {
             valid = search.mouseClicked(mx, my, mb);
             if(!valid && search.isFocused() && mb == 1) {
@@ -229,7 +231,7 @@ public class GuiNewControls extends ControlsScreen {
     }
     
     public boolean mouseReleased(double mx, double my, int mb) {
-        if(mb == 0 && this.field_146494_r.mouseReleased(mx, my, mb)) {
+        if(mb == 0 && this.keyBindingList.mouseReleased(mx, my, mb)) {
             this.setDragging(false);
             return true;
         } else if(search.isFocused()) {
@@ -246,7 +248,7 @@ public class GuiNewControls extends ControlsScreen {
         }
         if(search.isFocused()) {
             if(p_keyPressed_1_ == 256) {
-                search.setFocused(false);
+                search.setFocused2(false);
                 return true;
             }
         }

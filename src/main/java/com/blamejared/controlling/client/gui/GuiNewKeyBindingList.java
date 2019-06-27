@@ -92,7 +92,7 @@ public class GuiNewKeyBindingList extends KeyBindingList {
         }
         
         public void render(int p_render_1_, int p_render_2_, int p_render_3_, int p_render_4_, int p_render_5_, int p_render_6_, int p_render_7_, boolean p_render_8_, float p_render_9_) {
-            GuiNewKeyBindingList.this.minecraft.fontRenderer.drawString(this.labelText, (float) (GuiNewKeyBindingList.this.minecraft.field_71462_r.width / 2 - this.labelWidth / 2), (float) (p_render_2_ + p_render_5_ - 9 - 1), 16777215);
+            GuiNewKeyBindingList.this.minecraft.fontRenderer.drawString(this.labelText, (float) (GuiNewKeyBindingList.this.minecraft.currentScreen.width / 2 - this.labelWidth / 2), (float) (p_render_2_ + p_render_5_ - 9 - 1), 16777215);
         }
     }
     

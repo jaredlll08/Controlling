@@ -1,0 +1,9 @@
+options.search=Arama
+options.showAll=Hepsini Göster
+options.showConflicts=Çakışmaları Göster
+options.showNone=Atanmamışları Göster
+options.availableKeys=Kullanılabilir Tuşlar
+options.sort=Tür
+options.category=Kategori
+options.key=Anahtar
+options.toggleFree=Serbest Geçiş

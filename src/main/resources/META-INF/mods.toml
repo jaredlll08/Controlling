@@ -5,7 +5,7 @@ displayURL="https://minecraft.curseforge.com/projects/controlling" #optional
 authors="Jaredlll08" #optional
 [[mods]] #mandatory
 modId="controlling" #mandatory
-version="5.0.3" #mandatory
+version="5.0.4" #mandatory
 displayName="Controlling" #mandatory
 description='''
 Adds the ability to search for keybinds using their name in the KeyBinding menu, this allows players to easily find a key binding in the menu.

@@ -1,10 +1,10 @@
 package com.blamejared.controlling.client.gui;
 
 import net.minecraft.client.GameSettings;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.*;
-import net.minecraft.client.gui.widget.*;
-import net.minecraft.client.gui.widget.button.*;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.*;
 import net.minecraft.client.util.InputMappings;

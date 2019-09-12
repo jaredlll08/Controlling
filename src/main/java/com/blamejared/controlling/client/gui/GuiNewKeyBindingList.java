@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.ControlsScreen;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.gui.widget.list.*;
+import net.minecraft.client.gui.widget.list.KeyBindingList;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.text.TextFormatting;
@@ -31,6 +31,7 @@ public class GuiNewKeyBindingList extends KeyBindingList {
         this.x1 = controls.width + 45;
         this.controlsScreen = controls;
         this.mc = mcIn;
+        children().clear();
         allEntries = new ArrayList<>();
         KeyBinding[] akeybinding = ArrayUtils.clone(mcIn.gameSettings.keyBindings);
         Arrays.sort(akeybinding);

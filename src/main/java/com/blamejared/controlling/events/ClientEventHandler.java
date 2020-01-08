@@ -13,7 +13,7 @@ public class ClientEventHandler {
         try {
             if(event.getGui() instanceof ControlsScreen && !(event.getGui() instanceof GuiNewControls)) {
                 ControlsScreen gui = (ControlsScreen) event.getGui();
-                event.setGui(new GuiNewControls(gui.parentScreen, Minecraft.getInstance().gameSettings));
+                event.setGui(new GuiNewControls(gui.field_228182_a_, Minecraft.getInstance().gameSettings));
             }
         } catch(Exception e) {
             e.printStackTrace();

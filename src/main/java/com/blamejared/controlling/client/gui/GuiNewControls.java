@@ -45,7 +45,7 @@ public class GuiNewControls extends ControlsScreen {
     protected void init() {
         
         this.addButton(new Button(this.width / 2 - 155, 18, 150, 20, I18n.format("options.mouse_settings"), (p_213126_1_) -> {
-            this.minecraft.displayGuiScreen(new MouseSettingsScreen(this));
+            this.minecraft.displayGuiScreen(new MouseSettingsScreen(this, options));
         }));
         this.addButton(AbstractOption.AUTO_JUMP.createWidget(this.minecraft.gameSettings, this.width / 2 - 155 + 160, 18, 150));
         

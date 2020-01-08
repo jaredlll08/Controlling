@@ -9,7 +9,7 @@ public enum DisplayMode {
     ALL(keyEntry -> true), NONE(keyEntry -> keyEntry.getKeybinding().isInvalid()), CONFLICTING(keyEntry -> {
         
         for(KeyBinding key : Minecraft.getInstance().gameSettings.keyBindings) {
-            if(key.getKeyDescription().equals(keyEntry.getKeybinding().getKeyDescription())) {
+            if(key.getKeyDescription().equals(keyEntry.getKeybinding().getKeyDescription()) || key.isInvalid()) {
                 continue;
             } else {
                 if(key.getKey().getKeyCode() == keyEntry.getKeybinding().getKey().getKeyCode()) {

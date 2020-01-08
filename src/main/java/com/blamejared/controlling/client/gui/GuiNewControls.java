@@ -1,6 +1,6 @@
 package com.blamejared.controlling.client.gui;
 
-import net.minecraft.client.GameSettings;
+import net.minecraft.client.*;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -10,6 +10,7 @@ import net.minecraft.client.settings.*;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.util.Util;
 import net.minecraftforge.api.distmarker.*;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Predicate;
 
@@ -243,6 +244,14 @@ public class GuiNewControls extends ControlsScreen {
     }
     
     public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+        if(!search.isFocused() && this.buttonId == null) {
+            if(hasControlDown()) {
+                if(InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_F)) {
+                    search.setFocused2(true);
+                    return true;
+                }
+            }
+        }
         if(search.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_)) {
             return true;
         }

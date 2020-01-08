@@ -1,6 +1,6 @@
 package com.blamejared.controlling.client.gui;
 
-import net.minecraft.client.GameSettings;
+import net.minecraft.client.*;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -10,6 +10,7 @@ import net.minecraft.client.settings.*;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.util.Util;
 import net.minecraftforge.api.distmarker.*;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Predicate;
 
@@ -87,17 +88,18 @@ public class GuiNewControls extends ControlsScreen {
         search = new TextFieldWidget(font, this.width / 2 - 154, this.height - 29 - 23, 148, 18, "");
         this.buttonKey = this.addButton(new GuiCheckBox(this.width / 2 - (155 / 2) + 20, this.height - 29 - 37, I18n.format("options.key"), false) {
             @Override
-            public void onClick(double mouseX, double mouseY) {
-                super.onClick(mouseX, mouseY);
+            public void onPress() {
+                super.onPress();
                 buttonCat.setIsChecked(false);
                 searchType = this.isChecked() ? SearchType.KEY : SearchType.NAME;
                 filterKeys();
             }
         });
         this.buttonCat = this.addButton(new GuiCheckBox(this.width / 2 - (155 / 2) + 20, this.height - 29 - 50, I18n.format("options.category"), false) {
+            
             @Override
-            public void onClick(double mouseX, double mouseY) {
-                super.onClick(mouseX, mouseY);
+            public void onPress() {
+                super.onPress();
                 buttonKey.setIsChecked(false);
                 searchType = this.isChecked() ? SearchType.CATEGORY : SearchType.NAME;
                 filterKeys();

@@ -243,6 +243,14 @@ public class GuiNewControls extends ControlsScreen {
     }
     
     public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+        if(!search.isFocused() && this.buttonId == null) {
+            if(hasControlDown()) {
+                if(InputMappings.isKeyDown(Minecraft.getInstance().func_228018_at_().getHandle(), GLFW.GLFW_KEY_F)) {
+                    search.setFocused2(true);
+                    return true;
+                }
+            }
+        }
         if(search.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_)) {
             return true;
         }

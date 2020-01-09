@@ -134,15 +134,15 @@ public class GuiNewKeyBindingList extends KeyBindingList {
         }
         
         @Override
-        public void render(int p_render_1_, int p_render_2_, int p_render_3_, int p_render_4_, int p_render_5_, int p_render_6_, int p_render_7_, boolean p_render_8_, float p_render_9_) {
-            int i = p_render_2_;
-            int j = p_render_3_;
+        public void render(int slotIndex, int y, int x, int p_render_4_, int p_render_5_, int mouseX, int mouseY, boolean p_render_8_, float p_render_9_) {
+            int i = y;
+            int j = x;
             boolean flag = GuiNewKeyBindingList.this.controlsScreen.buttonId == this.keybinding;
-            GuiNewKeyBindingList.this.mc.fontRenderer.drawString(this.keyDesc, (float) (j + 90 - GuiNewKeyBindingList.this.maxListLabelWidth), (float) (p_render_2_ + p_render_5_ / 2 - 9 / 2), 16777215);
-            this.btnResetKeyBinding.x = p_render_3_ + 190 + 20;
-            this.btnResetKeyBinding.y = p_render_2_;
+            GuiNewKeyBindingList.this.mc.fontRenderer.drawString(this.keyDesc, (float) (j + 90 - GuiNewKeyBindingList.this.maxListLabelWidth), (float) (y + p_render_5_ / 2 - 9 / 2), 16777215);
+            this.btnResetKeyBinding.x = x + 190 + 20;
+            this.btnResetKeyBinding.y = y;
             this.btnResetKeyBinding.active = !this.keybinding.isDefault();
-            this.btnResetKeyBinding.render(p_render_6_, p_render_7_, p_render_9_);
+            this.btnResetKeyBinding.render(mouseX, mouseY, p_render_9_);
             
             
             this.btnChangeKeyBinding.x = j + 105;
@@ -165,7 +165,10 @@ public class GuiNewKeyBindingList extends KeyBindingList {
                 this.btnChangeKeyBinding.setMessage((keyCodeModifierConflict ? TextFormatting.GOLD : TextFormatting.RED) + this.btnChangeKeyBinding.getMessage());
             }
             
-            this.btnChangeKeyBinding.render(p_render_6_, p_render_7_, p_render_9_);
+            this.btnChangeKeyBinding.render(mouseX, mouseY, p_render_9_);
+            if(mouseY >= y && mouseY <= y + p_render_5_) {
+                mc.fontRenderer.drawString(I18n.format(keybinding.getKeyCategory()), mouseX + 10, mouseY, 0xFFFFFF);
+            }
         }
         
         public List<? extends IGuiEventListener> children() {

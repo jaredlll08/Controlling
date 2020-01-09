@@ -6,7 +6,7 @@ authors="Jaredlll08"
 
 [[mods]]
 modId="controlling"
-version="5.0.4"
+version="5.0.5"
 displayName="Controlling"
 description='''
 Adds the ability to search for keybinds using their name in the KeyBinding menu, this allows players to easily find a key binding in the menu.

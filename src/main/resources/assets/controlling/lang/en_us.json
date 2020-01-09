@@ -7,5 +7,6 @@
   "options.sort": "Sort",
   "options.category": "Category",
   "options.key": "Key",
-  "options.toggleFree": "Toggle Free"
+  "options.toggleFree": "Toggle Free",
+  "options.confirmReset": "Click to confirm reset!"
 }

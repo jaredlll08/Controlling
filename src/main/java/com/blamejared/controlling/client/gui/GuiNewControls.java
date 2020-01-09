@@ -33,6 +33,8 @@ public class GuiNewControls extends ControlsScreen {
     private GuiCheckBox buttonKey;
     private GuiCheckBox buttonCat;
     
+    private boolean confirmingReset = false;
+    
     public GuiNewControls(Screen screen, GameSettings settings) {
         super(screen, settings);
         this.parentScreen = screen;
@@ -57,6 +59,13 @@ public class GuiNewControls extends ControlsScreen {
         
         this.buttonReset = this.addButton(new Button(this.width / 2 - 155, this.height - 29, 150, 20, I18n.format("controls.resetAll"), (p_213126_1_) -> {
             
+            if(!confirmingReset) {
+                confirmingReset = true;
+                p_213126_1_.setMessage(I18n.format("options.confirmReset"));
+                return;
+            }
+            confirmingReset = false;
+            p_213126_1_.setMessage(I18n.format("controls.resetAll"));
             for(KeyBinding keybinding : GuiNewControls.this.minecraft.gameSettings.keyBindings) {
                 keybinding.setToDefault();
             }
@@ -183,6 +192,10 @@ public class GuiNewControls extends ControlsScreen {
         }
         search.render(mouseX, mouseY, partialTicks);
         this.buttonReset.active = flag;
+        if(!flag) {
+            confirmingReset = false;
+            buttonReset.setMessage(I18n.format("controls.resetAll"));
+        }
         for(int i = 0; i < this.buttons.size(); ++i) {
             this.buttons.get(i).render(mouseX, mouseY, partialTicks);
         }

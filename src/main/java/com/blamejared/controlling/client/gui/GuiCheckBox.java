@@ -2,7 +2,7 @@ package com.blamejared.controlling.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraftforge.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 /**
  * This class provides a checkbox style control.

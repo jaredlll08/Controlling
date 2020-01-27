@@ -158,7 +158,7 @@ public class GuiNewControls extends ControlsScreen {
                 filters = filters.and(keyEntry -> keyEntry.getKeybinding().getKeyCategory().toLowerCase().contains(lastSearch.toLowerCase()));
                 break;
             case KEY:
-                filters = filters.and(keyEntry -> keyEntry.getKeybinding().getKey().getTranslationKey().toLowerCase().contains(lastSearch.toLowerCase()));
+                filters = filters.and(keyEntry -> keyEntry.getKeybinding().getLocalizedName().toLowerCase().contains(lastSearch.toLowerCase()));
                 break;
         }
         

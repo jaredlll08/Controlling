@@ -6,14 +6,17 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.*;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
-import org.lwjgl.input.*;
+import org.lwjgl.input.Mouse;
+import us.getfluxed.controlsearch.Control;
 
+import java.awt.*;
 import java.io.IOException;
+import java.net.*;
 import java.util.*;
 
 public class GuiNewControls extends GuiControls {
     
-    private static final GameSettings.Options[] OPTIONS_ARR = new GameSettings.Options[]{GameSettings.Options.INVERT_MOUSE, GameSettings.Options.SENSITIVITY, GameSettings.Options.TOUCHSCREEN, GameSettings.Options.AUTO_JUMP};
+    private static final GameSettings.Options[] OPTIONS_ARR = new GameSettings.Options[] {GameSettings.Options.INVERT_MOUSE, GameSettings.Options.SENSITIVITY, GameSettings.Options.TOUCHSCREEN, GameSettings.Options.AUTO_JUMP};
     /**
      * A reference to the screen object that created this. Used for navigating between screens.
      */
@@ -32,14 +35,14 @@ public class GuiNewControls extends GuiControls {
     
     private boolean conflicts = false;
     private boolean none = false;
-    private boolean toggleFreeKeys = false;
     
     private EnumSortingType sortingType = EnumSortingType.DEFAULT;
     
     public GuiButton buttonConflict;
     public GuiButton buttonNone;
     public GuiButton buttonSorting;
-    public GuiButton buttonToggleKeys;
+    public GuiButton buttonPatreon;
+    private String name;
     
     public GuiCheckBox boxSearchCategory;
     public GuiCheckBox boxSearchKey;
@@ -81,14 +84,14 @@ public class GuiNewControls extends GuiControls {
         buttonSorting = new GuiButton(2908, this.width / 2 - 155 + 160 + 80, this.height - 29 - 24 - 24, 150 / 2, 20, translate("options.sort") + ": " + sortingType.getName());
         boxSearchCategory = new GuiCheckBox(2909, this.width / 2 - (155 / 2) + 20, this.height - 29 - 37, translate("options.category"), false);
         boxSearchKey = new GuiCheckBox(2910, this.width / 2 - (155 / 2) + 20, this.height - 29 - 50, translate("options.key"), false);
-        buttonToggleKeys = new GuiButton(2911, this.width / 2 - 155 + 160, this.height - 29 - 24 - 24, 150 / 2, 20, translate("options.toggleFree"));
+        buttonPatreon = new GuiButton(2911, this.width / 2 - 155 + 160, this.height - 29 - 24 - 24, 150 / 2, 20, "Patreon");
         this.buttonList.add(buttonConflict);
         this.buttonList.add(buttonNone);
         this.buttonList.add(buttonSorting);
         this.buttonList.add(boxSearchCategory);
         this.buttonList.add(boxSearchKey);
-        this.buttonList.add(buttonToggleKeys);
-    
+        this.buttonList.add(buttonPatreon);
+        name = Control.PATRON_LIST.stream().skip(Control.PATRON_LIST.isEmpty() ? 0 : new Random().nextInt(Control.PATRON_LIST.size())).findFirst().orElse("");
     }
     
     @Override
@@ -269,12 +272,10 @@ public class GuiNewControls extends GuiControls {
                 keybinding.setToDefault();
             }
             KeyBinding.resetKeyBindingArrayAndHash();
-            toggleFreeKeys = false;
         } else if(button.id < 100 && button instanceof GuiOptionButton) {
             this.options.setOptionValue(((GuiOptionButton) button).returnEnumOptions(), 1);
             button.displayString = this.options.getKeyBinding(GameSettings.Options.getEnumOptions(button.id));
         } else if(button.id == 2906) {
-            toggleFreeKeys = false;
             none = false;
             buttonNone.displayString = translate("options.showNone");
             if(!conflicts) {
@@ -287,7 +288,6 @@ public class GuiNewControls extends GuiControls {
                 refreshKeys();
             }
         } else if(button.id == 2907) {
-            toggleFreeKeys = false;
             conflicts = false;
             buttonConflict.displayString = translate("options.showConflicts");
             if(!none) {
@@ -300,21 +300,25 @@ public class GuiNewControls extends GuiControls {
                 refreshKeys();
             }
         } else if(button.id == 2908) {
-            toggleFreeKeys = false;
             sortingType = sortingType.cycle();
             buttonSorting.displayString = translate("options.sort") + ": " + sortingType.getName();
             refreshKeys();
         } else if(button.id == 2909) {
-            toggleFreeKeys = false;
             boxSearchKey.setIsChecked(false);
             refreshKeys();
         } else if(button.id == 2910) {
-            toggleFreeKeys = false;
             boxSearchCategory.setIsChecked(false);
             refreshKeys();
         } else if(button.id == 2911) {
-            buttonToggleKeys.displayString = translate("options.toggleFree");
-            toggleFreeKeys = !toggleFreeKeys;
+            if(Desktop.isDesktopSupported()) {
+                Desktop desktop = Desktop.getDesktop();
+                try {
+                    desktop.browse(new URI("https://patreon.com/jaredlll08?s=controllingmod"));
+                } catch(IOException | URISyntaxException ignored) {
+                }
+            } else {
+                System.out.println("Desktop not supported");
+            }
         }
     }
     
@@ -436,64 +440,12 @@ public class GuiNewControls extends GuiControls {
         superSuperDrawScreen(mouseX, mouseY, partialTicks);
         search.drawTextBox();
         
-        if(toggleFreeKeys) {
-            drawRect(keyBindingList.left, keyBindingList.top, keyBindingList.right, keyBindingList.bottom , 0xFF000000);
-            LinkedList<Integer> keyCodes = new LinkedList<>();
-            for(int i = 2; i < 256; i++) {
-                keyCodes.add(i);
-            }
-            keyCodes.add(-98);
-            keyCodes.add(-99);
-            keyCodes.add(-100);
-            
-            List<Integer> removed = new ArrayList<>();
-            ((GuiNewKeyBindingList) keyBindingList).getListEntriesAll().forEach(i -> {
-                if(i instanceof GuiNewKeyBindingList.KeyEntry) {
-                    removed.add(((GuiNewKeyBindingList.KeyEntry) i).getKeybinding().getKeyCode());
-                }
-            });
-            int[] rem = new int[]{0xDB, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x70, 0x71, 0x29, 0x79, 0x57, 0x7B, 0x7D, 0x8D, 0x90, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x9C, 0xA7, 0xB3, 0xC5, 0x91, 0xC4, 0xDA};
-            for(int i : rem) {
-                removed.add(i);
-            }
-            
-            keyCodes.forEach(i -> {
-                if(i >= 0)
-                    if(Keyboard.getKeyName(i) == null || Keyboard.getKeyName(i).isEmpty()) {
-                        removed.add(i);
-                    }
-            });
-            keyCodes.removeAll(removed);
-            Collections.sort(keyCodes);
-            final int[] x = {0};
-            final int[] y = {0};
-            final int[] count = {0};
-            fontRendererObj.drawString(translate("options.availableKeys") + ":", width / 2, keyBindingList.top + 2, 0xFFFFFF);
-            keyCodes.forEach(key -> {
-                if(key >= 0) {
-                    fontRendererObj.drawString(Keyboard.getKeyName(key), keyBindingList.left + (x[0] * 65), keyBindingList.top + 12 + (y[0]++ * fontRendererObj.FONT_HEIGHT), 0xFF55FF);
-                } else {
-                    switch(key + 100) {
-                        case 0:
-                            fontRendererObj.drawString("Button 1", keyBindingList.left + (x[0] * 65), keyBindingList.top + 12 + (y[0]++ * fontRendererObj.FONT_HEIGHT), 0x55FF55);
-                            break;
-                        case 1:
-                            fontRendererObj.drawString("Button 2", keyBindingList.left + (x[0] * 65), keyBindingList.top + 12 + (y[0]++ * fontRendererObj.FONT_HEIGHT), 0x55FF55);
-                            break;
-                        case 2:
-                            fontRendererObj.drawString("Button 3", keyBindingList.left + (x[0] * 65), keyBindingList.top + 12 + (y[0]++ * fontRendererObj.FONT_HEIGHT), 0x55FF55);
-                            break;
-                        
-                    }
-                }
-                count[0]++;
-                if(count[0] > keyBindingList.height / 30) {
-                    count[0] = 0;
-                    x[0]++;
-                    y[0] = 0;
-                }
-            });
+        
+        if(buttonPatreon.isMouseOver()) {
+            String str = "Join " + name + " and other patrons!";
+            drawHoveringText(Collections.singletonList(str), mouseX, mouseY);
         }
+        
     }
     
     public void superSuperDrawScreen(int mouseX, int mouseY, float partialTicks) {

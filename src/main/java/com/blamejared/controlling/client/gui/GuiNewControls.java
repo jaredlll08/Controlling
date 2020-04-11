@@ -32,7 +32,8 @@ public class GuiNewControls extends ControlsScreen {
     private SortOrder sortOrder;
     
     private Button buttonUnboundConflictingAll;
-    private Button buttonConflicting;
+    private Button buttonShowAvailableKeys;
+
     private GuiCheckBox buttonKey;
     private GuiCheckBox buttonCat;
     private Button patreonButton;
@@ -76,6 +77,9 @@ public class GuiNewControls extends ControlsScreen {
             }
             
             KeyBinding.resetKeyBindingArrayAndHash();
+        }));
+        this.buttonShowAvailableKeys = this.addButton(new Button(this.width / 2 - 155 + 160, this.height - 29 - 24 - 24, 20, 20, "?", (p_213126_1_) -> {
+
         }));
         this.buttonUnboundConflictingAll = this.addButton(new Button(this.width / 2 - 155 + 160, this.height - 29 - 24, 150, 20, I18n.format("options.showUnbound"), (p_213126_1_) -> {
             if(displayMode == DisplayMode.ALL) {

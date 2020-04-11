@@ -6,7 +6,7 @@ import net.minecraft.client.settings.KeyBinding;
 import java.util.function.Predicate;
 
 public enum DisplayMode {
-    ALL(keyEntry -> true), NONE(keyEntry -> keyEntry.getKeybinding().isInvalid()), CONFLICTING(keyEntry -> {
+    ALL(keyEntry -> true), UNBOUND(keyEntry -> keyEntry.getKeybinding().isInvalid()), CONFLICTING(keyEntry -> {
         
         for(KeyBinding key : Minecraft.getInstance().gameSettings.keyBindings) {
             if(key.getKeyDescription().equals(keyEntry.getKeybinding().getKeyDescription()) || key.isInvalid()) {

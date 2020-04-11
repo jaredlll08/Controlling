@@ -31,7 +31,7 @@ public class GuiNewControls extends ControlsScreen {
     private SearchType searchType;
     private SortOrder sortOrder;
     
-    private Button buttonNone;
+    private Button buttonUnboundConflictingAll;
     private Button buttonConflicting;
     private GuiCheckBox buttonKey;
     private GuiCheckBox buttonCat;
@@ -77,25 +77,16 @@ public class GuiNewControls extends ControlsScreen {
             
             KeyBinding.resetKeyBindingArrayAndHash();
         }));
-        this.buttonNone = this.addButton(new Button(this.width / 2 - 155 + 160 + 76, this.height - 29 - 24, 150 / 2, 20, I18n.format("options.showNone"), (p_213126_1_) -> {
-            if(displayMode == DisplayMode.NONE) {
-                buttonNone.setMessage(I18n.format("options.showNone"));
-                displayMode = DisplayMode.ALL;
-            } else {
-                displayMode = DisplayMode.NONE;
-                buttonNone.setMessage(I18n.format("options.showAll"));
-                buttonConflicting.setMessage(I18n.format("options.showConflicts"));
-            }
-            filterKeys();
-        }));
-        this.buttonConflicting = this.addButton(new Button(this.width / 2 - 155 + 160, this.height - 29 - 24, 150 / 2, 20, I18n.format("options.showConflicts"), (p_213126_1_) -> {
-            if(displayMode == DisplayMode.CONFLICTING) {
-                buttonConflicting.setMessage(I18n.format("options.showConflicts"));
-                displayMode = DisplayMode.ALL;
-            } else {
+        this.buttonUnboundConflictingAll = this.addButton(new Button(this.width / 2 - 155 + 160, this.height - 29 - 24, 150, 20, I18n.format("options.showUnbound"), (p_213126_1_) -> {
+            if(displayMode == DisplayMode.ALL) {
+                buttonUnboundConflictingAll.setMessage(I18n.format("options.showConflicts"));
+                displayMode = DisplayMode.UNBOUND;
+            } else if(displayMode == DisplayMode.UNBOUND) {
+                buttonUnboundConflictingAll.setMessage(I18n.format("options.showAll"));
                 displayMode = DisplayMode.CONFLICTING;
-                buttonConflicting.setMessage("Show All");
-                buttonNone.setMessage(I18n.format("options.showNone"));
+            } else if(displayMode == DisplayMode.CONFLICTING) {
+                buttonUnboundConflictingAll.setMessage(I18n.format("options.showUnbound"));
+                displayMode = DisplayMode.ALL;
             }
             filterKeys();
         }));

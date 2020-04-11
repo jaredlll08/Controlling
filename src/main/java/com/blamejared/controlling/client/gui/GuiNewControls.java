@@ -116,37 +116,37 @@ public class GuiNewControls extends ControlsScreen {
             p_213126_1_.setMessage(I18n.format("options.sort") + ": " + sortOrder.getName());
             filterKeys();
         }));
-        name = Controlling.PATRON_LIST.stream().skip(Controlling.PATRON_LIST.isEmpty() ? 0 : new Random().nextInt(Controlling.PATRON_LIST.size())).findFirst().orElse("");
-        patreonButton = this.addButton(new Button(this.width / 2 - 155 + 160, this.height - 29 - 24 - 24, 150 / 2, 20, "Patreon", p_onPress_1_ -> {
-            Util.getOSType().openURI("https://patreon.com/jaredlll08?s=controllingmod");
-        }) {
-            private boolean wasHovered;
+        // name = Controlling.PATRON_LIST.stream().skip(Controlling.PATRON_LIST.isEmpty() ? 0 : new Random().nextInt(Controlling.PATRON_LIST.size())).findFirst().orElse("");
+        // patreonButton = this.addButton(new Button(this.width / 2 - 155 + 160, this.height - 29 - 24 - 24, 150 / 2, 20, "Patreon", p_onPress_1_ -> {
+        //     Util.getOSType().openURI("https://patreon.com/jaredlll08?s=controllingmod");
+        // }) {
+        //     private boolean wasHovered;
             
-            @Override
-            public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
-                if(this.visible) {
-                    this.isHovered = p_render_1_ >= this.x && p_render_2_ >= this.y && p_render_1_ < this.x + this.width && p_render_2_ < this.y + this.height;
-                    if(this.wasHovered != this.isHovered()) {
-                        if(this.isHovered()) {
-                            if(this.isFocused()) {
-                                this.nextNarration = Util.milliTime() + 200L;
-                            } else {
-                                this.nextNarration = Util.milliTime() + 750L;
-                            }
-                        } else {
-                            this.nextNarration = Long.MAX_VALUE;
-                        }
-                    }
+        //     @Override
+        //     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
+        //         if(this.visible) {
+        //             this.isHovered = p_render_1_ >= this.x && p_render_2_ >= this.y && p_render_1_ < this.x + this.width && p_render_2_ < this.y + this.height;
+        //             if(this.wasHovered != this.isHovered()) {
+        //                 if(this.isHovered()) {
+        //                     if(this.isFocused()) {
+        //                         this.nextNarration = Util.milliTime() + 200L;
+        //                     } else {
+        //                         this.nextNarration = Util.milliTime() + 750L;
+        //                     }
+        //                 } else {
+        //                     this.nextNarration = Long.MAX_VALUE;
+        //                 }
+        //             }
                     
-                    if(this.visible) {
-                        this.renderButton(p_render_1_, p_render_2_, p_render_3_);
-                    }
+        //             if(this.visible) {
+        //                 this.renderButton(p_render_1_, p_render_2_, p_render_3_);
+        //             }
                     
-                    this.narrate();
-                    this.wasHovered = this.isHovered();
-                }
-            }
-        });
+        //             this.narrate();
+        //             this.wasHovered = this.isHovered();
+        //         }
+        //     }
+        // });
         lastSearch = "";
         displayMode = DisplayMode.ALL;
         searchType = SearchType.NAME;
@@ -232,12 +232,12 @@ public class GuiNewControls extends ControlsScreen {
         font.drawString(text, this.width / 2 - (155 / 2) - (font.getStringWidth(text)) - 5, this.height - 29 - 42, 16777215);
         GlStateManager.enableLighting();
         
-        if(patreonButton.isHovered()) {
-            GlStateManager.disableLighting();
-            String str = "Join " + name + " and other patrons!";
-            renderTooltip(str, mouseX, mouseY);
-            GlStateManager.enableLighting();
-        }
+        // if(patreonButton.isHovered()) {
+        //     GlStateManager.disableLighting();
+        //     String str = "Join " + name + " and other patrons!";
+        //     renderTooltip(str, mouseX, mouseY);
+        //     GlStateManager.enableLighting();
+        // }
     }
     
     public boolean mouseClicked(double mx, double my, int mb) {

@@ -227,7 +227,7 @@ public class GuiNewControls extends ControlsScreen {
             this.buttons.get(i).render(mouseX, mouseY, partialTicks);
         }
         
-        String text = I18n.format("options.search");
+        String text = I18n.format("options.searchBy");
         GlStateManager.disableLighting();
         font.drawString(text, this.width / 2 - (155 / 2) - (font.getStringWidth(text)) - 5, this.height - 29 - 42, 16777215);
         GlStateManager.enableLighting();

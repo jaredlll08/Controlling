@@ -27,7 +27,7 @@ public class GuiNewKeyBindingList extends KeyBindingList {
         this.width = controls.width + 45;
         this.height = controls.height;
         this.y0 = 43;
-        this.y1 = controls.height - 80;
+        this.y1 = controls.height - 82;
         this.x1 = controls.width + 45;
         this.controlsScreen = controls;
         this.mc = mcIn;

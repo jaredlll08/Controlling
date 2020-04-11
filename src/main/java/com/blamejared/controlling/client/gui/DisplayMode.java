@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 public enum DisplayMode {
     ALL(keyEntry -> true), UNBOUND(keyEntry -> keyEntry.getKeybinding().isInvalid()), CONFLICTING(keyEntry -> {
-        
+
         for(KeyBinding key : Minecraft.getInstance().gameSettings.keyBindings) {
             if(key.getKeyDescription().equals(keyEntry.getKeybinding().getKeyDescription()) || key.isInvalid()) {
                 continue;
@@ -19,14 +19,14 @@ public enum DisplayMode {
         }
         return false;
     });
-    
-    
+
+
     private Predicate<GuiNewKeyBindingList.KeyEntry> predicate;
-    
+
     DisplayMode(Predicate<GuiNewKeyBindingList.KeyEntry> predicate) {
         this.predicate = predicate;
     }
-    
+
     public Predicate<GuiNewKeyBindingList.KeyEntry> getPredicate() {
         return predicate;
     }

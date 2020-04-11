@@ -10,21 +10,21 @@ public enum SortOrder {
     }), ZA(entries -> {
         entries.sort((o1, o2) -> ((GuiNewKeyBindingList.KeyEntry) o2).getKeyDesc().compareTo(((GuiNewKeyBindingList.KeyEntry) o1).getKeyDesc()));
     });
-    
+
     private ISort sorter;
-    
+
     SortOrder(ISort sorter) {
         this.sorter = sorter;
     }
-    
+
     public SortOrder cycle() {
         return SortOrder.values()[(this.ordinal() + 1) % SortOrder.values().length];
     }
-    
+
     public void sort(List<GuiNewKeyBindingList.Entry> list) {
         this.sorter.sort(list);
     }
-    
+
     public String getName() {
         switch(this) {
             default:

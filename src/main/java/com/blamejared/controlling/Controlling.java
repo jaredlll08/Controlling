@@ -15,9 +15,9 @@ import static com.blamejared.controlling.reference.Reference.MODID;
 
 @Mod(MODID)
 public class Controlling {
-    
+
     public static Set<String> PATRON_LIST = new HashSet<>();
-    
+
     public Controlling() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
         new Thread(() -> {
@@ -35,7 +35,7 @@ public class Controlling {
             }
         }).start();
     }
-    
+
     private void init(final FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
     }

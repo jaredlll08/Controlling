@@ -7,7 +7,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ClientEventHandler {
-    
+
     @SubscribeEvent
     public void openGui(GuiOpenEvent event) {
         try {

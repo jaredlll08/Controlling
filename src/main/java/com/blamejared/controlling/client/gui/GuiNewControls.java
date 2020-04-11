@@ -111,7 +111,7 @@ public class GuiNewControls extends ControlsScreen {
             }
         });
         sortOrder = SortOrder.NONE;
-        Button buttonSort = this.addButton(new Button(this.width / 2 - 155 + 160 + 76, this.height - 29 - 24 - 24, 150 / 2, 20, I18n.format("options.sort") + ": " + sortOrder.getName(), (p_213126_1_) -> {
+        Button buttonSort = this.addButton(new Button(this.width / 2 - 155 + 160 + 24, this.height - 29 - 24 - 24, 150 - 24, 20, I18n.format("options.sort") + ": " + sortOrder.getName(), (p_213126_1_) -> {
             sortOrder = sortOrder.cycle();
             p_213126_1_.setMessage(I18n.format("options.sort") + ": " + sortOrder.getName());
             filterKeys();

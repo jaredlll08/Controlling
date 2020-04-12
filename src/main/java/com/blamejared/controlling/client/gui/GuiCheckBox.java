@@ -31,7 +31,7 @@ public class GuiCheckBox extends Button {
             this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             if(isHovered()) {
                 GuiUtils.drawContinuousTexturedBox(WIDGETS_LOCATION, this.x, this.y, 0, 86, this.boxWidth, this.height, 200, 20, 2, 3, 2, 2, 500);
-                GuiUtils.drawContinuousTexturedBox(WIDGETS_LOCATION, this.x + 1, this.y + 1, 1, 45, this.boxWidth - 1, this.height - 2, 200, 20, 2, 3, 2, 2, 500);
+                GuiUtils.drawContinuousTexturedBox(WIDGETS_LOCATION, this.x+1, this.y+1, 2, 48, this.boxWidth-2, this.height-2, 200, 20, 1, 0, 1, 0, 500);
             } else {
                 GuiUtils.drawContinuousTexturedBox(WIDGETS_LOCATION, this.x, this.y, 0, 46, this.boxWidth, this.height, 200, 20, 2, 3, 2, 2, 500);
             }

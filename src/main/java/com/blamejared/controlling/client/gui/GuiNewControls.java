@@ -94,13 +94,13 @@ public class GuiNewControls extends ControlsScreen {
                 displayMode = DisplayMode.ALL;
             } else {
                 displayMode = DisplayMode.CONFLICTING;
-                buttonConflicting.setMessage("Show All");
+                buttonConflicting.setMessage(I18n.format("options.showAll"));
                 buttonNone.setMessage(I18n.format("options.showNone"));
             }
             filterKeys();
         }));
         search = new TextFieldWidget(font, this.width / 2 - 154, this.height - 29 - 23, 148, 18, "");
-        this.buttonKey = this.addButton(new GuiCheckBox(this.width / 2 - (155 / 2) + 20, this.height - 29 - 37, I18n.format("options.key"), false) {
+        this.buttonKey = this.addButton(new GuiCheckBox(this.width / 2 - (155 / 2), this.height - 29 - 37, I18n.format("options.key"), false) {
             @Override
             public void onPress() {
                 super.onPress();

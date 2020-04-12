@@ -109,7 +109,7 @@ public class GuiNewControls extends ControlsScreen {
                 filterKeys();
             }
         });
-        this.buttonCat = this.addButton(new GuiCheckBox(this.width / 2 - (155 / 2) + 20, this.height - 29 - 50, I18n.format("options.category"), false) {
+        this.buttonCat = this.addButton(new GuiCheckBox(this.width / 2 - (155 / 2) , this.height - 29 - 50, I18n.format("options.category"), false) {
             
             @Override
             public void onPress() {
@@ -238,7 +238,7 @@ public class GuiNewControls extends ControlsScreen {
         
         String text = I18n.format("options.search");
         GlStateManager.disableLighting();
-        font.drawString(text, this.width / 2 - (155 / 2) - (font.getStringWidth(text) / 2), this.height - 29 - 39, 16777215);
+        font.drawString(text, this.width / 2 - (155 / 2) - (font.getStringWidth(text)) - 5, this.height - 29 - 42, 16777215);
         GlStateManager.enableLighting();
         
         if(patreonButton.isHovered()) {

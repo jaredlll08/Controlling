@@ -1,8 +1,11 @@
 package com.blamejared.controlling.client.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraftforge.fml.client.gui.GuiUtils;
+import org.lwjgl.opengl.*;
 
 /**
  * This class provides a checkbox style control.
@@ -28,7 +31,7 @@ public class GuiCheckBox extends Button {
             this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.boxWidth && mouseY < this.y + this.height;
             if(isHovered()) {
                 GuiUtils.drawContinuousTexturedBox(WIDGETS_LOCATION, this.x, this.y, 0, 86, this.boxWidth, this.height, 200, 20, 2, 3, 2, 2, 500);
-                GuiUtils.drawContinuousTexturedBox(WIDGETS_LOCATION, this.x + 1, this.y + 1, 1, 45, this.boxWidth-1, this.height-2, 200, 20, 2, 3, 2, 2, 500);
+                GuiUtils.drawContinuousTexturedBox(WIDGETS_LOCATION, this.x + 1, this.y + 1, 1, 45, this.boxWidth - 1, this.height - 2, 200, 20, 2, 3, 2, 2, 500);
             } else {
                 GuiUtils.drawContinuousTexturedBox(WIDGETS_LOCATION, this.x, this.y, 0, 46, this.boxWidth, this.height, 200, 20, 2, 3, 2, 2, 500);
             }
@@ -42,8 +45,7 @@ public class GuiCheckBox extends Button {
             
             if(this.isChecked)
                 this.drawCenteredString(mc.fontRenderer, "x", this.x + this.boxWidth / 2 + 1, this.y + 1, 14737632);
-            
-            this.drawString(mc.fontRenderer, getMessage(), this.x + this.boxWidth + 2, this.y + 2, color);
+            mc.fontRenderer.drawString(getMessage(), this.x + this.boxWidth + 2, this.y + 2, color);
         }
     }
     

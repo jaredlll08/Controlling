@@ -80,13 +80,18 @@ public class GuiNewKeyBindingList extends KeyBindingList {
         
         private final String labelText;
         private final int labelWidth;
+        private final String name;
         
         public CategoryEntry(String name) {
             this.labelText = I18n.format(name);
             this.labelWidth = GuiNewKeyBindingList.this.mc.fontRenderer.getStringWidth(this.labelText);
+            this.name = name;
         }
-        
-        
+    
+        public String getName() {
+            return name;
+        }
+    
         @Override
         public List<? extends IGuiEventListener> children() {
             return ImmutableList.of();

@@ -7,6 +7,7 @@ import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.widget.list.KeyBindingList;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.*;
 import net.minecraft.client.util.InputMappings;
@@ -14,7 +15,7 @@ import net.minecraft.util.Util;
 import net.minecraftforge.api.distmarker.*;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.Random;
+import java.util.*;
 import java.util.function.Predicate;
 
 @OnlyIn(Dist.CLIENT)
@@ -109,7 +110,7 @@ public class GuiNewControls extends ControlsScreen {
                 filterKeys();
             }
         });
-        this.buttonCat = this.addButton(new GuiCheckBox(this.width / 2 - (155 / 2) , this.height - 29 - 50, I18n.format("options.category"), false) {
+        this.buttonCat = this.addButton(new GuiCheckBox(this.width / 2 - (155 / 2), this.height - 29 - 50, I18n.format("options.category"), false) {
             
             @Override
             public void onPress() {
@@ -199,12 +200,43 @@ public class GuiNewControls extends ControlsScreen {
         }
         
         for(GuiNewKeyBindingList.Entry entry : ((GuiNewKeyBindingList) keyBindingList).getAllEntries()) {
-            if(entry instanceof GuiNewKeyBindingList.KeyEntry) {
-                GuiNewKeyBindingList.KeyEntry keyEntry = (GuiNewKeyBindingList.KeyEntry) entry;
-                if(filters.test(keyEntry)) {
+            if(searchType == SearchType.CATEGORY && sortOrder == SortOrder.NONE && displayMode == DisplayMode.ALL) {
+                if(entry instanceof GuiNewKeyBindingList.KeyEntry) {
+                    GuiNewKeyBindingList.KeyEntry keyEntry = (GuiNewKeyBindingList.KeyEntry) entry;
+                    if(filters.test(keyEntry)) {
+                        keyBindingList.children().add(entry);
+                    }
+                } else  {
                     keyBindingList.children().add(entry);
                 }
+            } else {
+                if(entry instanceof GuiNewKeyBindingList.KeyEntry) {
+                    GuiNewKeyBindingList.KeyEntry keyEntry = (GuiNewKeyBindingList.KeyEntry) entry;
+                    if(filters.test(keyEntry)) {
+                        keyBindingList.children().add(entry);
+                    }
+                }
             }
+            
+        }
+        if(searchType == SearchType.CATEGORY  && sortOrder == SortOrder.NONE && displayMode == DisplayMode.ALL) {
+            Set<GuiNewKeyBindingList.CategoryEntry> categories = new LinkedHashSet<>();
+            
+            for(KeyBindingList.Entry entry : keyBindingList.children()) {
+                if(entry instanceof GuiNewKeyBindingList.CategoryEntry) {
+                    GuiNewKeyBindingList.CategoryEntry centry = (GuiNewKeyBindingList.CategoryEntry) entry;
+                    categories.add(centry);
+                    for(KeyBindingList.Entry child : keyBindingList.children()) {
+                        if(child instanceof GuiNewKeyBindingList.KeyEntry) {
+                            GuiNewKeyBindingList.KeyEntry childEntry = (GuiNewKeyBindingList.KeyEntry) child;
+                            if(childEntry.getKeybinding().getKeyCategory().equals(centry.getName())) {
+                                categories.remove(centry);
+                            }
+                        }
+                    }
+                }
+            }
+            keyBindingList.children().removeAll(categories);
         }
         sortOrder.sort(keyBindingList.children());
         

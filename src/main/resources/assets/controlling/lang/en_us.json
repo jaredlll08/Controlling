@@ -7,6 +7,9 @@
   "options.sort": "Sort",
   "options.category": "Category",
   "options.key": "Key",
+  "options.sortNone": "None",
+  "options.sortAZ": "A->Z",
+  "options.sortZA": "Z->A",
   "options.toggleFree": "Toggle Free",
   "options.confirmReset": "Click to confirm reset!"
 }

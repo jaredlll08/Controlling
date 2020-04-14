@@ -1,5 +1,7 @@
 package com.blamejared.controlling.client.gui;
 
+import net.minecraft.client.resources.I18n;
+
 import java.util.List;
 
 public enum SortOrder {
@@ -28,11 +30,11 @@ public enum SortOrder {
         switch(this) {
             default:
             case NONE:
-                return "None";
+                return I18n.format("options.sortNone");
             case AZ:
-                return "A->Z";
+                return I18n.format("options.sortAZ");
             case ZA:
-                return "Z->A";
+                return I18n.format("options.sortZA");
         }
     }
 }

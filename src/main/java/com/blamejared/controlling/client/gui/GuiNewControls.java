@@ -192,7 +192,7 @@ public class GuiNewControls extends ControlsScreen {
                 filters = filters.and(keyEntry -> keyEntry.getKeyDesc().toLowerCase().contains(lastSearch.toLowerCase()));
                 break;
             case CATEGORY:
-                filters = filters.and(keyEntry -> keyEntry.getKeybinding().getKeyCategory().toLowerCase().contains(lastSearch.toLowerCase()));
+                filters = filters.and(keyEntry -> I18n.format(keyEntry.getKeybinding().getKeyCategory()).toLowerCase().contains(lastSearch.toLowerCase()));
                 break;
             case KEY:
                 filters = filters.and(keyEntry -> keyEntry.getKeybinding().getLocalizedName().toLowerCase().contains(lastSearch.toLowerCase()));

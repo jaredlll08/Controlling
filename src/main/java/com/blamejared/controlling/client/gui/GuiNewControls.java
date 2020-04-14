@@ -119,12 +119,6 @@ public class GuiNewControls extends ControlsScreen {
                 filterKeys();
             }
         });
-        sortOrder = SortOrder.NONE;
-        Button buttonSort = this.addButton(new Button(this.width / 2 - 155 + 160 + 76, this.height - 29 - 24 - 24, 150 / 2, 20, I18n.format("options.sort") + ": " + sortOrder.getName(), (p_213126_1_) -> {
-            sortOrder = sortOrder.cycle();
-            p_213126_1_.setMessage(I18n.format("options.sort") + ": " + sortOrder.getName());
-            filterKeys();
-        }));
         name = Controlling.PATRON_LIST.stream().skip(Controlling.PATRON_LIST.isEmpty() ? 0 : new Random().nextInt(Controlling.PATRON_LIST.size())).findFirst().orElse("");
         patreonButton = this.addButton(new Button(this.width / 2 - 155 + 160, this.height - 29 - 24 - 24, 150 / 2, 20, "Patreon", p_onPress_1_ -> {
             Util.getOSType().openURI("https://patreon.com/jaredlll08?s=controllingmod");
@@ -156,6 +150,12 @@ public class GuiNewControls extends ControlsScreen {
                 }
             }
         });
+        sortOrder = SortOrder.NONE;
+        Button buttonSort = this.addButton(new Button(this.width / 2 - 155 + 160 + 76, this.height - 29 - 24 - 24, 150 / 2, 20, I18n.format("options.sort") + ": " + sortOrder.getName(), (p_213126_1_) -> {
+            sortOrder = sortOrder.cycle();
+            p_213126_1_.setMessage(I18n.format("options.sort") + ": " + sortOrder.getName());
+            filterKeys();
+        }));
         lastSearch = "";
         displayMode = DisplayMode.ALL;
         searchType = SearchType.NAME;

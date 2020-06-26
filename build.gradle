@@ -27,7 +27,7 @@ if (project.hasProperty('secretFile')) {
     loadSecrets(new File((String) findProperty('secretFile')))
 }
 
-version = '6.1.4'
+version = '6.1.5'
 if (System.getenv('BUILD_NUMBER') != null) {
     version += "." + System.getenv('BUILD_NUMBER')
 }
@@ -109,21 +109,18 @@ jar {
 task sourcesJar(type: Jar, dependsOn: classes) {
     description = 'Creates a JAR containing the source code.'
     from sourceSets.main.allSource
-    from files(zenCodeDeps.collect { project(it).sourceSets.main.allSource })
     classifier = 'sources'
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
     description = 'Creates a JAR containing the JavaDocs.'
     from javadoc.destinationDir
-    from files(zenCodeDeps.collect { project(it).javadoc.destinationDir })
     classifier = 'javadoc'
 }
 
 task deobfJar(type: Jar) {
     description = 'Creates a JAR containing the non-obfuscated compiled code.'
     from sourceSets.main.output
-    from files(zenCodeDeps.collect { project(it).sourceSets.main.output })
     classifier = "deobf"
 }
 artifacts {

@@ -21,3 +21,5 @@
 /run/
 usernamecache.json
 *.stackdump
+secrets.json
+changelog.md

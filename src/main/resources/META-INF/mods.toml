@@ -7,6 +7,7 @@ authors="Jaredlll08" #optional
 modId="controlling" #mandatory
 version="${file.jarVersion}" #mandatory
 displayName="Controlling" #mandatory
+updateJSONURL="https://updates.blamejared.com/get?n=controlling&gv=1.15.2"
 description='''
 Adds the ability to search for keybinds using their name in the KeyBinding menu, this allows players to easily find a key binding in the menu.
 '''

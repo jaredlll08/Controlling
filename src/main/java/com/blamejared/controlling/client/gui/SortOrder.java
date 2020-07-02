@@ -12,7 +12,7 @@ public enum SortOrder {
         entries.sort((o1, o2) -> ((GuiNewKeyBindingList.KeyEntry) o2).getKeyDesc().compareTo(((GuiNewKeyBindingList.KeyEntry) o1).getKeyDesc()));
     });
     
-    private ISort sorter;
+    private final ISort sorter;
     
     SortOrder(ISort sorter) {
         this.sorter = sorter;

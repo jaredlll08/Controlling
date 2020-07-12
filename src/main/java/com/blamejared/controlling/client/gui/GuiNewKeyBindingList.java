@@ -205,10 +205,5 @@ public class GuiNewKeyBindingList extends KeyBindingList {
             return keyDesc;
         }
 
-        public Button getBtnChangeKeyBinding() {
-            return btnChangeKeyBinding;
-        }
-
-
     }
 }

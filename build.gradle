@@ -36,8 +36,14 @@ archivesBaseName = 'Controlling'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
+repositories {
+    maven {
+        url 'https://dogforce-games.com/maven'
+    }
+}
+
 minecraft {
-    mappings channel: 'snapshot', version: '20200409-1.15.1'
+    mappings channel: 'snapshot', version: '20200712-1.16.1'
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
@@ -71,7 +77,7 @@ task genGitChangelog() {
     String repoLink = "https://github.com/jaredlll08/Controlling/commit/"
     // was having issues with grep and spaces in the regex
     exec {
-        commandLine 'git', 'log', '-i', '--grep=version\\spush', '--grep=open\\sbeta\\sspecific\\scode', '--pretty=tformat:%H', '--date=local', firstCommit + '..@{1}'
+        commandLine 'git', 'log', '-i', '--grep=version\\spush', '--grep=open\\sbeta\\sspecific\\scode', '--pretty=tformat:%H', '--date=local', firstCommit + '..@{0}'
         standardOutput = stdout
     }
     if (stdout.toString().trim().indexOf("\n") >= 0) {
@@ -90,7 +96,7 @@ task genGitChangelog() {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.1.43'
+    minecraft 'net.minecraftforge:forge:1.16.1-32.0.63'
 }
 
 jar {
@@ -201,7 +207,7 @@ task updateVersionTracker {
         def body = [
                 'author'        : "${project.findProperty('versionTrackerAuthor')}",
                 'projectName'   : "controlling",
-                'gameVersion'   : "1.15.2",
+                'gameVersion'   : "1.16.1",
                 'projectVersion': "${version}",
                 'homepage'      : "${project.findProperty('versionTrackerHomepage')}",
                 'uid'           : "${project.findProperty('versionTrackerKey')}"

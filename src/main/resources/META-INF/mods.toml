@@ -1,5 +1,5 @@
 modLoader="javafml" #mandatory
-loaderVersion="[31,)" #mandatory
+loaderVersion="[32,)" #mandatory
 issueTrackerURL="https://github.com/jaredlll08/Controlling/issues" #optional
 displayURL="https://minecraft.curseforge.com/projects/controlling" #optional
 authors="Jaredlll08" #optional
@@ -7,19 +7,7 @@ authors="Jaredlll08" #optional
 modId="controlling" #mandatory
 version="${file.jarVersion}" #mandatory
 displayName="Controlling" #mandatory
-updateJSONURL="https://updates.blamejared.com/get?n=controlling&gv=1.15.2"
+updateJSONURL="https://updates.blamejared.com/get?n=controlling&gv=1.16.1"
 description='''
 Adds the ability to search for keybinds using their name in the KeyBinding menu, this allows players to easily find a key binding in the menu.
 '''
-
-[[dependencies.controlling]] #optional
-    # the modid of the dependency
-    modId="forge" #mandatory
-    # Does this dependency have to exist - if not, ordering below must be specified
-    mandatory=true #mandatory
-    # The version range of the dependency
-    versionRange="[31,)" #mandatory
-    # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
-    ordering="NONE"
-    # Side this dependency is applied on - BOTH, CLIENT or SERVER
-    side="BOTH"

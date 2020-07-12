@@ -28,7 +28,7 @@ public class Controlling {
                 URLConnection urlConnection = url.openConnection();
                 urlConnection.setConnectTimeout(15000);
                 urlConnection.setReadTimeout(15000);
-                urlConnection.setRequestProperty("User-Agent", "Controlling|1.15.2");
+                urlConnection.setRequestProperty("User-Agent", "Controlling|1.16.1");
                 try(BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
                     PATRON_LIST = reader.lines().filter(s -> !s.isEmpty()).collect(Collectors.toSet());
                 }

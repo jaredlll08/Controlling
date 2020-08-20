@@ -279,7 +279,7 @@ public class GuiNewControls extends ControlsScreen {
         }
 
         ITextComponent text = new TranslationTextComponent("options.search");
-        font.func_238407_a_(stack, text, this.width / 2f - (155 / 2f) - (font.getStringWidth(text.getString())) - 5, this.height - 29 - 42, 16777215);
+        font.func_238407_a_(stack, text.func_241878_f(), this.width / 2f - (155 / 2f) - (font.getStringWidth(text.getString())) - 5, this.height - 29 - 42, 16777215);
 
         if (patreonButton.isHovered()) {
             String str = "Join " + name + " and other patrons!";

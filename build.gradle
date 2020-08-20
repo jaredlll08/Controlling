@@ -96,7 +96,7 @@ task genGitChangelog() {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.1-32.0.63'
+    minecraft 'net.minecraftforge:forge:1.16.2-33.0.7'
 }
 
 jar {
@@ -207,7 +207,7 @@ task updateVersionTracker {
         def body = [
                 'author'        : "${project.findProperty('versionTrackerAuthor')}",
                 'projectName'   : "controlling",
-                'gameVersion'   : "1.16.1",
+                'gameVersion'   : "1.16.2",
                 'projectVersion': "${version}",
                 'homepage'      : "${project.findProperty('versionTrackerHomepage')}",
                 'uid'           : "${project.findProperty('versionTrackerKey')}"

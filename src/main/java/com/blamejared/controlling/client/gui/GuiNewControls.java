@@ -70,7 +70,7 @@ public class GuiNewControls extends ControlsScreen {
 
         this.keyBindingList = new GuiNewKeyBindingList(this, this.minecraft);
         this.children.add(this.keyBindingList);
-        this.setFocused(this.keyBindingList);
+        this.setListener(this.keyBindingList);
         this.addButton(new Button(this.width / 2 - 155 + 160, this.height - 29, 150, 20, new TranslationTextComponent("gui.done"), (p_213126_1_) -> GuiNewControls.this.minecraft.displayGuiScreen(GuiNewControls.this.parentScreen)));
 
         this.buttonReset = this.addButton(new Button(this.width / 2 - 155, this.height - 29, 150, 20, new TranslationTextComponent("controls.resetAll"), (p_213126_1_) -> {
@@ -188,9 +188,9 @@ public class GuiNewControls extends ControlsScreen {
     public void filterKeys() {
 
         lastSearch = search.getText();
-        keyBindingList.children().clear();
+        keyBindingList.getEventListeners().clear();
         if (lastSearch.isEmpty() && displayMode == DisplayMode.ALL && sortOrder == SortOrder.NONE) {
-            keyBindingList.children().addAll(((GuiNewKeyBindingList) keyBindingList).getAllEntries());
+            keyBindingList.getEventListeners().addAll(((GuiNewKeyBindingList) keyBindingList).getAllEntries());
             return;
         }
         this.keyBindingList.setScrollAmount(0);
@@ -214,16 +214,16 @@ public class GuiNewControls extends ControlsScreen {
                 if (entry instanceof GuiNewKeyBindingList.KeyEntry) {
                     GuiNewKeyBindingList.KeyEntry keyEntry = (GuiNewKeyBindingList.KeyEntry) entry;
                     if (filters.test(keyEntry)) {
-                        keyBindingList.children().add(entry);
+                        keyBindingList.getEventListeners().add(entry);
                     }
                 } else {
-                    keyBindingList.children().add(entry);
+                    keyBindingList.getEventListeners().add(entry);
                 }
             } else {
                 if (entry instanceof GuiNewKeyBindingList.KeyEntry) {
                     GuiNewKeyBindingList.KeyEntry keyEntry = (GuiNewKeyBindingList.KeyEntry) entry;
                     if (filters.test(keyEntry)) {
-                        keyBindingList.children().add(entry);
+                        keyBindingList.getEventListeners().add(entry);
                     }
                 }
             }
@@ -232,11 +232,11 @@ public class GuiNewControls extends ControlsScreen {
         if (searchType == SearchType.CATEGORY && sortOrder == SortOrder.NONE && displayMode == DisplayMode.ALL) {
             Set<GuiNewKeyBindingList.CategoryEntry> categories = new LinkedHashSet<>();
 
-            for (KeyBindingList.Entry entry : keyBindingList.children()) {
+            for (KeyBindingList.Entry entry : keyBindingList.getEventListeners()) {
                 if (entry instanceof GuiNewKeyBindingList.CategoryEntry) {
                     GuiNewKeyBindingList.CategoryEntry centry = (GuiNewKeyBindingList.CategoryEntry) entry;
                     categories.add(centry);
-                    for (KeyBindingList.Entry child : keyBindingList.children()) {
+                    for (KeyBindingList.Entry child : keyBindingList.getEventListeners()) {
                         if (child instanceof GuiNewKeyBindingList.KeyEntry) {
                             GuiNewKeyBindingList.KeyEntry childEntry = (GuiNewKeyBindingList.KeyEntry) child;
                             if (childEntry.getKeybinding().getKeyCategory().equals(centry.getName())) {
@@ -246,9 +246,9 @@ public class GuiNewControls extends ControlsScreen {
                     }
                 }
             }
-            keyBindingList.children().removeAll(categories);
+            keyBindingList.getEventListeners().removeAll(categories);
         }
-        sortOrder.sort(keyBindingList.children());
+        sortOrder.sort(keyBindingList.getEventListeners());
 
 
     }
@@ -297,7 +297,7 @@ public class GuiNewControls extends ControlsScreen {
             search.setFocused2(false);
         } else if (mb == 0 && this.keyBindingList.mouseClicked(mx, my, mb)) {
             this.setDragging(true);
-            this.setFocused(this.keyBindingList);
+            this.setListener(this.keyBindingList);
             valid = true;
             search.setFocused2(false);
         } else {
@@ -310,9 +310,9 @@ public class GuiNewControls extends ControlsScreen {
 
         if (!valid) {
 
-            for (IGuiEventListener iguieventlistener : this.children()) {
+            for (IGuiEventListener iguieventlistener : this.getEventListeners()) {
                 if (iguieventlistener.mouseClicked(mx, my, mb)) {
-                    this.setFocused(iguieventlistener);
+                    this.setListener(iguieventlistener);
                     if (mb == 0) {
                         this.setDragging(true);
                     }

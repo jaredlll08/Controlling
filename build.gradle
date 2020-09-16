@@ -43,7 +43,7 @@ repositories {
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200712-1.16.1'
+    mappings channel: 'snapshot', version: '20200820-1.16.1'
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
@@ -96,7 +96,7 @@ task genGitChangelog() {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.2-33.0.7'
+    minecraft 'net.minecraftforge:forge:1.16.3-34.0.5'
 }
 
 jar {
@@ -207,7 +207,7 @@ task updateVersionTracker {
         def body = [
                 'author'        : "${project.findProperty('versionTrackerAuthor')}",
                 'projectName'   : "controlling",
-                'gameVersion'   : "1.16.2",
+                'gameVersion'   : "1.16.3",
                 'projectVersion': "${version}",
                 'homepage'      : "${project.findProperty('versionTrackerHomepage')}",
                 'uid'           : "${project.findProperty('versionTrackerKey')}"

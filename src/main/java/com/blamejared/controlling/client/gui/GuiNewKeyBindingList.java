@@ -32,7 +32,7 @@ public class GuiNewKeyBindingList extends KeyBindingList {
         this.x1 = controls.width + 45;
         this.controlsScreen = controls;
         this.mc = mcIn;
-        children().clear();
+        getEventListeners().clear();
         allEntries = new ArrayList<>();
         KeyBinding[] akeybinding = ArrayUtils.clone(mcIn.gameSettings.keyBindings);
         Arrays.sort(akeybinding);
@@ -64,7 +64,7 @@ public class GuiNewKeyBindingList extends KeyBindingList {
     }
 
     public void add(Entry ent) {
-        children().add(ent);
+        getEventListeners().add(ent);
         allEntries.add(ent);
     }
 
@@ -94,7 +94,7 @@ public class GuiNewKeyBindingList extends KeyBindingList {
         }
 
         @Override
-        public List<? extends IGuiEventListener> children() {
+        public List<? extends IGuiEventListener> getEventListeners() {
             return ImmutableList.of();
         }
 
@@ -181,7 +181,7 @@ public class GuiNewKeyBindingList extends KeyBindingList {
             }
         }
 
-        public List<? extends IGuiEventListener> children() {
+        public List<? extends IGuiEventListener> getEventListeners() {
             return ImmutableList.of(this.btnChangeKeyBinding, this.btnResetKeyBinding);
         }
 

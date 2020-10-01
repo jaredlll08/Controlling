@@ -23,3 +23,4 @@ usernamecache.json
 *.stackdump
 secrets.json
 changelog.md
+*.launch

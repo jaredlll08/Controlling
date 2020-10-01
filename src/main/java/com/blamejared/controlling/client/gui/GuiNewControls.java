@@ -259,7 +259,7 @@ public class GuiNewControls extends ControlsScreen {
     public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(stack);
         this.keyBindingList.render(stack, mouseX, mouseY, partialTicks);
-        this.drawCenteredString(stack, this.font, this.title.getString(), this.width / 2, 8, 16777215);
+        drawCenteredString(stack, this.font, this.title.getString(), this.width / 2, 8, 16777215);
         boolean flag = false;
 
         for (KeyBinding keybinding : this.options.keyBindings) {

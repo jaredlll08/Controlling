@@ -46,7 +46,7 @@ public class GuiCheckBox extends Button {
             }
             
             if(this.isChecked)
-                this.drawCenteredString(stack, mc.fontRenderer, "x", this.x + this.boxWidth / 2 + 1, this.y + 1, 14737632);
+                drawCenteredString(stack, mc.fontRenderer, "x", this.x + this.boxWidth / 2 + 1, this.y + 1, 14737632);
             mc.fontRenderer.func_238407_a_(stack, getMessage().func_241878_f(), this.x + this.boxWidth + 2, this.y + 2, color);
         }
     }

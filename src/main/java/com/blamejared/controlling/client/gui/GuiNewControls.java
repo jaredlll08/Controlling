@@ -137,9 +137,9 @@ public class GuiNewControls extends ControlsScreen {
             private boolean wasHovered;
 
             @Override
-            public void render(MatrixStack stack, int p_render_1_, int p_render_2_, float p_render_3_) {
+            public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
                 if (this.visible) {
-                    this.isHovered = p_render_1_ >= this.x && p_render_2_ >= this.y && p_render_1_ < this.x + this.width && p_render_2_ < this.y + this.height;
+                    this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
                     if (this.wasHovered != this.isHovered()) {
                         if (this.isHovered()) {
                             if (this.isFocused()) {
@@ -153,7 +153,7 @@ public class GuiNewControls extends ControlsScreen {
                     }
 
                     if (this.visible) {
-                        this.renderButton(stack, p_render_1_, p_render_2_, p_render_3_);
+                        this.renderButton(stack, mouseX, mouseY, partialTicks);
                     }
 
                     this.narrate();
@@ -178,6 +178,7 @@ public class GuiNewControls extends ControlsScreen {
         return search.charTyped(var1, var2);
     }
 
+    @Override
     public void tick() {
         this.search.tick();
         if (!lastSearch.equals(search.getText())) {
@@ -256,6 +257,7 @@ public class GuiNewControls extends ControlsScreen {
     /**
      * Draws the screen and all the components in it.
      */
+    @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(stack);
         this.keyBindingList.render(stack, mouseX, mouseY, partialTicks);
@@ -287,6 +289,7 @@ public class GuiNewControls extends ControlsScreen {
         }
     }
 
+    @Override
     public boolean mouseClicked(double mx, double my, int mb) {
         boolean valid;
         if (this.buttonId != null) {
@@ -328,6 +331,7 @@ public class GuiNewControls extends ControlsScreen {
         return valid;
     }
 
+    @Override
     public boolean mouseReleased(double mx, double my, int mb) {
         if (mb == 0 && this.keyBindingList.mouseReleased(mx, my, mb)) {
             this.setDragging(false);
@@ -340,7 +344,8 @@ public class GuiNewControls extends ControlsScreen {
         }
     }
 
-    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifier) {
         if (!search.isFocused() && this.buttonId == null) {
             if (hasControlDown()) {
                 if (InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_F)) {
@@ -349,22 +354,22 @@ public class GuiNewControls extends ControlsScreen {
                 }
             }
         }
-        if (search.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_)) {
+        if (search.keyPressed(keyCode, scanCode, modifier)) {
             return true;
         }
         if (search.isFocused()) {
-            if (p_keyPressed_1_ == 256) {
+            if (keyCode == 256) {
                 search.setFocused2(false);
                 return true;
             }
         }
         if (this.buttonId != null) {
-            if (p_keyPressed_1_ == 256) {
+            if (keyCode == 256) {
                 this.buttonId.setKeyModifierAndCode(net.minecraftforge.client.settings.KeyModifier.getActiveModifier(), InputMappings.INPUT_INVALID);
                 this.options.setKeyBindingCode(this.buttonId, InputMappings.INPUT_INVALID);
             } else {
-                this.buttonId.setKeyModifierAndCode(net.minecraftforge.client.settings.KeyModifier.getActiveModifier(), InputMappings.getInputByCode(p_keyPressed_1_, p_keyPressed_2_));
-                this.options.setKeyBindingCode(this.buttonId, InputMappings.getInputByCode(p_keyPressed_1_, p_keyPressed_2_));
+                this.buttonId.setKeyModifierAndCode(net.minecraftforge.client.settings.KeyModifier.getActiveModifier(), InputMappings.getInputByCode(keyCode, scanCode));
+                this.options.setKeyBindingCode(this.buttonId, InputMappings.getInputByCode(keyCode, scanCode));
             }
 
             if (!net.minecraftforge.client.settings.KeyModifier.isKeyCodeModifier(this.buttonId.getKey()))
@@ -373,7 +378,7 @@ public class GuiNewControls extends ControlsScreen {
             KeyBinding.resetKeyBindingArrayAndHash();
             return true;
         } else {
-            return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+            return super.keyPressed(keyCode, scanCode, modifier);
         }
     }
 

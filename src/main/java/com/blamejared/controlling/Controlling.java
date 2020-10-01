@@ -22,6 +22,9 @@ public class Controlling {
     public Controlling() {
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
+    }
+    
+    private void init(final FMLClientSetupEvent event) {
         new Thread(() -> {
             try {
                 URL url = new URL("https://blamejared.com/patrons.txt");
@@ -36,9 +39,6 @@ public class Controlling {
                 e.printStackTrace();
             }
         }).start();
-    }
-    
-    private void init(final FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
     }
 }

@@ -1,0 +1,15 @@
+{
+  "options.search": "தேடல்",
+  "options.showAll": "அனைத்தையும் காட்டு",
+  "options.showConflicts": "மோதல்களைக் காட்டு",
+  "options.showNone": "வரம்பற்றதைக் காட்டு",
+  "options.availableKeys": "இலவச விசைகள்",
+  "options.sort": "வகைபடுத்து",
+  "options.category": "வகை",
+  "options.key": "விசை",
+  "options.sortNone": "எதுவுமில்லை",
+  "options.sortAZ": "A->Z",
+  "options.sortZA": "Z->A",
+  "options.toggleFree": "இலவசமாக நிலைமாற்று",
+  "options.confirmReset": "மீட்டமைப்பை உறுதிப்படுத்த கிளிக் செய்க!"
+}

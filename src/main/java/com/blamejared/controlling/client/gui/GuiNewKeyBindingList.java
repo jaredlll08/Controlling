@@ -68,10 +68,12 @@ public class GuiNewKeyBindingList extends KeyBindingList {
         allEntries.add(ent);
     }
 
+    @Override
     protected int getScrollbarPosition() {
         return super.getScrollbarPosition() + 15 + 20;
     }
 
+    @Override
     public int getRowWidth() {
         return super.getRowWidth() + 32;
     }
@@ -124,6 +126,7 @@ public class GuiNewKeyBindingList extends KeyBindingList {
             this.btnChangeKeyBinding = new Button(0, 0, 75 + 20 /*Forge: add space*/, 20, new StringTextComponent(this.keyDesc), (p_214386_2_) -> {
                 GuiNewKeyBindingList.this.controlsScreen.buttonId = name;
             }) {
+            	@Override
                 protected IFormattableTextComponent getNarrationMessage() {
                     return name.isInvalid() ? new TranslationTextComponent("narrator.controls.unbound", GuiNewKeyBindingList.KeyEntry.this.keyDesc) : new TranslationTextComponent("narrator.controls.bound", GuiNewKeyBindingList.KeyEntry.this.keyDesc, super.getNarrationMessage());
                 }
@@ -133,6 +136,7 @@ public class GuiNewKeyBindingList extends KeyBindingList {
                 GuiNewKeyBindingList.this.minecraft.gameSettings.setKeyBindingCode(name, name.getDefault());
                 KeyBinding.resetKeyBindingArrayAndHash();
             }) {
+            	@Override
                 protected IFormattableTextComponent getNarrationMessage() {
                     return new TranslationTextComponent("narrator.controls.reset", GuiNewKeyBindingList.KeyEntry.this.keyDesc);
                 }
@@ -185,16 +189,18 @@ public class GuiNewKeyBindingList extends KeyBindingList {
             return ImmutableList.of(this.btnChangeKeyBinding, this.btnResetKeyBinding);
         }
 
-        public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
-            if (this.btnChangeKeyBinding.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_)) {
+        @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int buttonId) {
+            if (this.btnChangeKeyBinding.mouseClicked(mouseX, mouseY, buttonId)) {
                 return true;
             } else {
-                return this.btnResetKeyBinding.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_);
+                return this.btnResetKeyBinding.mouseClicked(mouseX, mouseY, buttonId);
             }
         }
 
-        public boolean mouseReleased(double p_mouseReleased_1_, double p_mouseReleased_3_, int p_mouseReleased_5_) {
-            return this.btnChangeKeyBinding.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);
+        @Override
+        public boolean mouseReleased(double mouseX, double mouseY, int buttonId) {
+            return this.btnChangeKeyBinding.mouseReleased(mouseX, mouseY, buttonId);
         }
 
         public KeyBinding getKeybinding() {

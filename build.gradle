@@ -51,6 +51,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
+            taskName 'ControllingClient'
             mods {
                 examplemod {
                     source sourceSets.main
@@ -61,6 +62,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
+            taskName 'ControllingServer'
             mods {
                 examplemod {
                     source sourceSets.main

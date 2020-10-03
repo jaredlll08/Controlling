@@ -1,0 +1,13 @@
+
+options.search=Поиск
+options.category=Категория
+options.key=Клавиша
+options.showNone=Несвязанные
+options.showConflicts=Конфликты
+options.showAll=Все
+options.sort=Сортировать
+options.sortNone=Нет
+options.sortAZ=А->Я
+options.sortZA=Я->А
+options.availableKeys=Доступные клавиши
+options.confirmReset=Подтвердить сброс!

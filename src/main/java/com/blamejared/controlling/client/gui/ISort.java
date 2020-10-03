@@ -1,8 +1,9 @@
 package com.blamejared.controlling.client.gui;
 
+import net.minecraft.client.gui.GuiListExtended;
+
 import java.util.List;
 
 public interface ISort {
-    
-    void sort(List<GuiNewKeyBindingList.Entry> entries);
+    void sort(List<GuiListExtended.IGuiListEntry> entries);
 }

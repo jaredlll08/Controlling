@@ -1,0 +1,12 @@
+
+options.search=検索
+options.showAll=全てを表示
+options.showConflicts=競合を表示
+options.showNone=未割り当てを表示
+options.availableKeys=利用可能なキー
+options.sort=並べ替え
+options.category=カテゴリー
+options.key=キー
+options.toggleFree=トグルフリー
+options.confirmReset=クリックしてリセットを承諾します！
+

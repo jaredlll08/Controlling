@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "controlling",
+    "name": "Controlling",
+    "description": "Adds the ability to search for keybinds using their name in the KeyBinding menu, this allows players to easily find a key binding in the menu.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "https://minecraft.curseforge.com/projects/controlling",
+    "updateUrl": "",
+    "authorList": ["Jaredlll08"],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]

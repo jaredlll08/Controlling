@@ -1,33 +1,38 @@
 package com.blamejared.controlling.client.gui;
 
+import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.resources.I18n;
 
+import java.util.Comparator;
 import java.util.List;
 
 public enum SortOrder {
-    NONE(entries -> {
-    }), AZ(entries -> {
-        entries.sort((o1, o2) -> ((GuiNewKeyBindingList.KeyEntry) o1).getKeyDesc().compareTo(((GuiNewKeyBindingList.KeyEntry) o2).getKeyDesc()));
-    }), ZA(entries -> {
-        entries.sort((o1, o2) -> ((GuiNewKeyBindingList.KeyEntry) o2).getKeyDesc().compareTo(((GuiNewKeyBindingList.KeyEntry) o1).getKeyDesc()));
+    NONE(entries -> { }),
+    AZ(entries -> {
+        entries.sort(Comparator.comparing(entry -> ((GuiNewKeyBindingList.KeyEntry) entry).getKeybinding()
+            .getKeyDescription()));
+    }),
+    ZA(entries -> {
+        entries.sort(Comparator.comparing(entry -> ((GuiNewKeyBindingList.KeyEntry) entry).getKeybinding()
+            .getKeyDescription()).reversed());
     });
-    
+
     private final ISort sorter;
-    
+
     SortOrder(ISort sorter) {
         this.sorter = sorter;
     }
-    
+
     public SortOrder cycle() {
         return SortOrder.values()[(this.ordinal() + 1) % SortOrder.values().length];
     }
-    
-    public void sort(List<GuiNewKeyBindingList.Entry> list) {
+
+    public void sort(List<GuiListExtended.IGuiListEntry> list) {
         this.sorter.sort(list);
     }
-    
+
     public String getName() {
-        switch(this) {
+        switch (this) {
             default:
             case NONE:
                 return I18n.format("options.sortNone");

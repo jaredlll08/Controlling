@@ -98,7 +98,7 @@ task genGitChangelog() {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.3-34.0.5'
+    minecraft 'net.minecraftforge:forge:1.16.4-35.0.15'
 }
 
 jar {
@@ -209,7 +209,7 @@ task updateVersionTracker {
         def body = [
                 'author'        : "${project.findProperty('versionTrackerAuthor')}",
                 'projectName'   : "controlling",
-                'gameVersion'   : "1.16.3",
+                'gameVersion'   : "1.16.4",
                 'projectVersion': "${version}",
                 'homepage'      : "${project.findProperty('versionTrackerHomepage')}",
                 'uid'           : "${project.findProperty('versionTrackerKey')}"
@@ -219,7 +219,7 @@ task updateVersionTracker {
         def req = new URL(project.findProperty('versionTrackerAPI')).openConnection()
         req.setRequestMethod('POST')
         req.setRequestProperty('Content-Type', 'application/json; charset=UTF-8')
-        req.setRequestProperty('User-Agent', "CraftTweaker Tracker Gradle")
+        req.setRequestProperty('User-Agent', "Controlling Tracker Gradle")
         req.setDoOutput(true)
         req.getOutputStream().write(JsonOutput.toJson(body).getBytes("UTF-8"))
 

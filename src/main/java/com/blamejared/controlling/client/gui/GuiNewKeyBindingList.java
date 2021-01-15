@@ -11,6 +11,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.text.*;
 import net.minecraftforge.api.distmarker.*;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.*;
@@ -173,15 +174,16 @@ public class GuiNewKeyBindingList extends KeyBindingList {
             if (flag) {
                 this.btnChangeKeyBinding.setMessage(new StringTextComponent(TextFormatting.WHITE + "> " + TextFormatting.YELLOW + message.getString() + TextFormatting.WHITE + " <"));
             } else if (flag1) {
-                IFormattableTextComponent modConflict = TextComponentUtils.func_240648_a_(message.copyRaw(), message.getStyle().setColor(Color.func_240743_a_(16755200)));
-                IFormattableTextComponent keyConflict = TextComponentUtils.func_240648_a_(message.copyRaw(), message.getStyle().setColor(Color.func_240743_a_(16755200)));
+                IFormattableTextComponent modConflict = TextComponentUtils.func_240648_a_(message.copyRaw(), message.getStyle().setColor(Color.fromInt(16755200)));
+                IFormattableTextComponent keyConflict = TextComponentUtils.func_240648_a_(message.copyRaw(), message.getStyle().setColor(Color.fromInt(16755200)));
 
                 this.btnChangeKeyBinding.setMessage(keyCodeModifierConflict ? modConflict : keyConflict);
             }
 
             this.btnChangeKeyBinding.render(stack, mouseX, mouseY, p_render_9_);
             if (mouseY >= y && mouseY <= y + p_render_5_) {
-                mc.fontRenderer.drawString(stack, I18n.format(keybinding.getKeyCategory()), mouseX + 10, mouseY, 0xFFFFFF);
+                GuiUtils.drawHoveringText(stack, Collections.singletonList(new TranslationTextComponent(keybinding.getKeyCategory())), mouseX, mouseY, mc.currentScreen.width, mc.currentScreen.height, 0, mc.fontRenderer);
+//                mc.fontRenderer.drawString(stack, I18n.format(keybinding.getKeyCategory()), mouseX + 10, mouseY, 0xFFFFFF);
             }
         }
 

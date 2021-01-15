@@ -24,3 +24,5 @@ usernamecache.json
 secrets.json
 changelog.md
 *.launch
+
+logs/

@@ -149,7 +149,8 @@ public class GuiNewKeyBindingList extends KeyBindingList {
             int i = y;
             int j = x;
             boolean flag = GuiNewKeyBindingList.this.controlsScreen.buttonId == this.keybinding;
-            GuiNewKeyBindingList.this.mc.fontRenderer.drawString(stack, this.keyDesc, (float) (j + 90 - GuiNewKeyBindingList.this.maxListLabelWidth), (float) (y + p_render_5_ / 2 - 9 / 2), 16777215);
+            int length = Math.max(0, j + 90 - GuiNewKeyBindingList.this.maxListLabelWidth);
+            GuiNewKeyBindingList.this.mc.fontRenderer.drawString(stack, this.keyDesc, (float) (length), (float) (y + p_render_5_ / 2 - 9 / 2), 16777215);
             this.btnResetKeyBinding.x = x + 190 + 20;
             this.btnResetKeyBinding.y = y;
             this.btnResetKeyBinding.active = !this.keybinding.isDefault();

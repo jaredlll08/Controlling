@@ -30,7 +30,7 @@ public class GuiCheckBox extends Button {
     public void renderButton(MatrixStack stack, int mouseX, int mouseY, float partial) {
         if(this.visible) {
             Minecraft mc = Minecraft.getInstance();
-            this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+            this.isHovered = active && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             if(isHovered()) {
                 GuiUtils.drawContinuousTexturedBox(WIDGETS_LOCATION, this.x, this.y, 0, 86, this.boxWidth, this.height, 200, 20, 2, 3, 2, 2, 500);
                 GuiUtils.drawContinuousTexturedBox(WIDGETS_LOCATION, this.x+1, this.y+1, 2, 48, this.boxWidth-2, this.height-2, 200, 20, 1, 0, 1, 0, 500);
@@ -41,7 +41,8 @@ public class GuiCheckBox extends Button {
             
             if(packedFGColor != 0) {
                 color = packedFGColor;
-            } else if(!this.active) {
+            }
+            if(!this.active) {
                 color = 10526880;
             }
             

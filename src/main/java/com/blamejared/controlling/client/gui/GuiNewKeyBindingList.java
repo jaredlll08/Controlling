@@ -17,12 +17,11 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.*;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiNewKeyBindingList extends KeyBindingList {
+public class GuiNewKeyBindingList extends GuiCustomList {
 
     private final ControlsScreen controlsScreen;
     private final Minecraft mc;
     private int maxListLabelWidth;
-    public List<Entry> allEntries;
 
     public GuiNewKeyBindingList(ControlsScreen controls, Minecraft mcIn) {
         super(controls, mcIn);
@@ -59,15 +58,6 @@ public class GuiNewKeyBindingList extends KeyBindingList {
 
     }
 
-
-    public List<Entry> getAllEntries() {
-        return allEntries;
-    }
-
-    public void add(Entry ent) {
-        getEventListeners().add(ent);
-        allEntries.add(ent);
-    }
 
     @Override
     protected int getScrollbarPosition() {

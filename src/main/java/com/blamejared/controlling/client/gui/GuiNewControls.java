@@ -67,8 +67,7 @@ public class GuiNewControls extends ControlsScreen {
         this.keyBindingList = customKeyList;
         this.children.add(this.keyBindingList);
         this.setListener(this.keyBindingList);
-        this.addButton(new Button(this.width / 2 - 155 + 160, this.height - 29, 150, 20, new TranslationTextComponent("gui.done"), (p_213126_1_) -> GuiNewControls.this.minecraft
-                .displayGuiScreen(GuiNewControls.this.parentScreen)));
+        this.addButton(new Button(this.width / 2 - 155 + 160, this.height - 29, 150, 20, new TranslationTextComponent("gui.done"), (p_213126_1_) -> GuiNewControls.this.minecraft.displayGuiScreen(GuiNewControls.this.parentScreen)));
         
         this.buttonReset = this.addButton(new Button(this.width / 2 - 155, this.height - 29, 74, 20, new TranslationTextComponent("controls.resetAll"), (p_213126_1_) -> {
             
@@ -108,8 +107,7 @@ public class GuiNewControls extends ControlsScreen {
             filterKeys();
         }));
         search = new TextFieldWidget(font, this.width / 2 - 154, this.height - 29 - 23, 148, 18, new StringTextComponent(""));
-        this.buttonKey = this.addButton(new GuiCheckBox(this.width / 2 - (155 / 2), this.height - 29 - 37, new TranslationTextComponent("options.key")
-                .getString(), false) {
+        this.buttonKey = this.addButton(new GuiCheckBox(this.width / 2 - (155 / 2), this.height - 29 - 37, new TranslationTextComponent("options.key").getString(), false) {
             @Override
             public void onPress() {
                 
@@ -119,8 +117,7 @@ public class GuiNewControls extends ControlsScreen {
                 filterKeys();
             }
         });
-        this.buttonCat = this.addButton(new GuiCheckBox(this.width / 2 - (155 / 2), this.height - 29 - 50, new TranslationTextComponent("options.category")
-                .getString(), false) {
+        this.buttonCat = this.addButton(new GuiCheckBox(this.width / 2 - (155 / 2), this.height - 29 - 50, new TranslationTextComponent("options.category").getString(), false) {
             
             @Override
             public void onPress() {
@@ -131,13 +128,13 @@ public class GuiNewControls extends ControlsScreen {
                 filterKeys();
             }
         });
-        name = Controlling.PATRON_LIST.stream()
-                .skip(Controlling.PATRON_LIST.isEmpty() ? 0 : new Random().nextInt(Controlling.PATRON_LIST.size()))
-                .findFirst()
-                .orElse("");
-        patreonButton = this.addButton(new Button(this.width / 2 - 155 + 160, this.height - 29 - 24 - 24, 150 / 2, 20, new StringTextComponent("Patreon"), p_onPress_1_ -> Util
-                .getOSType()
-                .openURI("https://patreon.com/jaredlll08?s=controllingmod")) {
+        name = Controlling.PATRON_LIST.stream().skip(Controlling.PATRON_LIST.isEmpty() ? 0 : new Random().nextInt(Controlling.PATRON_LIST.size())).findFirst().orElse("");
+        patreonButton = this.addButton(new Button(this.width / 2 - 155 + 160, this.height - 29 - 24 - 24, 150 / 2, 20, new StringTextComponent("Patreon"), p_onPress_1_ -> this.minecraft.displayGuiScreen(new ConfirmOpenLinkScreen((function) -> {
+            if (function) {
+                Util.getOSType().openURI("https://patreon.com/jaredlll08?s=controllingmod");
+            }
+            this.minecraft.displayGuiScreen(this);
+        }, "https://patreon.com/jaredlll08?s=controllingmod", true))) {
             private boolean wasHovered;
             
             @Override
@@ -167,8 +164,7 @@ public class GuiNewControls extends ControlsScreen {
             }
         });
         sortOrder = SortOrder.NONE;
-        Button buttonSort = this.addButton(new Button(this.width / 2 - 155 + 160 + 76, this.height - 29 - 24 - 24, 150 / 2, 20, new TranslationTextComponent("options.sort")
-                .appendString(": " + sortOrder.getName()), (p_213126_1_) -> {
+        Button buttonSort = this.addButton(new Button(this.width / 2 - 155 + 160 + 76, this.height - 29 - 24 - 24, 150 / 2, 20, new TranslationTextComponent("options.sort").appendString(": " + sortOrder.getName()), (p_213126_1_) -> {
             sortOrder = sortOrder.cycle();
             p_213126_1_.setMessage(new TranslationTextComponent("options.sort").appendString(": " + sortOrder.getName()));
             filterKeys();
@@ -238,20 +234,13 @@ public class GuiNewControls extends ControlsScreen {
             
             switch(searchType) {
                 case NAME:
-                    filters = filters.and(keyEntry -> keyEntry.getKeyDesc()
-                            .toLowerCase()
-                            .contains(lastSearch.toLowerCase()));
+                    filters = filters.and(keyEntry -> keyEntry.getKeyDesc().toLowerCase().contains(lastSearch.toLowerCase()));
                     break;
                 case CATEGORY:
-                    filters = filters.and(keyEntry -> new TranslationTextComponent(keyEntry.getKeybinding()
-                            .getKeyCategory()).getString().toLowerCase().contains(lastSearch.toLowerCase()));
+                    filters = filters.and(keyEntry -> new TranslationTextComponent(keyEntry.getKeybinding().getKeyCategory()).getString().toLowerCase().contains(lastSearch.toLowerCase()));
                     break;
                 case KEY:
-                    filters = filters.and(keyEntry -> keyEntry.getKeybinding()
-                            .func_238171_j_()
-                            .getString()
-                            .toLowerCase()
-                            .contains(lastSearch.toLowerCase()));
+                    filters = filters.and(keyEntry -> keyEntry.getKeybinding().func_238171_j_().getString().toLowerCase().contains(lastSearch.toLowerCase()));
                     break;
             }
             
@@ -351,7 +340,16 @@ public class GuiNewControls extends ControlsScreen {
         
         if(patreonButton.isHovered()) {
             String str = "Join " + name + " and other patrons!";
-            renderTooltip(stack, new StringTextComponent(str), mouseX, mouseY);
+            int tempX = mouseX;
+            int tempY = mouseY;
+            boolean outOfBounds = tempX < patreonButton.x || tempX > patreonButton.x + patreonButton.getWidth();
+            outOfBounds |= tempY < patreonButton.y || tempY > patreonButton.y + patreonButton.getHeightRealms();
+            
+            if(outOfBounds) {
+                tempX = patreonButton.x + patreonButton.getWidth();
+                tempY = patreonButton.y + (patreonButton.getHeightRealms() / 2) + 7;
+            }
+            renderTooltip(stack, new StringTextComponent(str), tempX, tempY);
         }
     }
     
@@ -437,8 +435,7 @@ public class GuiNewControls extends ControlsScreen {
                 this.buttonId.setKeyModifierAndCode(net.minecraftforge.client.settings.KeyModifier.getActiveModifier(), InputMappings.INPUT_INVALID);
                 this.options.setKeyBindingCode(this.buttonId, InputMappings.INPUT_INVALID);
             } else {
-                this.buttonId.setKeyModifierAndCode(net.minecraftforge.client.settings.KeyModifier.getActiveModifier(), InputMappings
-                        .getInputByCode(keyCode, scanCode));
+                this.buttonId.setKeyModifierAndCode(net.minecraftforge.client.settings.KeyModifier.getActiveModifier(), InputMappings.getInputByCode(keyCode, scanCode));
                 this.options.setKeyBindingCode(this.buttonId, InputMappings.getInputByCode(keyCode, scanCode));
             }
             

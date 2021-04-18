@@ -1,5 +1,9 @@
 package com.blamejared.controlling.client.gui;
 
+import com.blamejared.controlling.api.events.KeyEntryListenersEvent;
+import com.blamejared.controlling.api.events.KeyEntryMouseClickedEvent;
+import com.blamejared.controlling.api.events.KeyEntryMouseReleasedEvent;
+import com.blamejared.controlling.api.events.KeyEntryRenderEvent;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
@@ -12,6 +16,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.*;
 import net.minecraftforge.api.distmarker.*;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -25,6 +30,7 @@ public class GuiNewKeyBindingList extends GuiCustomList {
     private int maxListLabelWidth;
     
     public GuiNewKeyBindingList(ControlsScreen controls, Minecraft mcIn) {
+        
         super(controls, mcIn);
         this.width = controls.width + 45;
         this.height = controls.height;
@@ -61,30 +67,38 @@ public class GuiNewKeyBindingList extends GuiCustomList {
     
     @Override
     protected void renderDecorations(MatrixStack matrixStack, int mouseX, int mouseY) {
+        
         Entry entry = this.getEntryAtPos(mouseY);
         if(!(entry instanceof KeyEntry)) {
             return;
         }
         KeyEntry keyEntry = (KeyEntry) entry;
-        GuiUtils.drawHoveringText(matrixStack, Collections.singletonList(new TranslationTextComponent(keyEntry.getKeybinding().getKeyCategory())), mouseX, mouseY, mc.currentScreen.width, mc.currentScreen.height, 0, mc.fontRenderer);
+        GuiUtils.drawHoveringText(matrixStack, Collections.singletonList(new TranslationTextComponent(keyEntry
+                .getKeybinding()
+                .getKeyCategory())), mouseX, mouseY, mc.currentScreen.width, mc.currentScreen.height, 0, mc.fontRenderer);
     }
     
     public Entry getEntryAtPos(double mouseY) {
-        if(mouseY <= getTop() || mouseY >= getBottom()){
+        
+        if(mouseY <= getTop() || mouseY >= getBottom()) {
             return null;
         }
-        int i1 = MathHelper.floor(mouseY - (double) this.y0) - this.headerHeight + (int) this.getScrollAmount() - 4;
+        int i1 = MathHelper.floor(mouseY - (double) this.y0) - this.headerHeight + (int) this
+                .getScrollAmount() - 4;
         int j1 = i1 / this.itemHeight;
-        return i1 >= 0 && j1 < this.getItemCount() ? this.getEventListeners().get(j1) : null;
+        return i1 >= 0 && j1 < this.getItemCount() ? this.getEventListeners()
+                .get(j1) : null;
     }
     
     @Override
     protected int getScrollbarPosition() {
+        
         return super.getScrollbarPosition() + 15 + 20;
     }
     
     @Override
     public int getRowWidth() {
+        
         return super.getRowWidth() + 32;
     }
     
@@ -96,23 +110,28 @@ public class GuiNewKeyBindingList extends GuiCustomList {
         private final String name;
         
         public CategoryEntry(String name) {
+            
             this.labelText = I18n.format(name);
             this.labelWidth = GuiNewKeyBindingList.this.mc.fontRenderer.getStringWidth(this.labelText);
             this.name = name;
         }
         
         public String getName() {
+            
             return name;
         }
         
         @Override
         public List<? extends IGuiEventListener> getEventListeners() {
+            
             return ImmutableList.of();
         }
         
-        public void render(MatrixStack stack, int p_render_1_, int p_render_2_, int p_render_3_, int p_render_4_, int p_render_5_, int p_render_6_, int p_render_7_, boolean p_render_8_, float p_render_9_) {
-            GuiNewKeyBindingList.this.minecraft.fontRenderer.drawString(stack, this.labelText, (float) (GuiNewKeyBindingList.this.minecraft.currentScreen.width / 2 - this.labelWidth / 2), (float) (p_render_2_ + p_render_5_ - 9 - 1), 16777215);
+        public void render(MatrixStack stack, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+            
+            GuiNewKeyBindingList.this.minecraft.fontRenderer.drawString(stack, this.labelText, (float) (GuiNewKeyBindingList.this.minecraft.currentScreen.width / 2 - this.labelWidth / 2), (float) (y + rowWidth - 9 - 1), 16777215);
         }
+        
     }
     
     @OnlyIn(Dist.CLIENT)
@@ -131,6 +150,7 @@ public class GuiNewKeyBindingList extends GuiCustomList {
         
         
         private KeyEntry(final KeyBinding name) {
+            
             this.keybinding = name;
             this.keyDesc = I18n.format(name.getKeyDescription());
             this.btnChangeKeyBinding = new Button(0, 0, 75 + 20 /*Forge: add space*/, 20, new StringTextComponent(this.keyDesc), (p_214386_2_) -> {
@@ -138,32 +158,38 @@ public class GuiNewKeyBindingList extends GuiCustomList {
             }) {
                 @Override
                 protected IFormattableTextComponent getNarrationMessage() {
-                    return name.isInvalid() ? new TranslationTextComponent("narrator.controls.unbound", GuiNewKeyBindingList.KeyEntry.this.keyDesc) : new TranslationTextComponent("narrator.controls.bound", GuiNewKeyBindingList.KeyEntry.this.keyDesc, super.getNarrationMessage());
+                    
+                    return name.isInvalid() ? new TranslationTextComponent("narrator.controls.unbound", GuiNewKeyBindingList.KeyEntry.this.keyDesc) : new TranslationTextComponent("narrator.controls.bound", GuiNewKeyBindingList.KeyEntry.this.keyDesc, super
+                            .getNarrationMessage());
                 }
             };
             this.btnResetKeyBinding = new Button(0, 0, 50, 20, new TranslationTextComponent("controls.reset"), (p_214387_2_) -> {
                 keybinding.setToDefault();
-                GuiNewKeyBindingList.this.minecraft.gameSettings.setKeyBindingCode(name, name.getDefault());
+                GuiNewKeyBindingList.this.minecraft.gameSettings.setKeyBindingCode(name, name
+                        .getDefault());
                 KeyBinding.resetKeyBindingArrayAndHash();
             }) {
                 @Override
                 protected IFormattableTextComponent getNarrationMessage() {
+                    
                     return new TranslationTextComponent("narrator.controls.reset", GuiNewKeyBindingList.KeyEntry.this.keyDesc);
                 }
             };
         }
         
         @Override
-        public void render(MatrixStack stack, int slotIndex, int y, int x, int p_render_4_, int p_render_5_, int mouseX, int mouseY, boolean p_render_8_, float p_render_9_) {
+        public void render(MatrixStack stack, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+            
+            MinecraftForge.EVENT_BUS.post(new KeyEntryRenderEvent(this, stack, slotIndex, y, x, rowLeft, rowWidth, mouseX, mouseY, hovered, partialTicks));
             int i = y;
             int j = x;
             boolean flag = GuiNewKeyBindingList.this.controlsScreen.buttonId == this.keybinding;
             int length = Math.max(0, j + 90 - GuiNewKeyBindingList.this.maxListLabelWidth);
-            GuiNewKeyBindingList.this.mc.fontRenderer.drawString(stack, this.keyDesc, (float) (length), (float) (y + p_render_5_ / 2 - 9 / 2), 16777215);
+            GuiNewKeyBindingList.this.mc.fontRenderer.drawString(stack, this.keyDesc, (float) (length), (float) (y + rowWidth / 2 - 9 / 2), 16777215);
             this.btnResetKeyBinding.x = x + 190 + 20;
             this.btnResetKeyBinding.y = y;
             this.btnResetKeyBinding.active = !this.keybinding.isDefault();
-            this.btnResetKeyBinding.render(stack, mouseX, mouseY, p_render_9_);
+            this.btnResetKeyBinding.render(stack, mouseX, mouseY, partialTicks);
             
             
             this.btnChangeKeyBinding.x = j + 105;
@@ -182,23 +208,38 @@ public class GuiNewKeyBindingList extends GuiCustomList {
             }
             ITextComponent message = this.btnChangeKeyBinding.getMessage();
             if(flag) {
-                this.btnChangeKeyBinding.setMessage(new StringTextComponent(TextFormatting.WHITE + "> " + TextFormatting.YELLOW + message.getString() + TextFormatting.WHITE + " <"));
+                this.btnChangeKeyBinding.setMessage(new StringTextComponent(TextFormatting.WHITE + "> " + TextFormatting.YELLOW + message
+                        .getString() + TextFormatting.WHITE + " <"));
             } else if(flag1) {
-                IFormattableTextComponent modConflict = TextComponentUtils.func_240648_a_(message.copyRaw(), message.getStyle().setColor(Color.fromInt(16755200)));
-                IFormattableTextComponent keyConflict = TextComponentUtils.func_240648_a_(message.copyRaw(), message.getStyle().setColor(Color.fromInt(16755200)));
+                IFormattableTextComponent modConflict = TextComponentUtils.func_240648_a_(message
+                        .copyRaw(), message.getStyle()
+                        .setColor(Color.fromInt(16755200)));
+                IFormattableTextComponent keyConflict = TextComponentUtils.func_240648_a_(message
+                        .copyRaw(), message.getStyle()
+                        .setColor(Color.fromInt(16755200)));
                 
                 this.btnChangeKeyBinding.setMessage(keyCodeModifierConflict ? modConflict : keyConflict);
             }
             
-            this.btnChangeKeyBinding.render(stack, mouseX, mouseY, p_render_9_);
+            this.btnChangeKeyBinding.render(stack, mouseX, mouseY, partialTicks);
         }
         
-        public List<? extends IGuiEventListener> getEventListeners() {
-            return ImmutableList.of(this.btnChangeKeyBinding, this.btnResetKeyBinding);
+        public List<IGuiEventListener> getEventListeners() {
+            
+            KeyEntryListenersEvent event = new KeyEntryListenersEvent(this);
+            MinecraftForge.EVENT_BUS.post(event);
+            return event.getListeners();
         }
         
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int buttonId) {
+            
+            KeyEntryMouseClickedEvent event = new KeyEntryMouseClickedEvent(this, mouseX, mouseY, buttonId);
+            MinecraftForge.EVENT_BUS.post(event);
+            if(event.isHandled()) {
+                return true;
+            }
+            
             if(this.btnChangeKeyBinding.mouseClicked(mouseX, mouseY, buttonId)) {
                 return true;
             } else {
@@ -208,16 +249,36 @@ public class GuiNewKeyBindingList extends GuiCustomList {
         
         @Override
         public boolean mouseReleased(double mouseX, double mouseY, int buttonId) {
+    
+            KeyEntryMouseReleasedEvent event = new KeyEntryMouseReleasedEvent(this, mouseX, mouseY, buttonId);
+            MinecraftForge.EVENT_BUS.post(event);
+            if(event.isHandled()) {
+                return true;
+            }
+            
             return this.btnChangeKeyBinding.mouseReleased(mouseX, mouseY, buttonId);
         }
         
         public KeyBinding getKeybinding() {
+            
             return keybinding;
         }
         
         public String getKeyDesc() {
+            
             return keyDesc;
         }
         
+        public Button getBtnResetKeyBinding() {
+            
+            return btnResetKeyBinding;
+        }
+        
+        public Button getBtnChangeKeyBinding() {
+            
+            return btnChangeKeyBinding;
+        }
+        
     }
+    
 }

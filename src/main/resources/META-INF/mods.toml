@@ -1,14 +1,15 @@
-modLoader="javafml" #mandatory
-loaderVersion="[34,)" #mandatory
-issueTrackerURL="https://github.com/jaredlll08/Controlling/issues" #optional
-displayURL="https://minecraft.curseforge.com/projects/controlling" #optional
-authors="Jaredlll08" #optional
+modLoader="javafml"
+loaderVersion="[34,)"
+issueTrackerURL="https://github.com/jaredlll08/Controlling/issues"
 license="MIT"
-[[mods]] #mandatory
-modId="controlling" #mandatory
-version="${file.jarVersion}" #mandatory
-displayName="Controlling" #mandatory
+
+[[mods]]
+modId="controlling"
 updateJSONURL="https://updates.blamejared.com/get?n=controlling&gv=1.16.5"
+version="${file.jarVersion}"
+displayName="Controlling"
+displayURL="https://minecraft.curseforge.com/projects/controlling"
+authors="Jaredlll08"
 description='''
 Adds the ability to search for keybinds using their name in the KeyBinding menu, this allows players to easily find a key binding in the menu.
 '''

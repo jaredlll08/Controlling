@@ -1,44 +1,27 @@
-import groovy.json.JsonOutput
-
 buildscript {
     repositories {
-        maven {
-            url = 'https://files.minecraftforge.net/maven'
-        }
-        jcenter()
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://maven.blamejared.com' }
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'com.blamejared', name: 'ModTemplate', version: '1.+', changing: true
     }
 }
 plugins {
     id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'com.blamejared.modtemplate'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-apply from: 'https://raw.githubusercontent.com/MinecraftModDevelopment/Gradle-Collection/22e7d543a18cd30675277fbfa3669e3d9e206010/generic/secrets.gradle'
-
-if (project.hasProperty('secretFile')) {
-    loadSecrets(new File((String) findProperty('secretFile')))
-}
-
 version = '7.0.0'
-if (System.getenv('BUILD_NUMBER') != null) {
-    version += "." + System.getenv('BUILD_NUMBER')
-}
 group = 'com.blamejared.controlling'
 archivesBaseName = 'Controlling'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
-
-repositories {
-    maven {
-        url 'https://dogforce-games.com/maven'
-    }
-}
 
 minecraft {
     mappings channel: 'snapshot', version: '20201028-1.16.3'
@@ -47,8 +30,6 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
             taskName 'ControllingClient'
             mods {
                 examplemod {
@@ -58,8 +39,6 @@ minecraft {
         }
         server {
             workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
             taskName 'ControllingServer'
             mods {
                 examplemod {
@@ -67,6 +46,28 @@ minecraft {
                 }
             }
         }
+    }
+}
+
+modTemplate {
+    mcVersion "1.16.5"
+    curseHomepage "https://www.curseforge.com/minecraft/mc-mods/controlling"
+    displayName "Controlling"
+
+    changelog {
+        enabled true
+        firstCommit "efff217f353e51ce43751caf94b1924818b710e8"
+        repo "https://github.com/jaredlll08/Controlling"
+    }
+    versionTracker {
+        enabled true
+        author "Jared"
+        projectName "controlling"
+    }
+    webhook {
+        enabled true
+        curseId "250398"
+        avatarUrl "https://media.forgecdn.net/avatars/49/603/636079972364045115.png"
     }
 }
 
@@ -104,11 +105,15 @@ task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier = "deobf"
 }
+
 artifacts {
     archives sourcesJar
     archives javadocJar
     archives deobfJar
 }
+
+publish.dependsOn(project.tasks.getByName("assemble"))
+publish.mustRunAfter(project.tasks.getByName("build"))
 
 publishing {
 
@@ -169,61 +174,4 @@ curseforge {
 //        addArtifact(javadocJar)
         addArtifact(deobfJar)
     }
-}
-
-task updateVersionTracker {
-
-    onlyIf {
-
-        project.hasProperty('versionTrackerAPI')
-    }
-
-    doLast {
-        def body = [
-                'author'        : "${project.findProperty('versionTrackerAuthor')}",
-                'projectName'   : "controlling",
-                'gameVersion'   : "1.16.5",
-                'projectVersion': "${version}",
-                'homepage'      : "${project.findProperty('versionTrackerHomepage')}",
-                'uid'           : "${project.findProperty('versionTrackerKey')}"
-        ]
-
-        // Opens a connection to the version tracker API and writes the payload JSON.
-        def req = new URL(project.findProperty('versionTrackerAPI')).openConnection()
-        req.setRequestMethod('POST')
-        req.setRequestProperty('Content-Type', 'application/json; charset=UTF-8')
-        req.setRequestProperty('User-Agent', "Controlling Tracker Gradle")
-        req.setDoOutput(true)
-        req.getOutputStream().write(JsonOutput.toJson(body).getBytes("UTF-8"))
-
-        // We need to attempt a read in order to actually send the message.
-        println "VersionCheck Status code: ${req.getResponseCode()}"
-        println "VersionCheck Response: ${req.getInputStream().getText()}"
-    }
-
-}
-
-task genGitChangelog() {
-    def stdout = new ByteArrayOutputStream()
-    // first commit to check from, in our case the first commit of the branch
-    String firstCommit = "efff217f353e51ce43751caf94b1924818b710e8";
-    String repoLink = "https://github.com/jaredlll08/Controlling/commit/"
-    // was having issues with grep and spaces in the regex
-    exec {
-        commandLine 'git', 'log', '-i', '--grep=version\\spush', '--grep=open\\sbeta\\sspecific\\scode', '--pretty=tformat:%H', '--date=local', firstCommit + '..@{0}'
-        standardOutput = stdout
-    }
-    if (stdout.toString().trim().indexOf("\n") >= 0) {
-        firstCommit = stdout.toString().split("\n")[0].trim();
-    }
-    System.out.println("Last version hash: \"" + firstCommit + "\"");
-    stdout = new ByteArrayOutputStream()
-    def test = exec {
-        commandLine 'git', 'log', '--pretty=tformat:- [%s](' + repoLink + '%H) - %aN - %cd', '--max-parents=1', '--date=local', firstCommit + "..@"
-        standardOutput = stdout
-    }
-    File file = new File("changelog.md")
-    file.write("### Current version: " + project.version)
-    file.append("\n" + stdout.toString())
-    System.out.println("Changelog generated!")
 }

@@ -1,8 +1,8 @@
 {
   "options.search": "Buscar por",
   "options.showAll": "Mostrar todo",
-  "options.showConflicts": "Mostrar conflictos",
-  "options.showNone": "Mostrar no asignados",
+  "options.showConflicts": "Conflictos",
+  "options.showNone": "No asignados",
   "options.availableKeys": "Teclas Disponibles",
   "options.sort": "Ordenar",
   "options.category": "Categoría",

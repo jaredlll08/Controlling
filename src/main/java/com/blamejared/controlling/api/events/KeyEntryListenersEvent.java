@@ -1,26 +1,21 @@
 package com.blamejared.controlling.api.events;
 
 import com.blamejared.controlling.client.gui.GuiNewKeyBindingList;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraftforge.eventbus.api.Event;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
- * GetKeyEntryListenersEvent is called to get the values for {@link GuiNewKeyBindingList.KeyEntry#getEventListeners()}.
+ * GetKeyEntryListenersEvent is called to get the values for {@link GuiNewKeyBindingList.KeyEntry#children()}.
  * Allowing for mods to add more listeners.
  */
 public class KeyEntryListenersEvent extends Event {
     
     private final GuiNewKeyBindingList.KeyEntry entry;
     
-    private final List<IGuiEventListener> listeners;
+    private final List<GuiEventListener> listeners;
     
     public KeyEntryListenersEvent(GuiNewKeyBindingList.KeyEntry entry) {
         
@@ -32,7 +27,7 @@ public class KeyEntryListenersEvent extends Event {
     }
     
     
-    public List<IGuiEventListener> getListeners() {
+    public List<GuiEventListener> getListeners() {
         
         return listeners;
     }

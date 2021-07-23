@@ -1,12 +1,13 @@
 package com.blamejared.controlling.client.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.ControlsScreen;
-import net.minecraft.client.gui.widget.list.KeyBindingList;
+import net.minecraft.client.gui.screens.controls.ControlList;
+import net.minecraft.client.gui.screens.controls.ControlsScreen;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class GuiCustomList  extends KeyBindingList {
+public class GuiCustomList extends ControlList {
     
     public List<Entry> allEntries;
     
@@ -20,9 +21,15 @@ public class GuiCustomList  extends KeyBindingList {
         return allEntries;
     }
     
-    public void add(Entry ent) {
+    @Override
+    protected int addEntry(Entry ent) {
         
-        getEventListeners().add(ent);
+        if(allEntries == null) {
+            allEntries = new ArrayList<>();
+        }
         allEntries.add(ent);
+        this.children().add(ent);
+        return this.children().size() - 1;
     }
+    
 }

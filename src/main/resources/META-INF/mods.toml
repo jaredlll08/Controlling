@@ -1,11 +1,11 @@
 modLoader="javafml"
-loaderVersion="[34,)"
+loaderVersion="[37,)"
 issueTrackerURL="https://github.com/jaredlll08/Controlling/issues"
 license="MIT"
 
 [[mods]]
 modId="controlling"
-updateJSONURL="https://updates.blamejared.com/get?n=controlling&gv=1.16.5"
+updateJSONURL="https://updates.blamejared.com/get?n=controlling&gv=1.17.1"
 version="${file.jarVersion}"
 displayName="Controlling"
 displayURL="https://minecraft.curseforge.com/projects/controlling"

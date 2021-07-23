@@ -1,11 +1,8 @@
 package com.blamejared.controlling.api.events;
 
 import com.blamejared.controlling.client.gui.GuiNewKeyBindingList;
-import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraftforge.eventbus.api.Event;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * KeyEntryMouseClickedEvent is called at the start of {@link GuiNewKeyBindingList.KeyEntry#mouseClicked(double, double, int)}.

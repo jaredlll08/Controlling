@@ -1,18 +1,18 @@
 package com.blamejared.controlling.api.events;
 
 import com.blamejared.controlling.client.gui.GuiNewKeyBindingList;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.eventbus.api.Event;
 
 /**
- * RenderKeyEntryEvent is called at the top of {@link com.blamejared.controlling.client.gui.GuiNewKeyBindingList.KeyEntry#render(MatrixStack, int, int, int, int, int, int, int, boolean, float)}
+ * RenderKeyEntryEvent is called at the top of {@link com.blamejared.controlling.client.gui.GuiNewKeyBindingList.KeyEntry#render(PoseStack, int, int, int, int, int, int, int, boolean, float)}
  * is called, allowing mods to render additional info.
  */
 public class KeyEntryRenderEvent extends Event {
     
     private final GuiNewKeyBindingList.KeyEntry entry;
     
-    private final MatrixStack stack;
+    private final PoseStack stack;
     private final int slotIndex;
     private final int y;
     private final int x;
@@ -23,7 +23,7 @@ public class KeyEntryRenderEvent extends Event {
     private final boolean hovered;
     private final float partialTicks;
     
-    public KeyEntryRenderEvent(GuiNewKeyBindingList.KeyEntry entry, MatrixStack stack, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+    public KeyEntryRenderEvent(GuiNewKeyBindingList.KeyEntry entry, PoseStack stack, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         
         this.entry = entry;
         this.stack = stack;
@@ -43,7 +43,7 @@ public class KeyEntryRenderEvent extends Event {
         return entry;
     }
     
-    public MatrixStack getStack() {
+    public PoseStack getStack() {
         
         return stack;
     }

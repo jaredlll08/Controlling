@@ -1,18 +1,17 @@
 package com.blamejared.controlling.client.gui;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.ControlsScreen;
-import net.minecraft.client.gui.widget.list.KeyBindingList;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.screens.controls.ControlsScreen;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.gui.GuiUtils;
-import sun.security.jca.GetInstance;
+import net.minecraftforge.fmlclient.gui.GuiUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +27,7 @@ public class GuiFreeKeysList extends GuiCustomList {
     private final Minecraft mc;
     private int maxListLabelWidth;
     
-    List<KeyBinding> keyBindings;
+    List<KeyMapping> keyBindings;
     
     public GuiFreeKeysList(ControlsScreen controls, Minecraft mcIn) {
         
@@ -40,9 +39,9 @@ public class GuiFreeKeysList extends GuiCustomList {
         this.x1 = controls.width + 45;
         this.controlsScreen = controls;
         this.mc = mcIn;
-        getEventListeners().clear();
+        children().clear();
         allEntries = new ArrayList<>();
-        keyBindings = Arrays.stream(mc.gameSettings.keyBindings).collect(Collectors.toList());
+        keyBindings = Arrays.stream(mc.options.keyMappings).collect(Collectors.toList());
         
         recalculate();
         
@@ -50,19 +49,19 @@ public class GuiFreeKeysList extends GuiCustomList {
     
     public void recalculate() {
         
-        getEventListeners().clear();
+        children().clear();
         allEntries.clear();
         
-        add(new HeaderEntry("Available Keys"));
-        InputMappings.Input.REGISTRY.values().stream().filter(input -> {
+        addEntry(new HeaderEntry("Available Keys"));
+        InputConstants.Key.NAME_MAP.values().stream().filter(input -> {
             return !input.toString().startsWith("key.keyboard.world");
-        }).sorted(Comparator.comparing(o -> o.func_237520_d_().getString())).forEach(input -> {
+        }).sorted(Comparator.comparing(o -> o.getDisplayName().getString())).forEach(input -> {
             if(keyBindings.stream().noneMatch(keyBinding -> keyBinding.getKey().equals(input))) {
-                int i = mc.fontRenderer.getStringWidth(input.func_237520_d_().getString());
+                int i = mc.font.width(input.getDisplayName().getString());
                 if(i > this.maxListLabelWidth) {
                     this.maxListLabelWidth = i;
                 }
-                add(new InputEntry(input));
+                addEntry(new InputEntry(input));
             }
         });
     }
@@ -82,33 +81,38 @@ public class GuiFreeKeysList extends GuiCustomList {
     @OnlyIn(Dist.CLIENT)
     public class InputEntry extends Entry {
         
-        private final InputMappings.Input input;
+        private final InputConstants.Key input;
         
-        public InputEntry(InputMappings.Input input) {
+        public InputEntry(InputConstants.Key input) {
             
             this.input = input;
         }
         
+        public InputConstants.Key getInput() {
+            
+            return input;
+        }
+        
         @Override
-        public List<? extends IGuiEventListener> getEventListeners() {
+        public void render(PoseStack stack, int slotIndex, int y, int x, int p_render_4_, int p_render_5_, int mouseX, int mouseY, boolean p_render_8_, float p_render_9_) {
+            
+            String str = this.input.toString() + " - " + input.getValue();
+            int length = mc.font.width(input.getDisplayName().getString());
+            
+            GuiFreeKeysList.this.mc.font.draw(stack, str, x, (float) (y + p_render_5_ / 2 - 9 / 2), 16777215);
+            GuiUtils.drawHoveringText(stack, Collections.singletonList(input.getDisplayName()), x + p_render_4_ - (length), y + p_render_5_, mc.screen.width, mc.screen.height, -1, mc.font);
+        }
+        
+        @Override
+        public List<? extends NarratableEntry> narratables() {
             
             return ImmutableList.of();
         }
-    
-        public InputMappings.Input getInput() {
         
-            return input;
-        }
-    
         @Override
-        public void render(MatrixStack stack, int slotIndex, int y, int x, int p_render_4_, int p_render_5_, int mouseX, int mouseY, boolean p_render_8_, float p_render_9_) {
+        public List<? extends GuiEventListener> children() {
             
-            String str = this.input.toString() + " - " + input.getKeyCode();// + " - " + input.func_237520_d_().getString() + " - " + input.getKeyCode();
-            int length = mc.fontRenderer.getStringWidth(input.func_237520_d_().getString());
-            
-            GuiFreeKeysList.this.mc.fontRenderer.drawString(stack, str, x, (float) (y + p_render_5_ / 2 - 9 / 2), 16777215);
-            GuiUtils.drawHoveringText(stack, Collections.singletonList(input.func_237520_d_()), x + p_render_4_ - (length), y + p_render_5_, mc.currentScreen.width, mc.currentScreen.height, -1, mc.fontRenderer);
-            
+            return ImmutableList.of();
         }
         
     }
@@ -124,15 +128,22 @@ public class GuiFreeKeysList extends GuiCustomList {
         }
         
         @Override
-        public List<? extends IGuiEventListener> getEventListeners() {
+        public List<? extends NarratableEntry> narratables() {
             
             return ImmutableList.of();
         }
         
         @Override
-        public void render(MatrixStack stack, int slotIndex, int y, int x, int p_render_4_, int p_render_5_, int mouseX, int mouseY, boolean p_render_8_, float p_render_9_) {
+        public List<? extends GuiEventListener> children() {
             
-            drawString(stack, mc.fontRenderer, new TranslationTextComponent("options.availableKeys"),  (mc.currentScreen.width / 2 - this.text.length() / 2), (y + p_render_5_ - 9 - 1), 16777215);
+            return ImmutableList.of();
+        }
+        
+        @Override
+        public void render(PoseStack stack, int slotIndex, int y, int x, int p_render_4_, int p_render_5_, int mouseX, int mouseY, boolean p_render_8_, float p_render_9_) {
+            
+            drawCenteredString(stack, mc.font, new TranslatableComponent("options.availableKeys"), (mc.screen.width / 2 - this.text
+                    .length() / 2), (y + p_render_5_ - 9 - 1), 16777215);
         }
         
     }

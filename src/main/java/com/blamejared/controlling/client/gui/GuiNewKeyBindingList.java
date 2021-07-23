@@ -5,22 +5,35 @@ import com.blamejared.controlling.api.events.KeyEntryMouseClickedEvent;
 import com.blamejared.controlling.api.events.KeyEntryMouseReleasedEvent;
 import com.blamejared.controlling.api.events.KeyEntryRenderEvent;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.ControlsScreen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.gui.widget.list.KeyBindingList;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.*;
-import net.minecraftforge.api.distmarker.*;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.controls.ControlList;
+import net.minecraft.client.gui.screens.controls.ControlsScreen;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.Mth;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraftforge.fmlclient.gui.GuiUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiNewKeyBindingList extends GuiCustomList {
@@ -39,43 +52,43 @@ public class GuiNewKeyBindingList extends GuiCustomList {
         this.x1 = controls.width + 45;
         this.controlsScreen = controls;
         this.mc = mcIn;
-        getEventListeners().clear();
+        children().clear();
         allEntries = new ArrayList<>();
-        KeyBinding[] akeybinding = ArrayUtils.clone(mcIn.gameSettings.keyBindings);
+        KeyMapping[] akeybinding = ArrayUtils.clone(mcIn.options.keyMappings);
         Arrays.sort(akeybinding);
         String s = null;
         
-        for(KeyBinding keybinding : akeybinding) {
-            String s1 = keybinding.getKeyCategory();
+        for(KeyMapping keybinding : akeybinding) {
+            String s1 = keybinding.getCategory();
             if(!s1.equals(s)) {
                 s = s1;
                 if(!s1.endsWith(".hidden")) {
-                    add(new GuiNewKeyBindingList.CategoryEntry(s1));
+                    addEntry(new GuiNewKeyBindingList.CategoryEntry(s1));
                 }
             }
             
-            int i = mcIn.fontRenderer.getStringWidth(I18n.format(keybinding.getKeyDescription()));
+            int i = mcIn.font.width(I18n.get(keybinding.getName()));
             if(i > this.maxListLabelWidth) {
                 this.maxListLabelWidth = i;
             }
             if(!s1.endsWith(".hidden")) {
-                add(new GuiNewKeyBindingList.KeyEntry(keybinding));
+                addEntry(new GuiNewKeyBindingList.KeyEntry(keybinding));
             }
         }
         
     }
     
     @Override
-    protected void renderDecorations(MatrixStack matrixStack, int mouseX, int mouseY) {
+    protected void renderDecorations(PoseStack matrixStack, int mouseX, int mouseY) {
         
         Entry entry = this.getEntryAtPos(mouseY);
         if(!(entry instanceof KeyEntry)) {
             return;
         }
         KeyEntry keyEntry = (KeyEntry) entry;
-        GuiUtils.drawHoveringText(matrixStack, Collections.singletonList(new TranslationTextComponent(keyEntry
+        GuiUtils.drawHoveringText(matrixStack, Collections.singletonList(new TranslatableComponent(keyEntry
                 .getKeybinding()
-                .getKeyCategory())), mouseX, mouseY, mc.currentScreen.width, mc.currentScreen.height, 0, mc.fontRenderer);
+                .getCategory())), mouseX, mouseY, mc.screen.width, mc.screen.height, 0, mc.font);
     }
     
     public Entry getEntryAtPos(double mouseY) {
@@ -83,10 +96,10 @@ public class GuiNewKeyBindingList extends GuiCustomList {
         if(mouseY <= getTop() || mouseY >= getBottom()) {
             return null;
         }
-        int i1 = MathHelper.floor(mouseY - (double) this.y0) - this.headerHeight + (int) this
+        int i1 = Mth.floor(mouseY - (double) this.y0) - this.headerHeight + (int) this
                 .getScrollAmount() - 4;
         int j1 = i1 / this.itemHeight;
-        return i1 >= 0 && j1 < this.getItemCount() ? this.getEventListeners()
+        return i1 >= 0 && j1 < this.getItemCount() ? this.children()
                 .get(j1) : null;
     }
     
@@ -103,7 +116,7 @@ public class GuiNewKeyBindingList extends GuiCustomList {
     }
     
     @OnlyIn(Dist.CLIENT)
-    public class CategoryEntry extends KeyBindingList.Entry {
+    public class CategoryEntry extends ControlList.Entry {
         
         private final String labelText;
         private final int labelWidth;
@@ -111,8 +124,8 @@ public class GuiNewKeyBindingList extends GuiCustomList {
         
         public CategoryEntry(String name) {
             
-            this.labelText = I18n.format(name);
-            this.labelWidth = GuiNewKeyBindingList.this.mc.fontRenderer.getStringWidth(this.labelText);
+            this.labelText = I18n.get(name);
+            this.labelWidth = GuiNewKeyBindingList.this.mc.font.width(this.labelText);
             this.name = name;
         }
         
@@ -121,26 +134,41 @@ public class GuiNewKeyBindingList extends GuiCustomList {
             return name;
         }
         
-        @Override
-        public List<? extends IGuiEventListener> getEventListeners() {
+        public void render(PoseStack stack, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             
-            return ImmutableList.of();
+            GuiNewKeyBindingList.this.minecraft.font.draw(stack, this.labelText, (float) (GuiNewKeyBindingList.this.minecraft.screen.width / 2 - this.labelWidth / 2), (float) (y + rowWidth - 9 - 1), 16777215);
         }
         
-        public void render(MatrixStack stack, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+        public List<? extends NarratableEntry> narratables() {
             
-            GuiNewKeyBindingList.this.minecraft.fontRenderer.drawString(stack, this.labelText, (float) (GuiNewKeyBindingList.this.minecraft.currentScreen.width / 2 - this.labelWidth / 2), (float) (y + rowWidth - 9 - 1), 16777215);
+            return ImmutableList.of(new NarratableEntry() {
+                public NarrationPriority narrationPriority() {
+                    
+                    return NarrationPriority.HOVERED;
+                }
+                
+                public void updateNarration(NarrationElementOutput neo) {
+                    
+                    neo.add(NarratedElementType.TITLE, labelText);
+                }
+            });
+        }
+        
+        @Override
+        public List<? extends GuiEventListener> children() {
+            
+            return ImmutableList.of();
         }
         
     }
     
     @OnlyIn(Dist.CLIENT)
-    public class KeyEntry extends KeyBindingList.Entry {
+    public class KeyEntry extends ControlList.Entry {
         
         /**
          * The keybinding specified for this KeyEntry
          */
-        private final KeyBinding keybinding;
+        private final KeyMapping keybinding;
         /**
          * The localized key description for this KeyEntry
          */
@@ -149,43 +177,45 @@ public class GuiNewKeyBindingList extends GuiCustomList {
         private final Button btnResetKeyBinding;
         
         
-        private KeyEntry(final KeyBinding name) {
+        private KeyEntry(final KeyMapping name) {
             
             this.keybinding = name;
-            this.keyDesc = I18n.format(name.getKeyDescription());
-            this.btnChangeKeyBinding = new Button(0, 0, 75 + 20 /*Forge: add space*/, 20, new StringTextComponent(this.keyDesc), (p_214386_2_) -> {
-                GuiNewKeyBindingList.this.controlsScreen.buttonId = name;
+            this.keyDesc = I18n.get(name.getName());
+            this.btnChangeKeyBinding = new Button(0, 0, 75 + 20 /*Forge: add space*/, 20, new TextComponent(this.keyDesc), (p_214386_2_) -> {
+                GuiNewKeyBindingList.this.controlsScreen.selectedKey = name;
             }) {
+                
                 @Override
-                protected IFormattableTextComponent getNarrationMessage() {
+                protected MutableComponent createNarrationMessage() {
                     
-                    return name.isInvalid() ? new TranslationTextComponent("narrator.controls.unbound", GuiNewKeyBindingList.KeyEntry.this.keyDesc) : new TranslationTextComponent("narrator.controls.bound", GuiNewKeyBindingList.KeyEntry.this.keyDesc, super
-                            .getNarrationMessage());
+                    return name.isUnbound() ? new TranslatableComponent("narrator.controls.unbound", GuiNewKeyBindingList.KeyEntry.this.keyDesc) : new TranslatableComponent("narrator.controls.bound", GuiNewKeyBindingList.KeyEntry.this.keyDesc, super
+                            .createNarrationMessage());
                 }
+                
             };
-            this.btnResetKeyBinding = new Button(0, 0, 50, 20, new TranslationTextComponent("controls.reset"), (p_214387_2_) -> {
+            this.btnResetKeyBinding = new Button(0, 0, 50, 20, new TranslatableComponent("controls.reset"), (p_214387_2_) -> {
                 keybinding.setToDefault();
-                GuiNewKeyBindingList.this.minecraft.gameSettings.setKeyBindingCode(name, name
-                        .getDefault());
-                KeyBinding.resetKeyBindingArrayAndHash();
+                GuiNewKeyBindingList.this.minecraft.options.setKey(name, name.getDefaultKey());
+                KeyMapping.resetMapping();
             }) {
+                
                 @Override
-                protected IFormattableTextComponent getNarrationMessage() {
+                protected MutableComponent createNarrationMessage() {
                     
-                    return new TranslationTextComponent("narrator.controls.reset", GuiNewKeyBindingList.KeyEntry.this.keyDesc);
+                    return new TranslatableComponent("narrator.controls.reset", GuiNewKeyBindingList.KeyEntry.this.keyDesc);
                 }
             };
         }
         
         @Override
-        public void render(MatrixStack stack, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+        public void render(PoseStack stack, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             
             MinecraftForge.EVENT_BUS.post(new KeyEntryRenderEvent(this, stack, slotIndex, y, x, rowLeft, rowWidth, mouseX, mouseY, hovered, partialTicks));
             int i = y;
             int j = x;
-            boolean flag = GuiNewKeyBindingList.this.controlsScreen.buttonId == this.keybinding;
+            boolean flag = GuiNewKeyBindingList.this.controlsScreen.selectedKey == this.keybinding;
             int length = Math.max(0, j + 90 - GuiNewKeyBindingList.this.maxListLabelWidth);
-            GuiNewKeyBindingList.this.mc.fontRenderer.drawString(stack, this.keyDesc, (float) (length), (float) (y + rowWidth / 2 - 9 / 2), 16777215);
+            GuiNewKeyBindingList.this.mc.font.draw(stack, this.keyDesc, (float) (length), (float) (y + rowWidth / 2 - 9 / 2), 16777215);
             this.btnResetKeyBinding.x = x + 190 + 20;
             this.btnResetKeyBinding.y = y;
             this.btnResetKeyBinding.active = !this.keybinding.isDefault();
@@ -194,29 +224,27 @@ public class GuiNewKeyBindingList extends GuiCustomList {
             
             this.btnChangeKeyBinding.x = j + 105;
             this.btnChangeKeyBinding.y = i;
-            this.btnChangeKeyBinding.setMessage(this.keybinding.func_238171_j_());
+            this.btnChangeKeyBinding.setMessage(this.keybinding.getTranslatedKeyMessage());
             
             boolean flag1 = false;
             boolean keyCodeModifierConflict = true; // less severe form of conflict, like SHIFT conflicting with SHIFT+G
-            if(!this.keybinding.isInvalid()) {
-                for(KeyBinding keybinding : GuiNewKeyBindingList.this.mc.gameSettings.keyBindings) {
-                    if(keybinding != this.keybinding && this.keybinding.conflicts(keybinding)) {
+            if(!this.keybinding.isUnbound()) {
+                for(KeyMapping keybinding : GuiNewKeyBindingList.this.mc.options.keyMappings) {
+                    if(keybinding != this.keybinding && this.keybinding.same(keybinding)) {
                         flag1 = true;
                         keyCodeModifierConflict &= keybinding.hasKeyCodeModifierConflict(this.keybinding);
                     }
                 }
             }
-            ITextComponent message = this.btnChangeKeyBinding.getMessage();
+            Component message = this.btnChangeKeyBinding.getMessage();
             if(flag) {
-                this.btnChangeKeyBinding.setMessage(new StringTextComponent(TextFormatting.WHITE + "> " + TextFormatting.YELLOW + message
-                        .getString() + TextFormatting.WHITE + " <"));
+                this.btnChangeKeyBinding.setMessage(new TextComponent(ChatFormatting.WHITE + "> " + ChatFormatting.YELLOW + message
+                        .getString() + ChatFormatting.WHITE + " <"));
             } else if(flag1) {
-                IFormattableTextComponent modConflict = TextComponentUtils.func_240648_a_(message
-                        .copyRaw(), message.getStyle()
-                        .setColor(Color.fromInt(16755200)));
-                IFormattableTextComponent keyConflict = TextComponentUtils.func_240648_a_(message
-                        .copyRaw(), message.getStyle()
-                        .setColor(Color.fromInt(16755200)));
+                MutableComponent modConflict = ComponentUtils.mergeStyles(message.copy(), message.getStyle()
+                        .withColor(16755200));
+                MutableComponent keyConflict = ComponentUtils.mergeStyles(message.copy(), message.getStyle()
+                        .withColor(16755200));
                 
                 this.btnChangeKeyBinding.setMessage(keyCodeModifierConflict ? modConflict : keyConflict);
             }
@@ -224,11 +252,22 @@ public class GuiNewKeyBindingList extends GuiCustomList {
             this.btnChangeKeyBinding.render(stack, mouseX, mouseY, partialTicks);
         }
         
-        public List<IGuiEventListener> getEventListeners() {
+        public List<GuiEventListener> children() {
             
             KeyEntryListenersEvent event = new KeyEntryListenersEvent(this);
             MinecraftForge.EVENT_BUS.post(event);
             return event.getListeners();
+        }
+        
+        @Override
+        public Optional<GuiEventListener> getChildAt(double p_94730_, double p_94731_) {
+            
+            return super.getChildAt(p_94730_, p_94731_);
+        }
+        
+        public List<? extends NarratableEntry> narratables() {
+            
+            return ImmutableList.of(this.btnChangeKeyBinding, this.btnResetKeyBinding);
         }
         
         @Override
@@ -247,9 +286,10 @@ public class GuiNewKeyBindingList extends GuiCustomList {
             }
         }
         
+        
         @Override
         public boolean mouseReleased(double mouseX, double mouseY, int buttonId) {
-    
+            
             KeyEntryMouseReleasedEvent event = new KeyEntryMouseReleasedEvent(this, mouseX, mouseY, buttonId);
             MinecraftForge.EVENT_BUS.post(event);
             if(event.isHandled()) {
@@ -259,7 +299,7 @@ public class GuiNewKeyBindingList extends GuiCustomList {
             return this.btnChangeKeyBinding.mouseReleased(mouseX, mouseY, buttonId);
         }
         
-        public KeyBinding getKeybinding() {
+        public KeyMapping getKeybinding() {
             
             return keybinding;
         }

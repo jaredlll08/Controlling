@@ -7,5 +7,9 @@
   "options.sort": "Filter",
   "options.category": "Factions",
   "options.key": "Key",
-  "options.toggleFree": "Lootable Keys"
+  "options.sortNone": "Naught",
+  "options.sortAZ": "Bow->Stern",
+  "options.sortZA": "Stern->Bow",
+  "options.toggleFree": "Lootable Keys",
+  "options.confirmReset": "Click to seal ye fate!"
 }

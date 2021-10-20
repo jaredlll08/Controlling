@@ -48,7 +48,6 @@ public class GuiNewControls extends ControlsScreen {
     private GuiCheckBox buttonKey;
     private GuiCheckBox buttonCat;
     private Button buttonFree;
-    private Button patreonButton;
     private boolean confirmingReset = false;
     private boolean showFree = false;
     private String name;
@@ -147,13 +146,6 @@ public class GuiNewControls extends ControlsScreen {
                 .skip(Controlling.PATRON_LIST.isEmpty() ? 0 : new Random().nextInt(Controlling.PATRON_LIST.size()))
                 .findFirst()
                 .orElse("");
-        patreonButton = this.addRenderableWidget(new Button(this.width / 2 - 155 + 160, this.height - 29 - 24 - 24, 150 / 2, 20, new TextComponent("Patreon"), p_onPress_1_ -> this.minecraft
-                .setScreen(new ConfirmLinkScreen((function) -> {
-                    if(function) {
-                        Util.getPlatform().openUri("https://patreon.com/jaredlll08?s=controllingmod");
-                    }
-                    this.minecraft.setScreen(this);
-                }, "https://patreon.com/jaredlll08?s=controllingmod", true))));
         sortOrder = SortOrder.NONE;
         Button buttonSort = this.addRenderableWidget(new Button(this.width / 2 - 155 + 160 + 76, this.height - 29 - 24 - 24, 150 / 2, 20, new TranslatableComponent("options.sort")
                 .append(": " + sortOrder.getName()), (p_213126_1_) -> {
@@ -332,19 +324,6 @@ public class GuiNewControls extends ControlsScreen {
         Component text = new TranslatableComponent("options.search");
         font.draw(stack, text, this.width / 2f - (155 / 2f) - (font.width(text.getString())) - 5, this.height - 29 - 42, 16777215);
         
-        if(patreonButton.isHovered()) {
-            String str = "Join " + name + " and other patrons!";
-            int tempX = mouseX;
-            int tempY = mouseY;
-            boolean outOfBounds = tempX < patreonButton.x || tempX > patreonButton.x + patreonButton.getWidth();
-            outOfBounds |= tempY < patreonButton.y || tempY > patreonButton.y + patreonButton.getHeight();
-            
-            if(outOfBounds) {
-                tempX = patreonButton.x + patreonButton.getWidth();
-                tempY = patreonButton.y + (patreonButton.getHeight() / 2) + 7;
-            }
-            renderTooltip(stack, new TextComponent(str), tempX, tempY);
-        }
         for(Widget widget : this.renderables) {
             widget.render(stack, mouseX, mouseY, partialTicks);
         }

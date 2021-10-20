@@ -72,7 +72,7 @@ modTemplate {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.17.1-37.0.0'
+    minecraft 'net.minecraftforge:forge:1.17.1-37.0.13'
 }
 
 jar {

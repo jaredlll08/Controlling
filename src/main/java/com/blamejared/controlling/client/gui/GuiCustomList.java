@@ -1,17 +1,17 @@
 package com.blamejared.controlling.client.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.controls.ControlList;
-import net.minecraft.client.gui.screens.controls.ControlsScreen;
+import net.minecraft.client.gui.screens.controls.KeyBindsList;
+import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiCustomList extends ControlList {
+public class GuiCustomList extends KeyBindsList {
     
     public List<Entry> allEntries;
     
-    public GuiCustomList(ControlsScreen controls, Minecraft mcIn) {
+    public GuiCustomList(KeyBindsScreen controls, Minecraft mcIn) {
         
         super(controls, mcIn);
     }

@@ -7,7 +7,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fmllegacy.network.FMLNetworkConstants;
+import net.minecraftforge.network.NetworkConstants;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class Controlling {
     public Controlling() {
         
         ModLoadingContext.get()
-                .registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> FMLNetworkConstants.IGNORESERVERONLY, (remote, isServer) -> true));
+                .registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (remote, isServer) -> true));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
     }
     
@@ -38,7 +38,7 @@ public class Controlling {
                 URLConnection urlConnection = url.openConnection();
                 urlConnection.setConnectTimeout(15000);
                 urlConnection.setReadTimeout(15000);
-                urlConnection.setRequestProperty("User-Agent", "Controlling|1.17.1");
+                urlConnection.setRequestProperty("User-Agent", "Controlling|1.18");
                 try(BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
                     PATRON_LIST = reader.lines().filter(s -> !s.isEmpty()).collect(Collectors.toSet());
                 }

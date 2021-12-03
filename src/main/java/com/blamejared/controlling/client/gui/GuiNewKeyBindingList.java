@@ -14,8 +14,8 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.controls.ControlList;
-import net.minecraft.client.gui.screens.controls.ControlsScreen;
+import net.minecraft.client.gui.screens.controls.KeyBindsList;
+import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
@@ -26,7 +26,6 @@ import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fmlclient.gui.GuiUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
@@ -38,11 +37,11 @@ import java.util.Optional;
 @OnlyIn(Dist.CLIENT)
 public class GuiNewKeyBindingList extends GuiCustomList {
     
-    private final ControlsScreen controlsScreen;
+    private final KeyBindsScreen controlsScreen;
     private final Minecraft mc;
     private int maxListLabelWidth;
     
-    public GuiNewKeyBindingList(ControlsScreen controls, Minecraft mcIn) {
+    public GuiNewKeyBindingList(KeyBindsScreen controls, Minecraft mcIn) {
         
         super(controls, mcIn);
         this.width = controls.width + 45;
@@ -79,16 +78,16 @@ public class GuiNewKeyBindingList extends GuiCustomList {
     }
     
     @Override
-    protected void renderDecorations(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderDecorations(PoseStack stack, int mouseX, int mouseY) {
         
         Entry entry = this.getEntryAtPos(mouseY);
         if(!(entry instanceof KeyEntry)) {
             return;
         }
         KeyEntry keyEntry = (KeyEntry) entry;
-        GuiUtils.drawHoveringText(matrixStack, Collections.singletonList(new TranslatableComponent(keyEntry
+        controlsScreen.renderComponentTooltip(stack, Collections.singletonList(new TranslatableComponent(keyEntry
                 .getKeybinding()
-                .getCategory())), mouseX, mouseY, mc.screen.width, mc.screen.height, 0, mc.font);
+                .getCategory())), mouseX, mouseY, mc.font);
     }
     
     public Entry getEntryAtPos(double mouseY) {
@@ -116,7 +115,7 @@ public class GuiNewKeyBindingList extends GuiCustomList {
     }
     
     @OnlyIn(Dist.CLIENT)
-    public class CategoryEntry extends ControlList.Entry {
+    public class CategoryEntry extends KeyBindsList.Entry {
         
         private final String labelText;
         private final int labelWidth;
@@ -163,7 +162,7 @@ public class GuiNewKeyBindingList extends GuiCustomList {
     }
     
     @OnlyIn(Dist.CLIENT)
-    public class KeyEntry extends ControlList.Entry {
+    public class KeyEntry extends KeyBindsList.Entry {
         
         /**
          * The keybinding specified for this KeyEntry
@@ -232,7 +231,7 @@ public class GuiNewKeyBindingList extends GuiCustomList {
                 for(KeyMapping keybinding : GuiNewKeyBindingList.this.mc.options.keyMappings) {
                     if(keybinding != this.keybinding && this.keybinding.same(keybinding)) {
                         flag1 = true;
-                        keyCodeModifierConflict &= keybinding.hasKeyCodeModifierConflict(this.keybinding);
+                        keyCodeModifierConflict &= keybinding.hasKeyModifierConflict(this.keybinding);
                     }
                 }
             }

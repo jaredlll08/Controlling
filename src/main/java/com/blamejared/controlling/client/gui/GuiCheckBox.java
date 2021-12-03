@@ -7,7 +7,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraftforge.fmlclient.gui.GuiUtils;
+import net.minecraftforge.client.gui.GuiUtils;
 
 /**
  * This class provides a checkbox style control.
@@ -41,7 +41,7 @@ public class GuiCheckBox extends Button {
         RenderSystem.enableDepthTest();
         
         this.isHovered = active && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-        if(isHovered()) {
+        if(isHoveredOrFocused()) {
             GuiUtils.drawContinuousTexturedBox(stack, this.x, this.y, 0, 86, this.boxWidth, this.height, 200, 20, 2, 3, 2, 2, 0);
             GuiUtils.drawContinuousTexturedBox(stack, this.x + 1, this.y + 1, 2, 48, this.boxWidth - 2, this.height - 2, 200, 20, 1, 0, 1, 0, 0);
         } else {

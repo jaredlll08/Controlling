@@ -7,29 +7,33 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.controls.ControlsScreen;
+import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fmlclient.gui.GuiUtils;
+import net.minecraftforge.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiFreeKeysList extends GuiCustomList {
     
-    private final ControlsScreen controlsScreen;
+    private final KeyBindsScreen controlsScreen;
     private final Minecraft mc;
     private int maxListLabelWidth;
     
     List<KeyMapping> keyBindings;
     
-    public GuiFreeKeysList(ControlsScreen controls, Minecraft mcIn) {
+    public GuiFreeKeysList(KeyBindsScreen controls, Minecraft mcIn) {
         
         super(controls, mcIn);
         this.width = controls.width + 45;
@@ -100,7 +104,7 @@ public class GuiFreeKeysList extends GuiCustomList {
             int length = mc.font.width(input.getDisplayName().getString());
             
             GuiFreeKeysList.this.mc.font.draw(stack, str, x, (float) (y + p_render_5_ / 2 - 9 / 2), 16777215);
-            GuiUtils.drawHoveringText(stack, Collections.singletonList(input.getDisplayName()), x + p_render_4_ - (length), y + p_render_5_, mc.screen.width, mc.screen.height, -1, mc.font);
+            controlsScreen.renderComponentTooltip(stack, Collections.singletonList(input.getDisplayName()), x + p_render_4_ - (length), y + p_render_5_, mc.font);
         }
         
         @Override

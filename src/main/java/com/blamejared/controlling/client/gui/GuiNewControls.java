@@ -12,11 +12,10 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.MouseSettingsScreen;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.controls.ControlList;
-import net.minecraft.client.gui.screens.controls.ControlsScreen;
+import net.minecraft.client.gui.screens.controls.KeyBindsList;
+import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -30,7 +29,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiNewControls extends ControlsScreen {
+public class GuiNewControls extends KeyBindsScreen {
     
     private Button buttonReset;
     private final Screen parentScreen;
@@ -52,7 +51,7 @@ public class GuiNewControls extends ControlsScreen {
     private boolean showFree = false;
     private String name;
     
-    private ControlList customKeyList;
+    private KeyBindsList customKeyList;
     private GuiFreeKeysList freeKeyList;
     
     public GuiNewControls(Screen screen, Options settings) {
@@ -74,9 +73,9 @@ public class GuiNewControls extends ControlsScreen {
         this.addRenderableWidget(Option.AUTO_JUMP.createButton(this.minecraft.options, this.width / 2 - 155 + 160, 18, 150));
         customKeyList = new GuiNewKeyBindingList(this, this.minecraft);
         freeKeyList = new GuiFreeKeysList(this, this.minecraft);
-        this.controlList = customKeyList;
-        this.addWidget(this.controlList);
-        this.setFocused(this.controlList);
+        this.keyBindsList = customKeyList;
+        this.addWidget(this.keyBindsList);
+        this.setFocused(this.keyBindsList);
         this.addRenderableWidget(new Button(this.width / 2 - 155 + 160, this.height - 29, 150, 20, new TranslatableComponent("gui.done"), (p_213126_1_) -> GuiNewControls.this.minecraft
                 .setScreen(GuiNewControls.this.parentScreen)));
         
@@ -155,7 +154,7 @@ public class GuiNewControls extends ControlsScreen {
         }));
         
         this.buttonFree = this.addRenderableWidget(new Button(this.width / 2 - 155 + 76, this.height - 29, 74, 20, new TranslatableComponent("options.toggleFree"), (p_213126_1_) -> {
-            this.removeWidget(this.controlList);
+            this.removeWidget(this.keyBindsList);
             if(showFree) {
                 buttonSort.active = true;
                 buttonCat.active = true;
@@ -163,7 +162,7 @@ public class GuiNewControls extends ControlsScreen {
                 buttonNone.active = true;
                 buttonConflicting.active = true;
                 buttonReset.active = true;
-                controlList = customKeyList;
+                keyBindsList = customKeyList;
             } else {
                 freeKeyList.recalculate();
                 buttonSort.active = false;
@@ -172,10 +171,10 @@ public class GuiNewControls extends ControlsScreen {
                 buttonNone.active = false;
                 buttonConflicting.active = false;
                 buttonReset.active = false;
-                controlList = freeKeyList;
+                keyBindsList = freeKeyList;
             }
-            this.addWidget(this.controlList);
-            this.setFocused(this.controlList);
+            this.addWidget(this.keyBindsList);
+            this.setFocused(this.keyBindsList);
             showFree = !showFree;
         }));
         
@@ -202,14 +201,14 @@ public class GuiNewControls extends ControlsScreen {
     public void filterKeys() {
         
         lastSearch = search.getValue();
-        controlList.children().clear();
-        if(controlList instanceof GuiNewKeyBindingList) {
+        keyBindsList.children().clear();
+        if(keyBindsList instanceof GuiNewKeyBindingList) {
             
             if(lastSearch.isEmpty() && displayMode == DisplayMode.ALL && sortOrder == SortOrder.NONE) {
-                controlList.children().addAll(((GuiCustomList) controlList).getAllEntries());
+                keyBindsList.children().addAll(((GuiCustomList) keyBindsList).getAllEntries());
                 return;
             }
-            this.controlList.setScrollAmount(0);
+            this.keyBindsList.setScrollAmount(0);
             Predicate<GuiNewKeyBindingList.KeyEntry> filters = displayMode.getPredicate();
             
             
@@ -232,21 +231,21 @@ public class GuiNewControls extends ControlsScreen {
                     break;
             }
             
-            for(GuiNewKeyBindingList.Entry entry : ((GuiCustomList) controlList).getAllEntries()) {
+            for(GuiNewKeyBindingList.Entry entry : ((GuiCustomList) keyBindsList).getAllEntries()) {
                 if(searchType == SearchType.CATEGORY && sortOrder == SortOrder.NONE && displayMode == DisplayMode.ALL) {
                     if(entry instanceof GuiNewKeyBindingList.KeyEntry) {
                         GuiNewKeyBindingList.KeyEntry keyEntry = (GuiNewKeyBindingList.KeyEntry) entry;
                         if(filters.test(keyEntry)) {
-                            controlList.children().add(entry);
+                            keyBindsList.children().add(entry);
                         }
                     } else {
-                        controlList.children().add(entry);
+                        keyBindsList.children().add(entry);
                     }
                 } else {
                     if(entry instanceof GuiNewKeyBindingList.KeyEntry) {
                         GuiNewKeyBindingList.KeyEntry keyEntry = (GuiNewKeyBindingList.KeyEntry) entry;
                         if(filters.test(keyEntry)) {
-                            controlList.children().add(entry);
+                            keyBindsList.children().add(entry);
                         }
                     }
                 }
@@ -255,11 +254,11 @@ public class GuiNewControls extends ControlsScreen {
             if(searchType == SearchType.CATEGORY && sortOrder == SortOrder.NONE && displayMode == DisplayMode.ALL) {
                 Set<GuiNewKeyBindingList.CategoryEntry> categories = new LinkedHashSet<>();
                 
-                for(ControlList.Entry entry : controlList.children()) {
+                for(KeyBindsList.Entry entry : keyBindsList.children()) {
                     if(entry instanceof GuiNewKeyBindingList.CategoryEntry) {
                         GuiNewKeyBindingList.CategoryEntry centry = (GuiNewKeyBindingList.CategoryEntry) entry;
                         categories.add(centry);
-                        for(ControlList.Entry child : controlList.children()) {
+                        for(KeyBindsList.Entry child : keyBindsList.children()) {
                             if(child instanceof GuiNewKeyBindingList.KeyEntry) {
                                 GuiNewKeyBindingList.KeyEntry childEntry = (GuiNewKeyBindingList.KeyEntry) child;
                                 if(childEntry.getKeybinding().getCategory().equals(centry.getName())) {
@@ -269,25 +268,25 @@ public class GuiNewControls extends ControlsScreen {
                         }
                     }
                 }
-                controlList.children().removeAll(categories);
+                keyBindsList.children().removeAll(categories);
             }
-            sortOrder.sort(controlList.children());
+            sortOrder.sort(keyBindsList.children());
             
-        } else if(controlList instanceof GuiFreeKeysList) {
+        } else if(keyBindsList instanceof GuiFreeKeysList) {
             if(lastSearch.isEmpty()) {
-                controlList.children().addAll(((GuiCustomList) controlList).getAllEntries());
+                keyBindsList.children().addAll(((GuiCustomList) keyBindsList).getAllEntries());
                 return;
             }
-            this.controlList.setScrollAmount(0);
+            this.keyBindsList.setScrollAmount(0);
             
-            for(GuiFreeKeysList.Entry entry : ((GuiCustomList) controlList).getAllEntries()) {
+            for(GuiFreeKeysList.Entry entry : ((GuiCustomList) keyBindsList).getAllEntries()) {
                 if(entry instanceof GuiFreeKeysList.InputEntry) {
                     GuiFreeKeysList.InputEntry inputEntry = (GuiFreeKeysList.InputEntry) entry;
                     if(inputEntry.getInput().toString().toLowerCase().contains(lastSearch.toLowerCase())) {
-                        controlList.children().add(entry);
+                        keyBindsList.children().add(entry);
                     }
                 } else {
-                    controlList.children().add(entry);
+                    keyBindsList.children().add(entry);
                 }
                 
             }
@@ -301,7 +300,7 @@ public class GuiNewControls extends ControlsScreen {
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         
         this.renderBackground(stack);
-        this.controlList.render(stack, mouseX, mouseY, partialTicks);
+        this.keyBindsList.render(stack, mouseX, mouseY, partialTicks);
         drawCenteredString(stack, this.font, this.title.getString(), this.width / 2, 8, 16777215);
         boolean flag = false;
         
@@ -339,9 +338,9 @@ public class GuiNewControls extends ControlsScreen {
             KeyMapping.resetMapping();
             valid = true;
             search.setFocus(false);
-        } else if(mb == 0 && this.controlList.mouseClicked(mx, my, mb)) {
+        } else if(mb == 0 && this.keyBindsList.mouseClicked(mx, my, mb)) {
             this.setDragging(true);
-            this.setFocused(this.controlList);
+            this.setFocused(this.keyBindsList);
             valid = true;
             search.setFocus(false);
         } else {
@@ -375,7 +374,7 @@ public class GuiNewControls extends ControlsScreen {
     @Override
     public boolean mouseReleased(double mx, double my, int mb) {
         
-        if(mb == 0 && this.controlList.mouseReleased(mx, my, mb)) {
+        if(mb == 0 && this.keyBindsList.mouseReleased(mx, my, mb)) {
             this.setDragging(false);
             return true;
         } else if(search.isFocused()) {

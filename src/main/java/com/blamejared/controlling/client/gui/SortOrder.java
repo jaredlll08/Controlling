@@ -7,13 +7,10 @@ import java.util.Comparator;
 import java.util.List;
 
 public enum SortOrder {
-    NONE(entries -> {
-    }), AZ(entries -> {
-        entries.sort(Comparator.comparing(o -> ((GuiNewKeyBindingList.KeyEntry) o).getKeyDesc()));
-    }), ZA(entries -> {
-        entries.sort((o1, o2) -> ((GuiNewKeyBindingList.KeyEntry) o2).getKeyDesc()
-                .compareTo(((GuiNewKeyBindingList.KeyEntry) o1).getKeyDesc()));
-    });
+    NONE(entries -> {}),
+    AZ(entries -> entries.sort(Comparator.comparing(o -> ((GuiNewKeyBindingList.KeyEntry) o).getKeyDesc()))),
+    ZA(entries -> entries.sort((o1, o2) -> ((GuiNewKeyBindingList.KeyEntry) o2).getKeyDesc()
+            .compareTo(((GuiNewKeyBindingList.KeyEntry) o1).getKeyDesc())));
     
     private final ISort sorter;
     

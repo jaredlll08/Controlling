@@ -19,8 +19,6 @@ import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.LinkedHashSet;
@@ -28,7 +26,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.function.Predicate;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiNewControls extends KeyBindsScreen {
     
     private Button buttonReset;
@@ -209,32 +206,26 @@ public class GuiNewControls extends KeyBindsScreen {
                 return;
             }
             this.keyBindsList.setScrollAmount(0);
-            Predicate<GuiNewKeyBindingList.KeyEntry> filters = displayMode.getPredicate();
-            
-            
-            switch(searchType) {
-                case NAME:
-                    filters = filters.and(keyEntry -> keyEntry.getKeyDesc()
-                            .toLowerCase()
-                            .contains(lastSearch.toLowerCase()));
-                    break;
-                case CATEGORY:
-                    filters = filters.and(keyEntry -> new TranslatableComponent(keyEntry.getKeybinding()
-                            .getCategory()).getString().toLowerCase().contains(lastSearch.toLowerCase()));
-                    break;
-                case KEY:
-                    filters = filters.and(keyEntry -> keyEntry.getKeybinding()
-                            .getTranslatedKeyMessage()
-                            .getString()
-                            .toLowerCase()
-                            .contains(lastSearch.toLowerCase()));
-                    break;
-            }
-            
+            final Predicate<GuiNewKeyBindingList.KeyEntry> filters = switch(searchType) {
+                case NAME -> displayMode.getPredicate().and(keyEntry -> keyEntry.getKeyDesc()
+                        .toLowerCase()
+                        .contains(lastSearch.toLowerCase()));
+                case CATEGORY -> displayMode.getPredicate().and(keyEntry ->
+                        new TranslatableComponent(keyEntry.getKeybinding().getCategory())
+                        .getString()
+                        .toLowerCase()
+                        .contains(lastSearch.toLowerCase()));
+                case KEY -> displayMode.getPredicate().and(keyEntry -> keyEntry.getKeybinding()
+                        .getTranslatedKeyMessage()
+                        .getString()
+                        .toLowerCase()
+                        .contains(lastSearch.toLowerCase()));
+            };
+    
+    
             for(GuiNewKeyBindingList.Entry entry : ((GuiCustomList) keyBindsList).getAllEntries()) {
                 if(searchType == SearchType.CATEGORY && sortOrder == SortOrder.NONE && displayMode == DisplayMode.ALL) {
-                    if(entry instanceof GuiNewKeyBindingList.KeyEntry) {
-                        GuiNewKeyBindingList.KeyEntry keyEntry = (GuiNewKeyBindingList.KeyEntry) entry;
+                    if(entry instanceof GuiNewKeyBindingList.KeyEntry keyEntry) {
                         if(filters.test(keyEntry)) {
                             keyBindsList.children().add(entry);
                         }
@@ -242,8 +233,7 @@ public class GuiNewControls extends KeyBindsScreen {
                         keyBindsList.children().add(entry);
                     }
                 } else {
-                    if(entry instanceof GuiNewKeyBindingList.KeyEntry) {
-                        GuiNewKeyBindingList.KeyEntry keyEntry = (GuiNewKeyBindingList.KeyEntry) entry;
+                    if(entry instanceof GuiNewKeyBindingList.KeyEntry keyEntry) {
                         if(filters.test(keyEntry)) {
                             keyBindsList.children().add(entry);
                         }
@@ -255,12 +245,10 @@ public class GuiNewControls extends KeyBindsScreen {
                 Set<GuiNewKeyBindingList.CategoryEntry> categories = new LinkedHashSet<>();
                 
                 for(KeyBindsList.Entry entry : keyBindsList.children()) {
-                    if(entry instanceof GuiNewKeyBindingList.CategoryEntry) {
-                        GuiNewKeyBindingList.CategoryEntry centry = (GuiNewKeyBindingList.CategoryEntry) entry;
+                    if(entry instanceof GuiNewKeyBindingList.CategoryEntry centry) {
                         categories.add(centry);
                         for(KeyBindsList.Entry child : keyBindsList.children()) {
-                            if(child instanceof GuiNewKeyBindingList.KeyEntry) {
-                                GuiNewKeyBindingList.KeyEntry childEntry = (GuiNewKeyBindingList.KeyEntry) child;
+                            if(child instanceof GuiNewKeyBindingList.KeyEntry childEntry) {
                                 if(childEntry.getKeybinding().getCategory().equals(centry.getName())) {
                                     categories.remove(centry);
                                 }
@@ -280,8 +268,7 @@ public class GuiNewControls extends KeyBindsScreen {
             this.keyBindsList.setScrollAmount(0);
             
             for(GuiFreeKeysList.Entry entry : ((GuiCustomList) keyBindsList).getAllEntries()) {
-                if(entry instanceof GuiFreeKeysList.InputEntry) {
-                    GuiFreeKeysList.InputEntry inputEntry = (GuiFreeKeysList.InputEntry) entry;
+                if(entry instanceof GuiFreeKeysList.InputEntry inputEntry) {
                     if(inputEntry.getInput().toString().toLowerCase().contains(lastSearch.toLowerCase())) {
                         keyBindsList.children().add(entry);
                     }

@@ -23,8 +23,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -34,7 +32,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiNewKeyBindingList extends GuiCustomList {
     
     private final KeyBindsScreen controlsScreen;
@@ -80,14 +77,12 @@ public class GuiNewKeyBindingList extends GuiCustomList {
     @Override
     protected void renderDecorations(PoseStack stack, int mouseX, int mouseY) {
         
-        Entry entry = this.getEntryAtPos(mouseY);
-        if(!(entry instanceof KeyEntry)) {
-            return;
+        final Entry entry = this.getEntryAtPos(mouseY);
+        if (entry instanceof final KeyEntry keyEntry) {
+            controlsScreen.renderComponentTooltip(stack, Collections.singletonList(new TranslatableComponent(keyEntry
+                    .getKeybinding()
+                    .getCategory())), mouseX, mouseY, mc.font);
         }
-        KeyEntry keyEntry = (KeyEntry) entry;
-        controlsScreen.renderComponentTooltip(stack, Collections.singletonList(new TranslatableComponent(keyEntry
-                .getKeybinding()
-                .getCategory())), mouseX, mouseY, mc.font);
     }
     
     public Entry getEntryAtPos(double mouseY) {
@@ -114,7 +109,6 @@ public class GuiNewKeyBindingList extends GuiCustomList {
         return super.getRowWidth() + 32;
     }
     
-    @OnlyIn(Dist.CLIENT)
     public class CategoryEntry extends KeyBindsList.Entry {
         
         private final String labelText;
@@ -161,7 +155,6 @@ public class GuiNewKeyBindingList extends GuiCustomList {
         
     }
     
-    @OnlyIn(Dist.CLIENT)
     public class KeyEntry extends KeyBindsList.Entry {
         
         /**

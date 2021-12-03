@@ -6,8 +6,9 @@ import net.minecraft.client.Minecraft;
 import java.util.function.Predicate;
 
 public enum DisplayMode {
-    ALL(keyEntry -> true), NONE(keyEntry -> keyEntry.getKeybinding().isUnbound()), CONFLICTING(keyEntry -> {
-        
+    ALL(keyEntry -> true),
+    NONE(keyEntry -> keyEntry.getKeybinding().isUnbound()),
+    CONFLICTING(keyEntry -> {
         for(KeyMapping key : Minecraft.getInstance().options.keyMappings) {
             if(key.getName().equals(keyEntry.getKeybinding().getName()) || key.isUnbound()) {
                 continue;
@@ -21,7 +22,7 @@ public enum DisplayMode {
     });
     
     
-    private Predicate<GuiNewKeyBindingList.KeyEntry> predicate;
+    private final Predicate<GuiNewKeyBindingList.KeyEntry> predicate;
     
     DisplayMode(Predicate<GuiNewKeyBindingList.KeyEntry> predicate) {
         

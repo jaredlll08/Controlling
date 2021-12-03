@@ -7,24 +7,16 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.controls.ControlsScreen;
 import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
-import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiFreeKeysList extends GuiCustomList {
     
     private final KeyBindsScreen controlsScreen;
@@ -57,9 +49,9 @@ public class GuiFreeKeysList extends GuiCustomList {
         allEntries.clear();
         
         addEntry(new HeaderEntry("Available Keys"));
-        InputConstants.Key.NAME_MAP.values().stream().filter(input -> {
-            return !input.toString().startsWith("key.keyboard.world");
-        }).sorted(Comparator.comparing(o -> o.getDisplayName().getString())).forEach(input -> {
+        InputConstants.Key.NAME_MAP.values().stream().filter(input ->
+            !input.toString().startsWith("key.keyboard.world")
+        ).sorted(Comparator.comparing(o -> o.getDisplayName().getString())).forEach(input -> {
             if(keyBindings.stream().noneMatch(keyBinding -> keyBinding.getKey().equals(input))) {
                 int i = mc.font.width(input.getDisplayName().getString());
                 if(i > this.maxListLabelWidth) {
@@ -82,7 +74,6 @@ public class GuiFreeKeysList extends GuiCustomList {
         return super.getRowWidth() + 32;
     }
     
-    @OnlyIn(Dist.CLIENT)
     public class InputEntry extends Entry {
         
         private final InputConstants.Key input;
@@ -121,7 +112,6 @@ public class GuiFreeKeysList extends GuiCustomList {
         
     }
     
-    @OnlyIn(Dist.CLIENT)
     public class HeaderEntry extends Entry {
         
         private final String text;

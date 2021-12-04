@@ -16,7 +16,18 @@
   "description": "Adds the ability to search for keybinds using their name in the KeyBinding menu, this allows players to easily find a key binding in the menu.\n",
   "entrypoints": {
   },
+  "depends": {
+    "fabricloader": ">=0.12",
+    "java": ">=17",
+    "minecraft": "1.18.x"
+  },
+  "recommends": {
+    "fabric": "*"
+  },
   "mixins": [
-    "controlling.mixins.json"
+    {
+      "config": "controlling.mixins.json",
+      "environment": "client"
+    }
   ]
 }

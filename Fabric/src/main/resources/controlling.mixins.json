@@ -6,12 +6,11 @@
     "AccessInputConstantsKey",
     "AccessKeyBindsScreen",
     "AccessKeyMapping",
-    "AccessScreen",
     "AccessOptionsSubScreen",
+    "AccessScreen",
     "OpenGuiMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "refmap": "controlling.refmap.json"
+  }
 }

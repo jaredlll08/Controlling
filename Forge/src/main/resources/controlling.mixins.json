@@ -6,8 +6,8 @@
     "AccessInputConstantsKey",
     "AccessKeyBindsScreen",
     "AccessKeyMapping",
-    "AccessScreen",
-    "AccessOptionsSubScreen"
+    "AccessOptionsSubScreen",
+    "AccessScreen"
   ],
   "injectors": {
     "defaultRequire": 1

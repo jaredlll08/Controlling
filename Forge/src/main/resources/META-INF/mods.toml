@@ -10,6 +10,7 @@ version="${file.jarVersion}"
 displayName="Controlling"
 displayURL="https://minecraft.curseforge.com/projects/controlling"
 authors="Jaredlll08"
+logoFile="icon.png"
 description='''
 Adds the ability to search for keybinds using their name in the KeyBinding menu, this allows players to easily find a key binding in the menu.
 '''

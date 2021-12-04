@@ -3,7 +3,8 @@
   "id": "controlling",
   "name": "Controlling For Fabric",
   "version": "${version}",
-  "side": "client",
+  "environment": "client",
+  "icon": "assets/controlling/icon.png",
   "authors": [
     "Jaredlll08"
   ],

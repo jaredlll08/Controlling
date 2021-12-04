@@ -9,7 +9,7 @@ public class ForgePlatformHelper implements IPlatformHelper {
     
     @Override
     public boolean hasConflictingModifier(KeyMapping keybinding, KeyMapping other) {
-        return keybinding.hasKeyModifierConflict(other);
+        return keybinding.hasKeyCodeModifierConflict(other);
     }
     
     @Override

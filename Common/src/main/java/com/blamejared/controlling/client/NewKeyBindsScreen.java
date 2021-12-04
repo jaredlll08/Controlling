@@ -18,8 +18,8 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.controls.KeyBindsList;
-import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
+import net.minecraft.client.gui.screens.controls.ControlList;
+import net.minecraft.client.gui.screens.controls.ControlsScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -30,7 +30,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class NewKeyBindsScreen extends KeyBindsScreen {
+public class NewKeyBindsScreen extends ControlsScreen {
     
     private Button buttonReset;
     private final Options options;
@@ -49,7 +49,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     private boolean confirmingReset = false;
     private boolean showFree = false;
     
-    private KeyBindsList customKeyList;
+    private ControlList customKeyList;
     private FreeKeysList freeKeyList;
     
     public NewKeyBindsScreen(Screen screen, Options settings) {
@@ -211,10 +211,10 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
             if(searchType == SearchType.CATEGORY && sortOrder == SortOrder.NONE && displayMode == DisplayMode.ALL) {
                 Set<NewKeyBindsList.CategoryEntry> categories = new LinkedHashSet<>();
                 
-                for(KeyBindsList.Entry entry : getKeyBindsList().children()) {
+                for(ControlList.Entry entry : getKeyBindsList().children()) {
                     if(entry instanceof NewKeyBindsList.CategoryEntry cEntry) {
                         categories.add(cEntry);
-                        for(KeyBindsList.Entry child : getKeyBindsList().children()) {
+                        for(ControlList.Entry child : getKeyBindsList().children()) {
                             if(child instanceof NewKeyBindsList.KeyEntry childEntry) {
                                 if(childEntry.getKeybinding().getCategory().equals(cEntry.getName())) {
                                     categories.remove(cEntry);
@@ -376,12 +376,12 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     }
     
     
-    private KeyBindsList getKeyBindsList() {
+    private ControlList getKeyBindsList() {
         return getAccess().getKeyBindsList();
     }
     
     
-    private void setKeyBindsList(KeyBindsList newList) {
+    private void setKeyBindsList(ControlList newList) {
         getAccess().setKeyBindsList(newList);
     }
     

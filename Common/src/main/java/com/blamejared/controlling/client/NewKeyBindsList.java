@@ -14,8 +14,8 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.controls.KeyBindsList;
-import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
+import net.minecraft.client.gui.screens.controls.ControlList;
+import net.minecraft.client.gui.screens.controls.ControlsScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -33,11 +33,11 @@ import java.util.function.UnaryOperator;
 
 public class NewKeyBindsList extends CustomList {
     
-    private final KeyBindsScreen controlsScreen;
+    private final ControlsScreen controlsScreen;
     private final Minecraft mc;
     private int maxListLabelWidth;
     
-    public NewKeyBindsList(KeyBindsScreen controls, Minecraft mcIn) {
+    public NewKeyBindsList(ControlsScreen controls, Minecraft mcIn) {
         
         super(controls, mcIn);
         this.width = controls.width + 45;
@@ -105,7 +105,7 @@ public class NewKeyBindsList extends CustomList {
         return super.getRowWidth() + 32;
     }
     
-    public class CategoryEntry extends KeyBindsList.Entry {
+    public class CategoryEntry extends ControlList.Entry {
         
         private final String labelText;
         private final int labelWidth;
@@ -151,7 +151,7 @@ public class NewKeyBindsList extends CustomList {
         
     }
     
-    public class KeyEntry extends KeyBindsList.Entry {
+    public class KeyEntry extends ControlList.Entry {
         
         /**
          * The keybinding specified for this KeyEntry

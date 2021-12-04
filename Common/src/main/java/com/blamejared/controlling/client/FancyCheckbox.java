@@ -60,7 +60,7 @@ public class FancyCheckbox extends AbstractButton {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        blit(stack, this.x, this.y, this.isHoveredOrFocused() ? 11 : 0.0F, this.selected ? 11 : 0.0F, 11, this.height, (int) (64f * (11f / 20f)), (int) (64f * (11f / 20f)));
+        blit(stack, this.x, this.y, this.isHovered() ? 11 : 0.0F, this.selected ? 11 : 0.0F, 11, this.height, (int) (64f * (11f / 20f)), (int) (64f * (11f / 20f)));
         this.renderBg(stack, mc, mouseX, mouseY);
         drawString(stack, mc.font, this.getMessage(), this.x + 11 + 2, this.y + (this.height - 8) / 2, TEXT_COLOR | Mth.ceil(this.alpha * 255.0F) << 24);
         

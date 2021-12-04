@@ -9,7 +9,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
+import net.minecraft.client.gui.screens.controls.ControlsScreen;
 import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.ArrayList;
@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 
 public class FreeKeysList extends CustomList {
     
-    private final KeyBindsScreen controlsScreen;
+    private final ControlsScreen controlsScreen;
     private final Minecraft mc;
     private int maxListLabelWidth;
     
     List<KeyMapping> keyBindings;
     
-    public FreeKeysList(KeyBindsScreen controls, Minecraft mcIn) {
+    public FreeKeysList(ControlsScreen controls, Minecraft mcIn) {
         
         super(controls, mcIn);
         this.width = controls.width + 45;

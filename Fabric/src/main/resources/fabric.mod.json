@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "controlling",
+  "name": "Controlling For Fabric",
+  "version": "${version}",
+  "side": "client",
+  "authors": [
+    "Jaredlll08"
+  ],
+  "license": "MIT",
+  "contact": {
+    "homepage": "https://minecraft.curseforge.com/projects/controlling",
+    "sources": "https://github.com/jaredlll08/Controlling"
+  },
+  "description": "Adds the ability to search for keybinds using their name in the KeyBinding menu, this allows players to easily find a key binding in the menu.\n",
+  "entrypoints": {
+  },
+  "mixins": [
+    "controlling.mixins.json"
+  ]
+}

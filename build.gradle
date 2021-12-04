@@ -1,177 +1,50 @@
-buildscript {
+subprojects {
+
+    apply plugin: 'java'
+
+    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+    java.withSourcesJar()
+    java.withJavadocJar()
+
+    jar {
+        manifest {
+            attributes([
+                    'Specification-Title'     : mod_name,
+                    'Specification-Vendor'    : mod_author,
+                    'Specification-Version'   : project.jar.archiveVersion,
+                    'Implementation-Title'    : project.name,
+                    'Implementation-Version'  : project.jar.archiveVersion,
+                    'Implementation-Vendor'   : mod_author,
+                    'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                    'Timestampe'              : System.currentTimeMillis(),
+                    'Built-On-Java'           : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
+                    'Build-On-Minecraft'      : minecraft_version
+            ])
+        }
+    }
+
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        maven { url = 'https://maven.blamejared.com' }
+
         mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-        classpath group: 'com.blamejared', name: 'ModTemplate', version: '1.+', changing: true
-    }
-}
-plugins {
-    id "com.matthewprenger.cursegradle" version "1.4.0"
-}
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'com.blamejared.modtemplate'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-
-version = '7.0.0'
-group = 'com.blamejared.controlling'
-archivesBaseName = 'Controlling'
-
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
-
-minecraft {
-    mappings channel: 'snapshot', version: '20201028-1.16.3'
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-            taskName 'ControllingClient'
-            mods {
-                examplemod {
-                    source sourceSets.main
-                }
-            }
-        }
-        server {
-            workingDirectory project.file('run')
-            taskName 'ControllingServer'
-            mods {
-                examplemod {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
-}
-
-modTemplate {
-    mcVersion "1.16.5"
-    curseHomepage "https://www.curseforge.com/minecraft/mc-mods/controlling"
-    displayName "Controlling"
-
-    changelog {
-        enabled true
-        firstCommit "efff217f353e51ce43751caf94b1924818b710e8"
-        repo "https://github.com/jaredlll08/Controlling"
-    }
-    versionTracker {
-        enabled true
-        author "Jared"
-        projectName "controlling"
-    }
-    webhook {
-        enabled true
-        curseId "250398"
-        avatarUrl "https://media.forgecdn.net/avatars/49/603/636079972364045115.png"
-    }
-}
-
-dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.0.0'
-}
-
-jar {
-    manifest {
-        attributes([
-                "Specification-Title"     : "controlling",
-                "Specification-Vendor"    : "BlameJared",
-                "Specification-Version"   : "1",
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : "${version}",
-                "Implementation-Vendor"   : "controlling",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
-    }
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    description = 'Creates a JAR containing the source code.'
-    from sourceSets.main.allSource
-    classifier = 'sources'
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    description = 'Creates a JAR containing the JavaDocs.'
-    from javadoc.destinationDir
-    classifier = 'javadoc'
-}
-
-task deobfJar(type: Jar) {
-    description = 'Creates a JAR containing the non-obfuscated compiled code.'
-    from sourceSets.main.output
-    classifier = "deobf"
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-    archives deobfJar
-}
-
-publish.dependsOn(project.tasks.getByName("assemble"))
-publish.mustRunAfter(project.tasks.getByName("build"))
-
-publishing {
-
-    publications {
-
-        mavenJava(MavenPublication) {
-
-            groupId project.group
-            artifactId project.archivesBaseName
-            version project.version
-            from components.java
-
-            // Allows the maven pom file to be modified.
-            pom.withXml {
-
-                // Go through all the dependencies.
-                asNode().dependencies.dependency.each { dep ->
-
-                    println 'Surpressing artifact ' + dep.artifactId.last().value().last() + ' from maven dependencies.'
-                    assert dep.parent().remove(dep)
-                }
-            }
-
-            artifact sourcesJar {
-
-                classifier 'sources'
-            }
-            artifact javadocJar {
-
-                classifier 'javadoc'
-            }
-            artifact deobfJar {
-
-                classifier 'deobf'
-            }
-        }
-    }
-
-    repositories {
 
         maven {
+            name = 'Sponge / Mixin'
+            url = 'https://repo.spongepowered.org/repository/maven-public/'
+        }
 
-            url "file://" + System.getenv("local_maven")
+        maven {
+            name = 'BlameJared Maven (CrT / Bookshelf)'
+            url = 'https://maven.blamejared.com'
         }
     }
-}
 
-curseforge {
+    dependencies {
+        implementation 'org.jetbrains:annotations:21.0.1'
+    }
 
-    apiKey = findProperty('curseforge_api_token') ?: 0
-    project {
-        id = "250398"
-        releaseType = 'release'
-        changelog = file("changelog.md")
-        changelogType = 'markdown'
+    tasks.withType(JavaCompile).configureEach {
 
-//        addArtifact(sourcesJar)
-//        addArtifact(javadocJar)
-        addArtifact(deobfJar)
+        it.options.encoding = 'UTF-8'
+        it.options.release = 17
     }
 }

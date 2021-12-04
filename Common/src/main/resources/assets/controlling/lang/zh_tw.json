@@ -1,0 +1,12 @@
+{
+  "options.search": "搜尋",
+  "options.showAll": "顯示全部",
+  "options.showConflicts": "顯示衝突",
+  "options.showNone": "顯示未綁定",
+  "options.availableKeys": "可用按鍵",
+  "options.sort": "排序",
+  "options.category": "分類",
+  "options.key": "按鍵",
+  "options.toggleFree": "免切換",
+  "options.confirmReset": "按一下以確定重設！"
+}

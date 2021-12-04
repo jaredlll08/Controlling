@@ -3,22 +3,22 @@
 # Package Files #
 *.war
 *.ear
-/build
-/eclipse
-/bin
-/out
+build
+eclipse
+bin
+out
 
 *.classpath
 *.project
-/.gradle
-/.settings
-/.idea
+.gradle
+.settings
+.idea
 *.iml
 *.ipr
 *.iws
-/.metadata/*
+.metadata/*
 *.eml
-/run/
+run/
 usernamecache.json
 *.stackdump
 secrets.json

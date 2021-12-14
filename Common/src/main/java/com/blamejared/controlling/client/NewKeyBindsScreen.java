@@ -12,11 +12,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.Option;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.MouseSettingsScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.controls.ControlList;
 import net.minecraft.client.gui.screens.controls.ControlsScreen;
@@ -63,12 +65,17 @@ public class NewKeyBindsScreen extends ControlsScreen {
      * window resizes, the buttonList is cleared beforehand.
      */
     protected void init() {
+        
+        this.addRenderableWidget(new Button(this.width / 2 - 155, 18, 150, 20, new TranslatableComponent("options.mouse_settings"), (btn) -> Objects.requireNonNull(this.minecraft)
+                .setScreen(new MouseSettingsScreen(this, options))));
+        this.addRenderableWidget(Option.AUTO_JUMP.createButton(Objects.requireNonNull(this.minecraft).options, this.width / 2 - 155 + 160, 18, 150));
         this.customKeyList = new NewKeyBindsList(this, this.minecraft);
         this.freeKeyList = new FreeKeysList(this, this.minecraft);
         this.setKeyBindsList(this.customKeyList);
         this.addWidget(getKeyBindsList());
         this.setFocused(getKeyBindsList());
-        this.addRenderableWidget(new Button(this.width / 2 - 155 + 160, this.height - 29, 150, 20, new TranslatableComponent("gui.done"), (btn) -> Objects.requireNonNull(this.minecraft).setScreen(this.lastScreen)));
+        this.addRenderableWidget(new Button(this.width / 2 - 155 + 160, this.height - 29, 150, 20, new TranslatableComponent("gui.done"), (btn) -> Objects.requireNonNull(this.minecraft)
+                .setScreen(this.lastScreen)));
         
         this.buttonReset = this.addRenderableWidget(new Button(this.width / 2 - 155, this.height - 29, 74, 20, new TranslatableComponent("controls.resetAll"), (btn) -> {
             
@@ -184,9 +191,18 @@ public class NewKeyBindsScreen extends ControlsScreen {
             }
             getKeyBindsList().setScrollAmount(0);
             Predicate<NewKeyBindsList.KeyEntry> filters = switch(searchType) {
-                case NAME -> displayMode.getPredicate().and(keyEntry -> keyEntry.getKeyDesc().toLowerCase().contains(lastSearch.toLowerCase()));
-                case CATEGORY -> displayMode.getPredicate().and(keyEntry -> new TranslatableComponent(keyEntry.getKeybinding().getCategory()).getString().toLowerCase().contains(lastSearch.toLowerCase()));
-                case KEY -> displayMode.getPredicate().and(keyEntry -> keyEntry.getKeybinding().getTranslatedKeyMessage().getString().toLowerCase().contains(lastSearch.toLowerCase()));
+                case NAME -> displayMode.getPredicate()
+                        .and(keyEntry -> keyEntry.getKeyDesc().toLowerCase().contains(lastSearch.toLowerCase()));
+                case CATEGORY -> displayMode.getPredicate()
+                        .and(keyEntry -> new TranslatableComponent(keyEntry.getKeybinding().getCategory()).getString()
+                                .toLowerCase()
+                                .contains(lastSearch.toLowerCase()));
+                case KEY -> displayMode.getPredicate()
+                        .and(keyEntry -> keyEntry.getKeybinding()
+                                .getTranslatedKeyMessage()
+                                .getString()
+                                .toLowerCase()
+                                .contains(lastSearch.toLowerCase()));
             };
             
             
@@ -377,19 +393,23 @@ public class NewKeyBindsScreen extends ControlsScreen {
     
     
     private ControlList getKeyBindsList() {
+        
         return getAccess().getKeyBindsList();
     }
     
     
     private void setKeyBindsList(ControlList newList) {
+        
         getAccess().setKeyBindsList(newList);
     }
     
     private AccessScreen getScreenAccess() {
+        
         return ((AccessScreen) this);
     }
     
     private AccessKeyBindsScreen getAccess() {
+        
         return ((AccessKeyBindsScreen) this);
     }
     

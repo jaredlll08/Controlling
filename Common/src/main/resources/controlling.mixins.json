@@ -1,16 +1,21 @@
 {
   "required": true,
+  "minVersion": "0.8",
   "package": "com.blamejared.controlling.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+  ],
+  "client": [
     "AccessInputConstantsKey",
     "AccessKeyBindsScreen",
     "AccessKeyMapping",
     "AccessOptionsSubScreen",
-    "AccessScreen",
-    "OpenGuiMixin"
+    "AccessScreen"
+  ],
+  "server": [
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "refmap": "${refmap_target}refmap.json"
 }

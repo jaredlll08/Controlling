@@ -28,6 +28,10 @@
     {
       "config": "controlling.mixins.json",
       "environment": "client"
+    },
+    {
+      "config": "controlling.fabric.mixins.json",
+      "environment": "client"
     }
   ]
 }

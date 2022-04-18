@@ -14,7 +14,7 @@ public class ClientEventHandler {
         
         try {
             if(event.getScreen() instanceof KeyBindsScreen gui && !(event.getScreen() instanceof NewKeyBindsScreen)) {
-                event.setScreen(new NewKeyBindsScreen(((AccessOptionsSubScreen) gui).getLastScreen(), Minecraft.getInstance().options));
+                event.setScreen(new NewKeyBindsScreen(((AccessOptionsSubScreen) gui).controlling$getLastScreen(), Minecraft.getInstance().options));
             }
         } catch(Exception e) {
             e.printStackTrace();

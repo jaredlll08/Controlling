@@ -9,9 +9,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface AccessKeyBindsScreen {
     
     @Accessor("keyBindsList")
-    KeyBindsList getKeyBindsList();
+    KeyBindsList controlling$getKeyBindsList();
     
     @Accessor("keyBindsList")
-    void setKeyBindsList(KeyBindsList newList);
+    void controlling$setKeyBindsList(KeyBindsList newList);
     
 }

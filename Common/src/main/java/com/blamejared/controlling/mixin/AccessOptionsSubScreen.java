@@ -9,6 +9,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface AccessOptionsSubScreen {
     
     @Accessor("lastScreen")
-    Screen getLastScreen();
+    Screen controlling$getLastScreen();
     
 }

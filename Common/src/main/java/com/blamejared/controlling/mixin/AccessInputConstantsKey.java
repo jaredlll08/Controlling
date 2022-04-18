@@ -10,7 +10,7 @@ import java.util.Map;
 public interface AccessInputConstantsKey {
     
     @Accessor("NAME_MAP")
-    static Map<String, InputConstants.Key> getNAME_MAP() {
+    static Map<String, InputConstants.Key> controlling$getNAME_MAP() {
         
         throw new AssertionError();
     }

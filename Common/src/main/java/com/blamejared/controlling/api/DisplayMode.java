@@ -12,8 +12,8 @@ public enum DisplayMode {
         
         for(KeyMapping key : Minecraft.getInstance().options.keyMappings) {
             if(!key.getName().equals(keyEntry.getKeybinding().getName()) && !key.isUnbound()) {
-                if(((AccessKeyMapping) key).getKey()
-                        .getValue() == ((AccessKeyMapping) keyEntry.getKeybinding()).getKey().getValue()) {
+                if(((AccessKeyMapping) key).controlling$getKey()
+                        .getValue() == ((AccessKeyMapping) keyEntry.getKeybinding()).controlling$getKey().getValue()) {
                     return true;
                 }
             }

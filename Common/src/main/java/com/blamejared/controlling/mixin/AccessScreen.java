@@ -11,6 +11,6 @@ import java.util.List;
 public interface AccessScreen {
     
     @Accessor("renderables")
-    List<Widget> getRenderables();
+    List<Widget> controlling$getRenderables();
     
 }

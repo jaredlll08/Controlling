@@ -288,7 +288,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         Component text = new TranslatableComponent("options.search");
         font.draw(stack, text, this.width / 2f - (155 / 2f) - (font.width(text.getString())) - 5, this.height - 29 - 42, 16777215);
         
-        for(Widget widget : getScreenAccess().getRenderables()) {
+        for(Widget widget : getScreenAccess().controlling$getRenderables()) {
             widget.render(stack, mouseX, mouseY, partialTicks);
         }
     }
@@ -375,7 +375,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
             } else {
                 Services.PLATFORM.setKey(options, this.selectedKey, InputConstants.getKey(keyCode, scanCode));
             }
-            if(!Services.PLATFORM.isKeyCodeModifier(((AccessKeyMapping) this.selectedKey).getKey())) {
+            if(!Services.PLATFORM.isKeyCodeModifier(((AccessKeyMapping) this.selectedKey).controlling$getKey())) {
                 this.selectedKey = null;
             }
             this.lastKeySelection = Util.getMillis();
@@ -389,13 +389,13 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     
     private KeyBindsList getKeyBindsList() {
         
-        return getAccess().getKeyBindsList();
+        return getAccess().controlling$getKeyBindsList();
     }
     
     
     private void setKeyBindsList(KeyBindsList newList) {
         
-        getAccess().setKeyBindsList(newList);
+        getAccess().controlling$setKeyBindsList(newList);
     }
     
     private AccessScreen getScreenAccess() {

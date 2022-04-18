@@ -12,4 +12,5 @@ public interface AccessScreen {
     
     @Accessor("renderables")
     List<Widget> getRenderables();
+    
 }

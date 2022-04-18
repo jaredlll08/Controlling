@@ -10,4 +10,5 @@ public interface IKeyEntryListenersEvent {
     List<GuiEventListener> getListeners();
     
     NewKeyBindsList.KeyEntry getEntry();
+    
 }

@@ -26,4 +26,5 @@ public interface IKeyEntryRenderEvent {
     boolean isHovered();
     
     float getPartialTicks();
+    
 }

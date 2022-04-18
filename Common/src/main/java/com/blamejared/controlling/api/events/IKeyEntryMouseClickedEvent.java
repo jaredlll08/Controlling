@@ -15,4 +15,5 @@ public interface IKeyEntryMouseClickedEvent {
     boolean isHandled();
     
     void setHandled(boolean handled);
+    
 }

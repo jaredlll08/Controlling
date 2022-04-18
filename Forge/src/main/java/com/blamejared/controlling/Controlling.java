@@ -14,7 +14,8 @@ public class Controlling {
     
     public Controlling() {
         
-        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (remote, isServer) -> true));
+        ModLoadingContext.get()
+                .registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (remote, isServer) -> true));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
     }
     

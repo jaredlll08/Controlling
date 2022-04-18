@@ -20,12 +20,14 @@ public class FancyCheckbox extends AbstractButton {
     private final OnPress pressFunction;
     
     public FancyCheckbox(int x, int y, int width, int height, Component label, boolean selected, OnPress pressFunction) {
+        
         super(x, y, Minecraft.getInstance().font.width(label) + 2 + width, height, label);
         this.selected = selected;
         this.pressFunction = pressFunction;
     }
     
     public void onPress() {
+        
         this.selected = !this.selected;
         if(pressFunction != null) {
             pressFunction.onPress(this);
@@ -33,14 +35,17 @@ public class FancyCheckbox extends AbstractButton {
     }
     
     public void selected(boolean selected) {
+        
         this.selected = selected;
     }
     
     public boolean selected() {
+        
         return this.selected;
     }
     
     public void updateNarration(NarrationElementOutput elementOutput) {
+        
         elementOutput.add(NarratedElementType.TITLE, this.createNarrationMessage());
         if(this.active) {
             if(this.isFocused()) {
@@ -53,6 +58,7 @@ public class FancyCheckbox extends AbstractButton {
     }
     
     public void renderButton(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+        
         Minecraft mc = Minecraft.getInstance();
         RenderSystem.setShaderTexture(0, TEXTURE);
         RenderSystem.enableDepthTest();
@@ -69,5 +75,7 @@ public class FancyCheckbox extends AbstractButton {
     public interface OnPress {
         
         void onPress(FancyCheckbox button);
+        
     }
+    
 }

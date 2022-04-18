@@ -79,7 +79,8 @@ public class NewKeyBindsList extends CustomList {
         Entry entry = this.getEntryAtPos(mouseY);
         if(entry instanceof KeyEntry keyEntry) {
             
-            controlsScreen.renderTooltip(matrixStack, new TranslatableComponent(keyEntry.getKeybinding().getCategory()), mouseX, mouseY);
+            controlsScreen.renderTooltip(matrixStack, new TranslatableComponent(keyEntry.getKeybinding()
+                    .getCategory()), mouseX, mouseY);
         }
     }
     
@@ -193,6 +194,7 @@ public class NewKeyBindsList extends CustomList {
         
         @Override
         public void render(PoseStack stack, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+            
             Services.EVENT.fireKeyEntryRenderEvent(this, stack, slotIndex, y, x, rowLeft, rowWidth, mouseX, mouseY, hovered, partialTicks);
             boolean flag = NewKeyBindsList.this.controlsScreen.selectedKey == this.keybinding;
             int length = Math.max(0, x + 90 - NewKeyBindsList.this.maxListLabelWidth);
@@ -222,7 +224,8 @@ public class NewKeyBindsList extends CustomList {
             if(flag) {
                 this.btnChangeKeyBinding.setMessage(new TextComponent(ChatFormatting.WHITE + "> " + ChatFormatting.YELLOW + message.getString() + ChatFormatting.WHITE + " <"));
             } else if(flag1) {
-                this.btnChangeKeyBinding.setMessage(message.copy().withStyle(keyCodeModifierConflict ? ChatFormatting.GOLD : ChatFormatting.RED));
+                this.btnChangeKeyBinding.setMessage(message.copy()
+                        .withStyle(keyCodeModifierConflict ? ChatFormatting.GOLD : ChatFormatting.RED));
             }
             
             this.btnChangeKeyBinding.render(stack, mouseX, mouseY, partialTicks);
@@ -230,7 +233,8 @@ public class NewKeyBindsList extends CustomList {
         
         public List<GuiEventListener> children() {
             
-            return Services.EVENT.fireKeyEntryListenersEvent(this).map(IKeyEntryListenersEvent::getListeners, UnaryOperator.identity());
+            return Services.EVENT.fireKeyEntryListenersEvent(this)
+                    .map(IKeyEntryListenersEvent::getListeners, UnaryOperator.identity());
         }
         
         @Override
@@ -247,7 +251,8 @@ public class NewKeyBindsList extends CustomList {
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int buttonId) {
             
-            if(Services.EVENT.fireKeyEntryMouseClickedEvent(this, mouseX, mouseY, buttonId).map(IKeyEntryMouseClickedEvent::isHandled, UnaryOperator.identity())) {
+            if(Services.EVENT.fireKeyEntryMouseClickedEvent(this, mouseX, mouseY, buttonId)
+                    .map(IKeyEntryMouseClickedEvent::isHandled, UnaryOperator.identity())) {
                 return true;
             }
             
@@ -262,7 +267,8 @@ public class NewKeyBindsList extends CustomList {
         @Override
         public boolean mouseReleased(double mouseX, double mouseY, int buttonId) {
             
-            if(Services.EVENT.fireKeyEntryMouseReleasedEvent(this, mouseX, mouseY, buttonId).map(IKeyEntryMouseReleasedEvent::isHandled, UnaryOperator.identity())) {
+            if(Services.EVENT.fireKeyEntryMouseReleasedEvent(this, mouseX, mouseY, buttonId)
+                    .map(IKeyEntryMouseReleasedEvent::isHandled, UnaryOperator.identity())) {
                 return true;
             }
             

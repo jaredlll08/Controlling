@@ -51,15 +51,21 @@ public class FreeKeysList extends CustomList {
         allEntries.clear();
         
         addEntry(new HeaderEntry("Available Keys"));
-        AccessInputConstantsKey.getNAME_MAP().values().stream().filter(input -> !input.toString().startsWith("key.keyboard.world")).sorted(Comparator.comparing(o -> o.getDisplayName().getString())).forEach(input -> {
-            if(keyBindings.stream().noneMatch(keyBinding -> ((AccessKeyMapping) keyBinding).getKey().equals(input))) {
-                int i = mc.font.width(input.getDisplayName().getString());
-                if(i > this.maxListLabelWidth) {
-                    this.maxListLabelWidth = i;
-                }
-                addEntry(new InputEntry(input));
-            }
-        });
+        AccessInputConstantsKey.getNAME_MAP()
+                .values()
+                .stream()
+                .filter(input -> !input.toString().startsWith("key.keyboard.world"))
+                .sorted(Comparator.comparing(o -> o.getDisplayName().getString()))
+                .forEach(input -> {
+                    if(keyBindings.stream()
+                            .noneMatch(keyBinding -> ((AccessKeyMapping) keyBinding).getKey().equals(input))) {
+                        int i = mc.font.width(input.getDisplayName().getString());
+                        if(i > this.maxListLabelWidth) {
+                            this.maxListLabelWidth = i;
+                        }
+                        addEntry(new InputEntry(input));
+                    }
+                });
     }
     
     @Override

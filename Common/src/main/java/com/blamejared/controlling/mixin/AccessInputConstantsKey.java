@@ -11,6 +11,7 @@ public interface AccessInputConstantsKey {
     
     @Accessor("NAME_MAP")
     static Map<String, InputConstants.Key> getNAME_MAP() {
+        
         throw new AssertionError();
     }
     

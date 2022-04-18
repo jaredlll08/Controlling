@@ -10,4 +10,5 @@ public interface AccessOptionsSubScreen {
     
     @Accessor("lastScreen")
     Screen getLastScreen();
+    
 }

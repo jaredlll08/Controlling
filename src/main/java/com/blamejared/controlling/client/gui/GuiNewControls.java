@@ -1,20 +1,22 @@
 package com.blamejared.controlling.client.gui;
 
 import com.blamejared.controlling.Controlling;
+import cpw.mods.fml.client.config.GuiCheckBox;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.fml.client.config.GuiCheckBox;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.StatCollector;
 
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.List;
 import java.util.function.Predicate;
 
 @SideOnly(Side.CLIENT)
@@ -57,7 +59,7 @@ public class GuiNewControls extends GuiControls {
      */
     @Override
     public void initGui() {
-        this.screenTitle = I18n.format("controls.title");
+        this.screenTitle = StatCollector.translateToLocal("controls.title");
         int i = 0;
 
         for (GameSettings.Options gameOption : OPTIONS_ARR) {
@@ -88,7 +90,7 @@ public class GuiNewControls extends GuiControls {
             this.height - 29,
             150,
             20,
-            I18n.format("gui.done")
+            StatCollector.translateToLocal("gui.done")
         ));
 
         this.buttonReset = new GuiButton(
@@ -97,7 +99,7 @@ public class GuiNewControls extends GuiControls {
             this.height - 29,
             150,
             20,
-            I18n.format("controls.resetAll")
+            StatCollector.translateToLocal("controls.resetAll")
         );
         this.buttonList.add(this.buttonReset);
 
@@ -107,7 +109,7 @@ public class GuiNewControls extends GuiControls {
             this.height - 29 - 24,
             150 / 2,
             20,
-            I18n.format("options.showNone")
+            StatCollector.translateToLocal("options.showNone")
         );
         this.buttonList.add(this.buttonNone);
 
@@ -117,18 +119,18 @@ public class GuiNewControls extends GuiControls {
             this.height - 29 - 24,
             150 / 2,
             20,
-            I18n.format("options.showConflicts")
+            StatCollector.translateToLocal("options.showConflicts")
         );
         this.buttonList.add(this.buttonConflicting);
 
-        this.search = new GuiTextField(0, fontRendererObj, this.width / 2 - 154, this.height - 29 - 23, 148, 18);
+        this.search = new GuiTextField(fontRendererObj, this.width / 2 - 154, this.height - 29 - 23, 148, 18);
         search.setCanLoseFocus(true);
 
         this.buttonKey = new GuiCheckBox(
             1005,
             this.width / 2 - (155 / 2),
             this.height - 29 - 37,
-            I18n.format("options.key"),
+            StatCollector.translateToLocal("options.key"),
             false
         );
         this.buttonList.add(this.buttonKey);
@@ -137,7 +139,7 @@ public class GuiNewControls extends GuiControls {
             1006,
             this.width / 2 - (155 / 2),
             this.height - 29 - 50,
-            I18n.format("options.category"),
+            StatCollector.translateToLocal("options.category"),
             false
         );
         this.buttonList.add(this.buttonCat);
@@ -163,7 +165,7 @@ public class GuiNewControls extends GuiControls {
             this.height - 29 - 24 - 24,
             150 / 2,
             20,
-            I18n.format("options.sort")
+            StatCollector.translateToLocal("options.sort")
         );
         this.buttonList.add(this.sortOrderButton);
         this.sortOrder = SortOrder.NONE;
@@ -196,7 +198,7 @@ public class GuiNewControls extends GuiControls {
                     .contains(lastSearch.toLowerCase()));
                 break;
             case CATEGORY:
-                filters = filters.and(keyEntry -> I18n.format(keyEntry.getKeybinding().getKeyCategory())
+                filters = filters.and(keyEntry -> StatCollector.translateToLocal(keyEntry.getKeybinding().getKeyCategory())
                     .toLowerCase()
                     .contains(lastSearch.toLowerCase()));
                 break;
@@ -276,14 +278,14 @@ public class GuiNewControls extends GuiControls {
 
         if (!flag) {
             confirmingReset = false;
-            buttonReset.displayString = I18n.format("controls.resetAll");
+            buttonReset.displayString = StatCollector.translateToLocal("controls.resetAll");
         }
 
-        for (GuiButton guiButton : this.buttonList) {
+        for (GuiButton guiButton : (List<GuiButton>)this.buttonList) {
             guiButton.drawButton(mc, mouseX, mouseY);
         }
 
-        String text = I18n.format("options.search");
+        String text = StatCollector.translateToLocal("options.search");
         drawCenteredString(
             fontRendererObj,
             text,
@@ -308,12 +310,12 @@ public class GuiNewControls extends GuiControls {
         } else if (button.id == 1002) {
             if (!confirmingReset) {
                 confirmingReset = true;
-                button.displayString = I18n.format("options.confirmReset");
+                button.displayString = StatCollector.translateToLocal("options.confirmReset");
                 return;
             }
 
             confirmingReset = false;
-            button.displayString = I18n.format("controls.resetAll");
+            button.displayString = StatCollector.translateToLocal("controls.resetAll");
 
             for (KeyBinding keyBinding : mc.gameSettings.keyBindings) {
                 keyBinding.setKeyCode(keyBinding.getKeyCodeDefault());
@@ -321,22 +323,22 @@ public class GuiNewControls extends GuiControls {
             KeyBinding.resetKeyBindingArrayAndHash();
         } else if (button.id == 1003) {
             if (displayMode == DisplayMode.NONE) {
-                buttonNone.displayString = I18n.format("options.showNone");
+                buttonNone.displayString = StatCollector.translateToLocal("options.showNone");
                 displayMode = DisplayMode.ALL;
             } else {
                 displayMode = DisplayMode.NONE;
-                buttonNone.displayString = I18n.format("options.showAll");
-                buttonConflicting.displayString = I18n.format("options.showConflicts");
+                buttonNone.displayString = StatCollector.translateToLocal("options.showAll");
+                buttonConflicting.displayString = StatCollector.translateToLocal("options.showConflicts");
             }
             filterKeys();
         } else if (button.id == 1004) {
             if (displayMode == DisplayMode.CONFLICTING) {
-                buttonConflicting.displayString = I18n.format("options.showConflicts");
+                buttonConflicting.displayString = StatCollector.translateToLocal("options.showConflicts");
                 displayMode = DisplayMode.ALL;
             } else {
                 displayMode = DisplayMode.CONFLICTING;
-                buttonConflicting.displayString = I18n.format("options.showAll");
-                buttonNone.displayString = I18n.format("options.showNone");
+                buttonConflicting.displayString = StatCollector.translateToLocal("options.showAll");
+                buttonNone.displayString = StatCollector.translateToLocal("options.showNone");
             }
             filterKeys();
         } else if (button.id == 1005) {
@@ -359,20 +361,24 @@ public class GuiNewControls extends GuiControls {
             }
         } else if (button.id == 1008) {
             sortOrder = sortOrder.cycle();
-            button.displayString = I18n.format("options.sort") + ": " + sortOrder.getName();
+            button.displayString = StatCollector.translateToLocal("options.sort") + ": " + sortOrder.getName();
             filterKeys();
         }
     }
 
     @Override
-    public void mouseClicked(int mx, int my, int mb) throws IOException {
+    public void mouseClicked(int mx, int my, int mb) {
         if (this.buttonId != null) {
             this.options.setOptionKeyBinding(this.buttonId, -100 + mb);
             this.buttonId = null;
             KeyBinding.resetKeyBindingArrayAndHash();
             search.setFocused(false);
-        } else if (mb == 0 && !this.keyBindingList.mouseClicked(mx, my, mb)) {
-            superSuperMouseClicked(mx, my, mb);
+        } else if (mb == 0 && !this.keyBindingList.func_148179_a(mx, my, mb)) { // func_148179_a is mouseClicked but still obfuscated in 1.7.10
+            try {
+                superSuperMouseClicked(mx, my, mb);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         search.mouseClicked(mx, my, mb);
@@ -384,7 +390,7 @@ public class GuiNewControls extends GuiControls {
     protected void superSuperMouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         if (mouseButton == 0) {
             for (int i = 0; i < this.buttonList.size(); ++i) {
-                GuiButton guibutton = this.buttonList.get(i);
+                GuiButton guibutton = (GuiButton) this.buttonList.get(i);
 
                 if (guibutton.mousePressed(this.mc, mouseX, mouseY)) {
                     net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent.Pre event = new net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent.Pre(
@@ -415,7 +421,7 @@ public class GuiNewControls extends GuiControls {
 
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state) {
-        if (state != 0 || !this.keyBindingList.mouseReleased(mouseX, mouseY, state)) {
+        if (state != 0 || !this.keyBindingList.func_148181_b(mouseX, mouseY, state)) { // func_148181_b is mouseReleased but still obfuscated in 1.7.10
             superSuperMouseReleased(mouseX, mouseY, state);
         }
     }

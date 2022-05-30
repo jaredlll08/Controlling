@@ -1,20 +1,20 @@
 package com.blamejared.controlling.client.gui;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiControls;
 import net.minecraft.client.gui.GuiKeyBindingList;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
@@ -57,7 +57,7 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
                 allEntries.add(new KeyEntry(keybinding));
             }
         }
-        
+
         listEntries = allEntries;
     }
 
@@ -74,7 +74,7 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
     public List<IGuiListEntry> getAllEntries() {
         return allEntries;
     }
-    
+
     @Override
     protected int getScrollBarX() {
         return super.getScrollBarX() + 15 + 20;
@@ -103,11 +103,7 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
         }
 
         @Override
-        public void setSelected(int i, int i1, int i2) {
-        }
-
-        @Override
-        public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
+        public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, Tessellator tessellator, int mouseX, int mouseY, boolean isSelected) {
             mc.fontRendererObj.drawString(
                 this.labelText,
                 mc.currentScreen.width / 2 - this.labelWidth / 2,
@@ -148,17 +144,13 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
         }
 
         @Override
-        public void setSelected(int i, int i1, int i2) {
-        }
-
-        @Override
-        public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
+        public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, Tessellator tessellator, int mouseX, int mouseY, boolean isSelected) {
             boolean flag = controlsScreen.buttonId == this.keybinding;
             mc.fontRendererObj.drawString(
-                this.keyDesc,
-                x + 90 - maxListLabelWidth,
-                y + slotHeight / 2 - mc.fontRendererObj.FONT_HEIGHT / 2,
-                16777215
+                    this.keyDesc,
+                    x + 90 - maxListLabelWidth,
+                    y + slotHeight / 2 - mc.fontRendererObj.FONT_HEIGHT / 2,
+                    16777215
             );
             this.btnResetKeyBinding.xPosition = x + 190 + 20;
             this.btnResetKeyBinding.yPosition = y;
@@ -187,7 +179,7 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
             }
 
             this.btnChangeKeyBinding.drawButton(mc, mouseX, mouseY);
-            
+
             if (mouseY >= y && mouseY <= y + slotHeight) {
                 mc.fontRendererObj.drawString(I18n.format(keybinding.getKeyCategory()), mouseX + 10, mouseY, 0xFFFFFF);
             }

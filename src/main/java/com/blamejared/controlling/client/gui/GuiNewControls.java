@@ -41,7 +41,6 @@ public class GuiNewControls extends GuiControls {
     private GuiButton buttonConflicting;
     private GuiCheckBox buttonKey;
     private GuiCheckBox buttonCat;
-    private GuiButton patreonButton;
     private GuiButton sortOrderButton;
     private boolean confirmingReset = false;
 
@@ -149,15 +148,6 @@ public class GuiNewControls extends GuiControls {
             .skip(Controlling.PATRON_LIST.isEmpty() ? 0 : new Random().nextInt(Controlling.PATRON_LIST.size()))
             .findFirst()
             .orElse("");
-        this.patreonButton = new GuiButton(
-            1007,
-            this.width / 2 - 155 + 160,
-            this.height - 29 - 24 - 24,
-            150 / 2,
-            20,
-            "Patreon"
-        );
-        this.buttonList.add(this.patreonButton);
 
         this.sortOrderButton = new GuiButton(
             1008,
@@ -293,11 +283,6 @@ public class GuiNewControls extends GuiControls {
             this.height - 29 - 42,
             16777215
         );
-
-        if (patreonButton.isMouseOver()) {
-            String str = "Join " + name + " and other patrons!";
-            drawHoveringText(Collections.singletonList(str), mouseX, mouseY);
-        }
     }
 
     @Override
@@ -349,17 +334,7 @@ public class GuiNewControls extends GuiControls {
             buttonKey.setIsChecked(false);
             searchType = buttonCat.isChecked() ? SearchType.CATEGORY : SearchType.NAME;
             filterKeys();
-        } else if (button.id == 1007) {
-            if (Desktop.isDesktopSupported()) {
-                Desktop desktop = Desktop.getDesktop();
-                try {
-                    desktop.browse(new URI("https://patreon.com/jaredlll08?s=controllingmod"));
-                } catch (IOException | URISyntaxException ignored) {
-                }
-            } else {
-                System.out.println("Desktop not supported");
-            }
-        } else if (button.id == 1008) {
+        }else if (button.id == 1008) {
             sortOrder = sortOrder.cycle();
             button.displayString = StatCollector.translateToLocal("options.sort") + ": " + sortOrder.getName();
             filterKeys();

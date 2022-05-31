@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mod(modid = "controlling", name = "Controlling", version = "7.0.0")
+@Mod(modid = "controlling", name = "Controlling", version = "7.0.0", acceptableRemoteVersions = "*")
 public class Controlling {
 
     public static Set<String> PATRON_LIST = new HashSet<>();

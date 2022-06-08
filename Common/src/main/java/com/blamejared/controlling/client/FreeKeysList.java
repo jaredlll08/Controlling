@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -142,7 +142,7 @@ public class FreeKeysList extends CustomList {
         @Override
         public void render(PoseStack stack, int slotIndex, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             
-            drawCenteredString(stack, mc.font, new TranslatableComponent("options.availableKeys"), (Objects.requireNonNull(mc.screen).width / 2 - this.text.length() / 2), (y + height - 9 - 1), 16777215);
+            drawCenteredString(stack, mc.font, Component.translatable("options.availableKeys"), (Objects.requireNonNull(mc.screen).width / 2 - this.text.length() / 2), (y + height - 9 - 1), 16777215);
         }
         
     }

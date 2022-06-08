@@ -17,9 +17,9 @@
   "entrypoints": {
   },
   "depends": {
-    "fabricloader": ">=0.12",
+    "fabricloader": ">=0.14",
     "java": ">=17",
-    "minecraft": "1.18.x"
+    "minecraft": "1.19.x"
   },
   "recommends": {
     "fabric": "*"

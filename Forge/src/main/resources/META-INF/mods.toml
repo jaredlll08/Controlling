@@ -1,11 +1,11 @@
 modLoader="javafml"
-loaderVersion="[40,)"
+loaderVersion="[41,)"
 issueTrackerURL="https://github.com/jaredlll08/Controlling/issues"
 license="MIT"
 
 [[mods]]
 modId="controlling"
-updateJSONURL="https://updates.blamejared.com/get?n=controlling&gv=1.18.2"
+updateJSONURL="https://updates.blamejared.com/get?n=controlling&gv=1.19"
 version="${file.jarVersion}"
 displayName="Controlling"
 displayURL="https://minecraft.curseforge.com/projects/controlling"
@@ -18,12 +18,12 @@ itemIcon="minecraft:compass"
   [[dependencies.controlling]]
 	modId="forge"
 	mandatory=true
-	versionRange="[40,)"
+	versionRange="[41,)"
 	ordering="NONE"
 	side="CLIENT"
   [[dependencies.controlling]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.18.2,)"
+    versionRange="[1.19,)"
     ordering="NONE"
     side="CLIENT"

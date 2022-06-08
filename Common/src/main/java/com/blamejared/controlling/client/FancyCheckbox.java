@@ -8,7 +8,6 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -49,9 +48,9 @@ public class FancyCheckbox extends AbstractButton {
         elementOutput.add(NarratedElementType.TITLE, this.createNarrationMessage());
         if(this.active) {
             if(this.isFocused()) {
-                elementOutput.add(NarratedElementType.USAGE, new TranslatableComponent("narration.checkbox.usage.focused"));
+                elementOutput.add(NarratedElementType.USAGE, Component.translatable("narration.checkbox.usage.focused"));
             } else {
-                elementOutput.add(NarratedElementType.USAGE, new TranslatableComponent("narration.checkbox.usage.hovered"));
+                elementOutput.add(NarratedElementType.USAGE, Component.translatable("narration.checkbox.usage.hovered"));
             }
         }
         

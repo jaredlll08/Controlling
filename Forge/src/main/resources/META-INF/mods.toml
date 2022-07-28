@@ -5,7 +5,7 @@ license="MIT"
 
 [[mods]]
 modId="controlling"
-updateJSONURL="https://updates.blamejared.com/get?n=controlling&gv=1.19"
+updateJSONURL="https://updates.blamejared.com/get?n=controlling&gv=1.19.1"
 version="${file.jarVersion}"
 displayName="Controlling"
 displayURL="https://minecraft.curseforge.com/projects/controlling"

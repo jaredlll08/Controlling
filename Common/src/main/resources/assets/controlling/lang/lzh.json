@@ -1,0 +1,15 @@
+{
+  "options.search": "尋",
+  "options.showAll": "全顯",
+  "options.showConflicts": "顯突者",
+  "options.showNone": "顯未绑定",
+  "options.availableKeys": "可用按鍵",
+  "options.sort": "序",
+  "options.category": "類",
+  "options.key": "鍵",
+  "options.sortNone": "無",
+  "options.sortAZ": "A至Z",
+  "options.sortZA": "Z至A",
+  "options.toggleFree": "自由綁定",
+  "options.confirmReset": "確認？"
+}

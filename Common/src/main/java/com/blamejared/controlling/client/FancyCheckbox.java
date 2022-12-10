@@ -1,5 +1,6 @@
 package com.blamejared.controlling.client;
 
+import com.google.common.collect.Comparators;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -10,6 +11,8 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+
+import java.util.Comparator;
 
 public class FancyCheckbox extends AbstractButton {
     
@@ -43,21 +46,20 @@ public class FancyCheckbox extends AbstractButton {
         return this.selected;
     }
     
-    public void updateNarration(NarrationElementOutput elementOutput) {
-        
-        elementOutput.add(NarratedElementType.TITLE, this.createNarrationMessage());
+    @Override
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+        narrationElementOutput.add(NarratedElementType.TITLE, this.createNarrationMessage());
         if(this.active) {
             if(this.isFocused()) {
-                elementOutput.add(NarratedElementType.USAGE, Component.translatable("narration.checkbox.usage.focused"));
+                narrationElementOutput.add(NarratedElementType.USAGE, Component.translatable("narration.checkbox.usage.focused"));
             } else {
-                elementOutput.add(NarratedElementType.USAGE, Component.translatable("narration.checkbox.usage.hovered"));
+                narrationElementOutput.add(NarratedElementType.USAGE, Component.translatable("narration.checkbox.usage.hovered"));
             }
         }
-        
     }
     
     public void renderButton(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        
+    
         Minecraft mc = Minecraft.getInstance();
         RenderSystem.setShaderTexture(0, TEXTURE);
         RenderSystem.enableDepthTest();
@@ -65,9 +67,9 @@ public class FancyCheckbox extends AbstractButton {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        blit(stack, this.x, this.y, this.isHoveredOrFocused() ? 11 : 0.0F, this.selected ? 11 : 0.0F, 11, this.height, (int) (64f * (11f / 20f)), (int) (64f * (11f / 20f)));
+        blit(stack, this.getX(), this.getY(), this.isHoveredOrFocused() ? 11 : 0.0F, this.selected ? 11 : 0.0F, 11, this.height, (int) (64f * (11f / 20f)), (int) (64f * (11f / 20f)));
         this.renderBg(stack, mc, mouseX, mouseY);
-        drawString(stack, mc.font, this.getMessage(), this.x + 11 + 2, this.y + (this.height - 8) / 2, TEXT_COLOR | Mth.ceil(this.alpha * 255.0F) << 24);
+        drawString(stack, mc.font, this.getMessage(), this.getX() + 11 + 2, this.getY() + (this.height - 8) / 2, TEXT_COLOR | Mth.ceil(this.alpha * 255.0F) << 24);
         
     }
     

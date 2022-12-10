@@ -32,7 +32,7 @@ public class FreeKeysList extends CustomList {
         super(controls, mcIn);
         this.width = controls.width + 45;
         this.height = controls.height;
-        this.y0 = 43;
+        this.y0 = 20;
         this.y1 = controls.height - 80;
         this.x1 = controls.width + 45;
         this.controlsScreen = controls;

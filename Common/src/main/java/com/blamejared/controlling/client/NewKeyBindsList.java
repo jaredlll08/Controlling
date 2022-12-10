@@ -18,17 +18,10 @@ import net.minecraft.client.gui.screens.controls.KeyBindsList;
 import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.util.Mth;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.UnaryOperator;
 
 public class NewKeyBindsList extends CustomList {
@@ -61,13 +54,14 @@ public class NewKeyBindsList extends CustomList {
                     addEntry(new NewKeyBindsList.CategoryEntry(category));
                 }
             }
-            
-            int width = mcIn.font.width(I18n.get(keybinding.getName()));
+    
+            Component component = Component.translatable(keybinding.getName());
+            int width = mcIn.font.width(component);
             if(width > this.maxListLabelWidth) {
                 this.maxListLabelWidth = width;
             }
             if(!category.endsWith(".hidden")) {
-                addEntry(new NewKeyBindsList.KeyEntry(keybinding));
+                addEntry(new NewKeyBindsList.KeyEntry(keybinding, component));
             }
         }
         
@@ -79,7 +73,8 @@ public class NewKeyBindsList extends CustomList {
         Entry entry = this.getEntryAtPos(mouseY);
         if(entry instanceof KeyEntry keyEntry) {
             
-            controlsScreen.renderTooltip(matrixStack, Component.translatable(keyEntry.getKeybinding().getCategory()), mouseX, mouseY);
+            controlsScreen.renderTooltip(matrixStack, Component.translatable(keyEntry.getKeybinding()
+                    .getCategory()), mouseX, mouseY);
         }
     }
     
@@ -160,35 +155,27 @@ public class NewKeyBindsList extends CustomList {
         /**
          * The localized key description for this KeyEntry
          */
-        private final String keyDesc;
+        private final Component keyDesc;
         private final Button btnChangeKeyBinding;
         private final Button btnResetKeyBinding;
         
         
-        private KeyEntry(final KeyMapping name) {
+        private KeyEntry(final KeyMapping name, final Component keyDesc) {
             
             this.keybinding = name;
-            this.keyDesc = I18n.get(name.getName());
-            this.btnChangeKeyBinding = new Button(0, 0, 75 + 20, 20, Component.literal(this.keyDesc), (btn) -> NewKeyBindsList.this.controlsScreen.selectedKey = name) {
-                
-                @Override
-                protected MutableComponent createNarrationMessage() {
-                    
-                    return name.isUnbound() ? Component.translatable("narrator.controls.unbound", NewKeyBindsList.KeyEntry.this.keyDesc) : Component.translatable("narrator.controls.bound", NewKeyBindsList.KeyEntry.this.keyDesc, super.createNarrationMessage());
-                }
-                
-            };
-            this.btnResetKeyBinding = new Button(0, 0, 50, 20, Component.translatable("controls.reset"), (btn) -> {
-                Services.PLATFORM.setToDefault(minecraft.options, name);
-                KeyMapping.resetMapping();
-            }) {
-                
-                @Override
-                protected MutableComponent createNarrationMessage() {
-                    
-                    return Component.translatable("narrator.controls.reset", NewKeyBindsList.KeyEntry.this.keyDesc);
-                }
-            };
+            this.keyDesc = keyDesc;
+            this.btnChangeKeyBinding = Button.builder(this.keyDesc, (btn) -> NewKeyBindsList.this.controlsScreen.selectedKey = name)
+                    .bounds(0, 0, 75, 20)
+                    .createNarration(supp -> name.isUnbound() ? Component.translatable("narrator.controls.unbound", keyDesc) : Component.translatable("narrator.controls.bound", keyDesc, supp.get()))
+                    .build();
+            
+            this.btnResetKeyBinding = Button.builder(Component.translatable("controls.reset"), btn -> {
+                        Services.PLATFORM.setToDefault(minecraft.options, name);
+                        KeyMapping.resetMapping();
+                    }).bounds(0, 0, 50, 20)
+                    .createNarration(supp -> Component.translatable("narrator.controls.reset", keyDesc))
+                    .build();
+            
         }
         
         @Override
@@ -198,14 +185,14 @@ public class NewKeyBindsList extends CustomList {
             boolean flag = NewKeyBindsList.this.controlsScreen.selectedKey == this.keybinding;
             int length = Math.max(0, x + 90 - NewKeyBindsList.this.maxListLabelWidth);
             NewKeyBindsList.this.mc.font.draw(stack, this.keyDesc, (float) (length), (float) (y + rowWidth / 2 - 9 / 2), 16777215);
-            this.btnResetKeyBinding.x = x + 190 + 20;
-            this.btnResetKeyBinding.y = y;
+            this.btnResetKeyBinding.setX(x + 190 + 20);
+            this.btnResetKeyBinding.setY(y);
             this.btnResetKeyBinding.active = !this.keybinding.isDefault();
             this.btnResetKeyBinding.render(stack, mouseX, mouseY, partialTicks);
             
             
-            this.btnChangeKeyBinding.x = x + 105;
-            this.btnChangeKeyBinding.y = y;
+            this.btnChangeKeyBinding.setX(x + 105);
+            this.btnChangeKeyBinding.setY(y);
             this.btnChangeKeyBinding.setMessage(this.keybinding.getTranslatedKeyMessage());
             
             boolean flag1 = false;
@@ -279,7 +266,7 @@ public class NewKeyBindsList extends CustomList {
             return keybinding;
         }
         
-        public String getKeyDesc() {
+        public Component getKeyDesc() {
             
             return keyDesc;
         }

@@ -15,7 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.controls.KeyBindsList;
@@ -23,7 +23,6 @@ import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
-import java.awt.*;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -68,10 +67,10 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         this.setKeyBindsList(this.customKeyList);
         this.addWidget(getKeyBindsList());
         this.setFocused(getKeyBindsList());
-        this.addRenderableWidget(new Button(this.width / 2 - 155 + 160, this.height - 29, 150, 20, Component.translatable("gui.done"), (btn) -> Objects.requireNonNull(this.minecraft)
-                .setScreen(this.lastScreen)));
+        this.addRenderableWidget(Button.builder(Component.translatable("gui.done"), (btn) -> Objects.requireNonNull(this.minecraft)
+                .setScreen(this.lastScreen)).bounds(this.width / 2 - 155 + 160, this.height - 29, 150, 20).build());
         
-        this.buttonReset = this.addRenderableWidget(new Button(this.width / 2 - 155, this.height - 29, 74, 20, Component.translatable("controls.resetAll"), (btn) -> {
+        this.buttonReset = this.addRenderableWidget(Button.builder(Component.translatable("controls.resetAll"), btn -> {
             
             if(!confirmingReset) {
                 confirmingReset = true;
@@ -86,8 +85,8 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
             }
             
             KeyMapping.releaseAll();
-        }));
-        this.buttonNone = this.addRenderableWidget(new Button(this.width / 2 - 155 + 160 + 76, this.height - 29 - 24, 150 / 2, 20, Component.translatable("options.showNone"), (btn) -> {
+        }).bounds(this.width / 2 - 155, this.height - 29, 74, 20).build());
+        this.buttonNone = this.addRenderableWidget(Button.builder(Component.translatable("options.showNone"), (btn) -> {
             if(displayMode == DisplayMode.NONE) {
                 buttonNone.setMessage(Component.translatable("options.showNone"));
                 displayMode = DisplayMode.ALL;
@@ -97,8 +96,8 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
                 buttonConflicting.setMessage(Component.translatable("options.showConflicts"));
             }
             filterKeys();
-        }));
-        this.buttonConflicting = this.addRenderableWidget(new Button(this.width / 2 - 155 + 160, this.height - 29 - 24, 150 / 2, 20, Component.translatable("options.showConflicts"), (btn) -> {
+        }).bounds(this.width / 2 - 155 + 160 + 76, this.height - 29 - 24, 150 / 2, 20).build());
+        this.buttonConflicting = this.addRenderableWidget(Button.builder(Component.translatable("options.showConflicts"), (btn) -> {
             if(displayMode == DisplayMode.CONFLICTING) {
                 buttonConflicting.setMessage(Component.translatable("options.showConflicts"));
                 displayMode = DisplayMode.ALL;
@@ -108,7 +107,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
                 buttonNone.setMessage(Component.translatable("options.showNone"));
             }
             filterKeys();
-        }));
+        }).bounds(this.width / 2 - 155 + 160, this.height - 29 - 24, 150 / 2, 20).build());
         search = new EditBox(font, this.width / 2 - 154, this.height - 29 - 23, 148, 18, Component.empty());
         addWidget(search);
         this.buttonKey = this.addRenderableWidget(new FancyCheckbox(this.width / 2 - (155 / 2), this.height - 29 - 37, 11, 11, Component.translatable("options.key"), false, btn -> {
@@ -122,13 +121,14 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
             filterKeys();
         }));
         sortOrder = SortOrder.NONE;
-        Button buttonSort = this.addRenderableWidget(new Button(this.width / 2 - 155 + 160 + 76, this.height - 29 - 24 - 24, 150 / 2, 20, Component.translatable("options.sort").append(": " + sortOrder.getName()), (btn) -> {
+        Button buttonSort = this.addRenderableWidget(Button.builder(Component.translatable("options.sort")
+                .append(": " + sortOrder.getName()), (btn) -> {
             sortOrder = sortOrder.cycle();
             btn.setMessage(Component.translatable("options.sort").append(": " + sortOrder.getName()));
             filterKeys();
-        }));
+        }).bounds(this.width / 2 - 155 + 160 + 76, this.height - 29 - 24 - 24, 150 / 2, 20).build());
         
-        this.addRenderableWidget(new Button(this.width / 2 - 155 + 76, this.height - 29, 74, 20, Component.translatable("options.toggleFree"), (btn) -> {
+        this.addRenderableWidget(Button.builder(Component.translatable("options.toggleFree"), (btn) -> {
             this.removeWidget(getKeyBindsList());
             if(showFree) {
                 buttonSort.active = true;
@@ -151,7 +151,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
             this.addWidget(getKeyBindsList());
             this.setFocused(getKeyBindsList());
             showFree = !showFree;
-        }));
+        }).bounds(this.width / 2 - 155 + 76, this.height - 29, 74, 20).build());
         
         lastSearch = "";
         displayMode = DisplayMode.ALL;
@@ -186,7 +186,10 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
             getKeyBindsList().setScrollAmount(0);
             Predicate<NewKeyBindsList.KeyEntry> filters = switch(searchType) {
                 case NAME -> displayMode.getPredicate()
-                        .and(keyEntry -> keyEntry.getKeyDesc().toLowerCase().contains(lastSearch.toLowerCase()));
+                        .and(keyEntry -> keyEntry.getKeyDesc()
+                                .getString()
+                                .toLowerCase()
+                                .contains(lastSearch.toLowerCase()));
                 case CATEGORY -> displayMode.getPredicate()
                         .and(keyEntry -> Component.translatable(keyEntry.getKeybinding().getCategory()).getString()
                                 .toLowerCase()
@@ -287,8 +290,8 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         Component text = Component.translatable("options.search");
         font.draw(stack, text, this.width / 2f - (155 / 2f) - (font.width(text.getString())) - 5, this.height - 29 - 42, 16777215);
         
-        for(Widget widget : getScreenAccess().controlling$getRenderables()) {
-            widget.render(stack, mouseX, mouseY, partialTicks);
+        for(Renderable renderable : getScreenAccess().controlling$getRenderables()) {
+            renderable.render(stack, mouseX, mouseY, partialTicks);
         }
     }
     

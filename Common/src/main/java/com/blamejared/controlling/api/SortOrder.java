@@ -9,11 +9,9 @@ import java.util.List;
 public enum SortOrder {
     NONE(entries -> {
     }),
-    AZ(entries -> entries.sort(Comparator.comparing(o -> ((NewKeyBindsList.KeyEntry) o).getKeyDesc()))),
-    ZA(entries -> {
-        entries.sort((o1, o2) -> ((NewKeyBindsList.KeyEntry) o2).getKeyDesc()
-                .compareTo(((NewKeyBindsList.KeyEntry) o1).getKeyDesc()));
-    });
+    AZ(entries -> entries.sort(Comparator.comparing(o -> ((NewKeyBindsList.KeyEntry) o).getKeyDesc().getString()))),
+    ZA(entries -> entries.sort(Comparator.comparing(o -> ((NewKeyBindsList.KeyEntry) o).getKeyDesc().getString())
+            .reversed()));
     
     private final ISort sorter;
     

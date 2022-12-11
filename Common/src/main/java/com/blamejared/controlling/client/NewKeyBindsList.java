@@ -1,5 +1,6 @@
 package com.blamejared.controlling.client;
 
+import com.blamejared.controlling.ControllingConstants;
 import com.blamejared.controlling.api.events.IKeyEntryListenersEvent;
 import com.blamejared.controlling.api.events.IKeyEntryMouseClickedEvent;
 import com.blamejared.controlling.api.events.IKeyEntryMouseReleasedEvent;
@@ -169,7 +170,7 @@ public class NewKeyBindsList extends CustomList {
                     .createNarration(supp -> name.isUnbound() ? Component.translatable("narrator.controls.unbound", keyDesc) : Component.translatable("narrator.controls.bound", keyDesc, supp.get()))
                     .build();
             
-            this.btnResetKeyBinding = Button.builder(Component.translatable("controls.reset"), btn -> {
+            this.btnResetKeyBinding = Button.builder(ControllingConstants.COMPONENT_CONTROLS_RESET, btn -> {
                         Services.PLATFORM.setToDefault(minecraft.options, name);
                         KeyMapping.resetMapping();
                     }).bounds(0, 0, 50, 20)

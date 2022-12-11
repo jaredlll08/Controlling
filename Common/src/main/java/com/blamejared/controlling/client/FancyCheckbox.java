@@ -1,6 +1,6 @@
 package com.blamejared.controlling.client;
 
-import com.google.common.collect.Comparators;
+import com.blamejared.controlling.ControllingConstants;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -11,8 +11,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-
-import java.util.Comparator;
 
 public class FancyCheckbox extends AbstractButton {
     
@@ -48,18 +46,19 @@ public class FancyCheckbox extends AbstractButton {
     
     @Override
     protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+        
         narrationElementOutput.add(NarratedElementType.TITLE, this.createNarrationMessage());
         if(this.active) {
             if(this.isFocused()) {
-                narrationElementOutput.add(NarratedElementType.USAGE, Component.translatable("narration.checkbox.usage.focused"));
+                narrationElementOutput.add(NarratedElementType.USAGE, ControllingConstants.COMPONENT_NARRATION_CHECKBOX_USAGE_FOCUSED);
             } else {
-                narrationElementOutput.add(NarratedElementType.USAGE, Component.translatable("narration.checkbox.usage.hovered"));
+                narrationElementOutput.add(NarratedElementType.USAGE, ControllingConstants.COMPONENT_NARRATION_CHECKBOX_USAGE_HOVERED);
             }
         }
     }
     
     public void renderButton(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-    
+        
         Minecraft mc = Minecraft.getInstance();
         RenderSystem.setShaderTexture(0, TEXTURE);
         RenderSystem.enableDepthTest();

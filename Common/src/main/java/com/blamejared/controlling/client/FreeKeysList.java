@@ -1,5 +1,6 @@
 package com.blamejared.controlling.client;
 
+import com.blamejared.controlling.ControllingConstants;
 import com.blamejared.controlling.mixin.AccessInputConstantsKey;
 import com.blamejared.controlling.mixin.AccessKeyMapping;
 import com.google.common.collect.ImmutableList;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class FreeKeysList extends CustomList {
@@ -54,7 +56,8 @@ public class FreeKeysList extends CustomList {
         AccessInputConstantsKey.controlling$getNAME_MAP()
                 .values()
                 .stream()
-                .filter(input -> !input.toString().startsWith("key.keyboard.world"))
+                .filter(input -> !input.getName().startsWith("key.keyboard.world"))
+                .filter(Predicate.not(InputConstants.UNKNOWN::equals))
                 .sorted(Comparator.comparing(o -> o.getDisplayName().getString()))
                 .forEach(input -> {
                     if(keyBindings.stream()
@@ -142,7 +145,7 @@ public class FreeKeysList extends CustomList {
         @Override
         public void render(PoseStack stack, int slotIndex, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             
-            drawCenteredString(stack, mc.font, Component.translatable("options.availableKeys"), (Objects.requireNonNull(mc.screen).width / 2 - this.text.length() / 2), (y + height - 9 - 1), 16777215);
+            drawCenteredString(stack, mc.font, ControllingConstants.COMPONENT_OPTIONS_AVAILABLE_KEYS, (Objects.requireNonNull(mc.screen).width / 2 - this.text.length() / 2), (y + height - 9 - 1), 16777215);
         }
         
     }

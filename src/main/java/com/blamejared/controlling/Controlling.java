@@ -38,6 +38,8 @@ public class Controlling {
 
     @Mod.EventHandler
     private void init(final FMLInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
+        if (event.getSide().isClient()) {
+            MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
+        }
     }
 }

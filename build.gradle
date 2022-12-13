@@ -41,6 +41,8 @@ archivesBaseName = 'Controlling'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
+    replaceIn "Controlling.java"
+    replace "GRADLETOKEN_VERSION", project.version
     version = "1.7.10-10.13.4.1614-1.7.10"
     mappings = "stable_12"
     runDir = "run"

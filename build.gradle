@@ -3,16 +3,16 @@ buildscript {
         jcenter()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://maven.minecraftforge.net"
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3.4'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "3.0.10"
+version = "3.0.11"
 group= "us.getfluxed.controlling" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Controlling"
 
@@ -26,9 +26,9 @@ jar {
     }
 }
 minecraft {
-    version = "1.12-14.21.1.2387"
+    version = "1.12.2-14.23.5.2847"
     runDir = "run"
-    mappings = "snapshot_20161220"
+    mappings = "stable_39"
 }
 
 dependencies {

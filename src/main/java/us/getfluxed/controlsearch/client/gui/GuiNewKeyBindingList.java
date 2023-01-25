@@ -47,7 +47,7 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
                 }
             }
             
-            int j = mcIn.fontRendererObj.getStringWidth(I18n.format(keybinding.getKeyDescription()));
+            int j = mcIn.fontRenderer.getStringWidth(I18n.format(keybinding.getKeyDescription()));
             
             if(j > this.maxListLabelWidth) {
                 this.maxListLabelWidth = j;
@@ -71,7 +71,7 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
     }
     
     protected int getScrollBarX() {
-        return super.getScrollBarX() + 35;
+        return GuiNewKeyBindingList.this.mc.currentScreen.width - 50;
     }
     
     /**
@@ -89,16 +89,18 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
         
         public CategoryEntry(String name) {
             this.labelText = I18n.format(name);
-            this.labelWidth = GuiNewKeyBindingList.this.mc.fontRendererObj.getStringWidth(this.labelText);
+            this.labelWidth = GuiNewKeyBindingList.this.mc.fontRenderer.getStringWidth(this.labelText);
         }
-        
+
+
         @Override
-        public void func_192633_a(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_) {
+        public void updatePosition(int i, int i1, int i2, float v) {
+
         }
-        
+
         @Override
-        public void func_192634_a(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float p_192634_9_) {
-            GuiNewKeyBindingList.this.mc.fontRendererObj.drawString(this.labelText, GuiNewKeyBindingList.this.mc.currentScreen.width / 2 - this.labelWidth / 2, y + slotHeight - GuiNewKeyBindingList.this.mc.fontRendererObj.FONT_HEIGHT - 1, 16777215);
+        public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float p_192634_9_) {
+            GuiNewKeyBindingList.this.mc.fontRenderer.drawString(this.labelText, GuiNewKeyBindingList.this.mc.currentScreen.width / 2 - this.labelWidth / 2, y + slotHeight - GuiNewKeyBindingList.this.mc.fontRenderer.FONT_HEIGHT - 1, 16777215);
         }
         
         /**
@@ -139,21 +141,23 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
         }
         
         @Override
-        public void func_192633_a(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_) {
+        public void updatePosition(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_) {
         }
         
         @Override
-        public void func_192634_a(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float p_192634_9_) {
+        public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float p_192634_9_) {
             boolean flag = GuiNewKeyBindingList.this.controlsScreen.buttonId == this.keybinding;
-            GuiNewKeyBindingList.this.mc.fontRendererObj.drawString(this.keyDesc, x + 90 - GuiNewKeyBindingList.this.maxListLabelWidth, y + slotHeight / 2 - GuiNewKeyBindingList.this.mc.fontRendererObj.FONT_HEIGHT / 2, 16777215);
+            int halfScreen = GuiNewKeyBindingList.this.mc.currentScreen.width / 2;
+            boolean extendFlag = GuiNewKeyBindingList.this.mc.fontRenderer.getStringWidth(this.keyDesc) > halfScreen;
+            GuiNewKeyBindingList.this.mc.fontRenderer.drawString(this.keyDesc, Math.max(x + 90 - GuiNewKeyBindingList.this.maxListLabelWidth, 20), y + slotHeight / 2 - GuiNewKeyBindingList.this.mc.fontRenderer.FONT_HEIGHT / 2, 16777215);
             //            GuiNewKeyBindingList.this.mc.fontRendererObj.drawString(String.format("(%s)", I18n.format(keybinding.getKeyCategory())), x - 45 - GuiNewKeyBindingList.this.maxListLabelWidth, y + slotHeight / 2 - GuiNewKeyBindingList.this.mc.fontRendererObj.FONT_HEIGHT / 2, 16777215);
             btnReset.visible = !keybinding.isSetToDefaultValue();
-            this.btnReset.xPosition = x + 210;
-            this.btnReset.yPosition = y;
+            this.btnReset.x = halfScreen + 110;
+            this.btnReset.y = y;
             this.btnReset.enabled = !this.keybinding.isSetToDefaultValue();
             
-            this.btnChangeKeyBinding.xPosition = x + 105;
-            this.btnChangeKeyBinding.yPosition = y;
+            this.btnChangeKeyBinding.x = halfScreen + 5;
+            this.btnChangeKeyBinding.y = y;
             this.btnChangeKeyBinding.displayString = this.keybinding.getDisplayName();
             
             boolean flag1 = false;
@@ -173,12 +177,15 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
             } else if(flag1) {
                 this.btnChangeKeyBinding.displayString = (keyCodeModifierConflict ? TextFormatting.GOLD : TextFormatting.RED) + this.btnChangeKeyBinding.displayString;
             }
-            this.btnChangeKeyBinding.func_191745_a(GuiNewKeyBindingList.this.mc, mouseX, mouseY, p_192634_9_);
-            this.btnReset.func_191745_a(GuiNewKeyBindingList.this.mc, mouseX, mouseY, p_192634_9_);
+            this.btnChangeKeyBinding.drawButton(GuiNewKeyBindingList.this.mc, mouseX, mouseY, p_192634_9_);
+            this.btnReset.drawButton(GuiNewKeyBindingList.this.mc, mouseX, mouseY, p_192634_9_);
             //            if(mouseX >= x + 90 - GuiNewKeyBindingList.this.maxListLabelWidth && mouseX <= x + listWidth) {
             if(mouseY >= y && mouseY <= y + slotHeight) {
-                mc.fontRendererObj.drawString(I18n.format(keybinding.getKeyCategory()), mouseX + 10, mouseY, 0xFFFFFF);
-            }
+                if(extendFlag) {
+                    mc.fontRenderer.drawString(I18n.format(keybinding.getKeyCategory()) + ": " + this.keyDesc, mouseX + 10, mouseY, 0xFFFFFF);
+                }else{
+                    mc.fontRenderer.drawString(I18n.format(keybinding.getKeyCategory()), mouseX + 10, mouseY, 0xFFFFFF);
+                }            }
             //            }
             
             

@@ -71,7 +71,7 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
     }
     
     protected int getScrollBarX() {
-        return GuiNewKeyBindingList.this.mc.currentScreen.width - 50;
+        return GuiNewKeyBindingList.this.mc.currentScreen.width - 20;
     }
     
     /**

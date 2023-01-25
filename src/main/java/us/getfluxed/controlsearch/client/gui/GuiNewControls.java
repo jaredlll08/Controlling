@@ -69,15 +69,15 @@ public class GuiNewControls extends GuiControls {
         int i = 0;
         
         for(GameSettings.Options gamesettings$options : OPTIONS_ARR) {
-            if(gamesettings$options.getEnumFloat()) {
-                this.buttonList.add(new GuiOptionSlider(gamesettings$options.returnEnumOrdinal(), this.width / 2 - 155 + i % 2 * 160, 18 + 24 * (i >> 1), gamesettings$options));
+            if(gamesettings$options.isFloat()) {
+                this.buttonList.add(new GuiOptionSlider(gamesettings$options.getOrdinal(), this.width / 2 - 155 + i % 2 * 160, 18 + 24 * (i >> 1), gamesettings$options));
             } else {
-                this.buttonList.add(new GuiOptionButton(gamesettings$options.returnEnumOrdinal(), this.width / 2 - 155 + i % 2 * 160, 18 + 24 * (i >> 1), gamesettings$options, this.options.getKeyBinding(gamesettings$options)));
+                this.buttonList.add(new GuiOptionButton(gamesettings$options.getOrdinal(), this.width / 2 - 155 + i % 2 * 160, 18 + 24 * (i >> 1), gamesettings$options, this.options.getKeyBinding(gamesettings$options)));
             }
             ++i;
         }
         
-        search = new GuiTextField(0, mc.fontRendererObj, this.width / 2 - 154, this.height - 29 - 23, 148, 18);
+        search = new GuiTextField(0, mc.fontRenderer, this.width / 2 - 154, this.height - 29 - 23, 148, 18);
         search.setCanLoseFocus(true);
         buttonConflict = new GuiButton(2906, this.width / 2 - 155 + 160, this.height - 29 - 24, 150 / 2, 20, translate("options.showConflicts"));
         buttonNone = new GuiButton(2907, this.width / 2 - 155 + 160 + 80, this.height - 29 - 24, 150 / 2, 20, translate("options.showNone"));
@@ -273,8 +273,8 @@ public class GuiNewControls extends GuiControls {
             }
             KeyBinding.resetKeyBindingArrayAndHash();
         } else if(button.id < 100 && button instanceof GuiOptionButton) {
-            this.options.setOptionValue(((GuiOptionButton) button).returnEnumOptions(), 1);
-            button.displayString = this.options.getKeyBinding(GameSettings.Options.getEnumOptions(button.id));
+            this.options.setOptionValue(((GuiOptionButton) button).getOption(), 1);
+            button.displayString = this.options.getKeyBinding(GameSettings.Options.byOrdinal(button.id));
         } else if(button.id == 2906) {
             none = false;
             buttonNone.displayString = translate("options.showNone");
@@ -335,7 +335,7 @@ public class GuiNewControls extends GuiControls {
             superSuperMouseClicked(mouseX, mouseY, mouseButton);
         }
         search.mouseClicked(mouseX, mouseY, mouseButton);
-        if(mouseButton == 1 && mouseX >= search.xPosition && mouseX < search.xPosition + search.width && mouseY >= search.yPosition && mouseY < search.yPosition + search.height) {
+        if(mouseButton == 1 && mouseX >= search.x && mouseX < search.x + search.width && mouseY >= search.y && mouseY < search.y + search.height) {
             search.setText("");
         }
     }
@@ -425,8 +425,8 @@ public class GuiNewControls extends GuiControls {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
         this.keyBindingList.drawScreen(mouseX, mouseY, partialTicks);
-        this.drawCenteredString(this.fontRendererObj, this.screenTitle, this.width / 2, 8, 16777215);
-        this.drawCenteredString(this.fontRendererObj, translate("options.search"), this.width / 2 - (155 / 2), this.height - 29 - 39, 16777215);
+        this.drawCenteredString(this.fontRenderer, this.screenTitle, this.width / 2, 8, 16777215);
+        this.drawCenteredString(this.fontRenderer, translate("options.search"), this.width / 2 - (155 / 2), this.height - 29 - 39, 16777215);
         boolean flag = false;
         
         for(KeyBinding keybinding : this.options.keyBindings) {
@@ -450,7 +450,7 @@ public class GuiNewControls extends GuiControls {
     
     public void superSuperDrawScreen(int mouseX, int mouseY, float partialTicks) {
         for(GuiButton aButtonList : this.buttonList) {
-            aButtonList.func_191745_a(this.mc, mouseX, mouseY, partialTicks);
+            aButtonList.drawButton(this.mc, mouseX, mouseY, partialTicks);
         }
         
         for(GuiLabel aLabelList : this.labelList) {

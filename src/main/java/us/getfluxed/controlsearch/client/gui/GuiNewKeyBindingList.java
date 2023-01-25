@@ -2,6 +2,10 @@ package us.getfluxed.controlsearch.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.text.TextFormatting;
@@ -19,6 +23,9 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
     private LinkedList<IGuiListEntry> listEntriesAll;
     
     private int maxListLabelWidth;
+
+    private static int wrapped = 0;
+    private static int fill = 0;
     
     public GuiNewKeyBindingList(GuiNewControls controls, Minecraft mcIn) {
         super(controls, mcIn);
@@ -47,7 +54,7 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
                 }
             }
             
-            int j = mcIn.fontRendererObj.getStringWidth(I18n.format(keybinding.getKeyDescription()));
+            int j = mcIn.fontRenderer.getStringWidth(I18n.format(keybinding.getKeyDescription()));
             
             if(j > this.maxListLabelWidth) {
                 this.maxListLabelWidth = j;
@@ -58,9 +65,52 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
             }
         }
     }
+
+    @Override
+    protected void drawSelectionBox(int insideLeft, int insideTop, int mouseXIn, int mouseYIn, float partialTicks) {
+        int i = this.getSize();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        fill = 0;
+        for(int j = 0; j < i; ++j) {
+
+            int k = insideTop + (j + fill) * this.slotHeight + this.headerPadding;
+            int l = this.slotHeight - 4;
+            if (k > this.bottom || k + l < this.top) {
+                this.updateItemPos(j, insideLeft, k, partialTicks);
+            }
+
+            if (this.showSelectionBox && this.isSelected(j)) {
+                int i1 = this.left + (this.width / 2 - this.getListWidth() / 2);
+                int j1 = this.left + this.width / 2 + this.getListWidth() / 2;
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager.disableTexture2D();
+                bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+                bufferbuilder.pos((double)i1, (double)(k + l + 2), 0.0).tex(0.0, 1.0).color(128, 128, 128, 255).endVertex();
+                bufferbuilder.pos((double)j1, (double)(k + l + 2), 0.0).tex(1.0, 1.0).color(128, 128, 128, 255).endVertex();
+                bufferbuilder.pos((double)j1, (double)(k - 2), 0.0).tex(1.0, 0.0).color(128, 128, 128, 255).endVertex();
+                bufferbuilder.pos((double)i1, (double)(k - 2), 0.0).tex(0.0, 0.0).color(128, 128, 128, 255).endVertex();
+                bufferbuilder.pos((double)(i1 + 1), (double)(k + l + 1), 0.0).tex(0.0, 1.0).color(0, 0, 0, 255).endVertex();
+                bufferbuilder.pos((double)(j1 - 1), (double)(k + l + 1), 0.0).tex(1.0, 1.0).color(0, 0, 0, 255).endVertex();
+                bufferbuilder.pos((double)(j1 - 1), (double)(k - 1), 0.0).tex(1.0, 0.0).color(0, 0, 0, 255).endVertex();
+                bufferbuilder.pos((double)(i1 + 1), (double)(k - 1), 0.0).tex(0.0, 0.0).color(0, 0, 0, 255).endVertex();
+                tessellator.draw();
+                GlStateManager.enableTexture2D();
+            }
+
+            this.drawSlot(j, insideLeft, k, l, mouseXIn, mouseYIn, partialTicks);
+
+            fill += wrapped;
+        }
+    }
     
     protected int getSize() {
         return this.listEntries.size();
+    }
+
+    @Override
+    protected int getContentHeight() {
+        return (this.getSize() + fill) * this.slotHeight + this.headerPadding;
     }
     
     /**
@@ -71,7 +121,7 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
     }
     
     protected int getScrollBarX() {
-        return super.getScrollBarX() + 35;
+        return GuiNewKeyBindingList.this.mc.currentScreen.width - 20;
     }
     
     /**
@@ -89,16 +139,18 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
         
         public CategoryEntry(String name) {
             this.labelText = I18n.format(name);
-            this.labelWidth = GuiNewKeyBindingList.this.mc.fontRendererObj.getStringWidth(this.labelText);
+            this.labelWidth = GuiNewKeyBindingList.this.mc.fontRenderer.getStringWidth(this.labelText);
         }
-        
+
+
         @Override
-        public void func_192633_a(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_) {
+        public void updatePosition(int i, int i1, int i2, float v) {
+
         }
-        
+
         @Override
-        public void func_192634_a(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float p_192634_9_) {
-            GuiNewKeyBindingList.this.mc.fontRendererObj.drawString(this.labelText, GuiNewKeyBindingList.this.mc.currentScreen.width / 2 - this.labelWidth / 2, y + slotHeight - GuiNewKeyBindingList.this.mc.fontRendererObj.FONT_HEIGHT - 1, 16777215);
+        public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float p_192634_9_) {
+            GuiNewKeyBindingList.this.mc.fontRenderer.drawString(this.labelText, GuiNewKeyBindingList.this.mc.currentScreen.width / 2 - this.labelWidth / 2, y + slotHeight - GuiNewKeyBindingList.this.mc.fontRenderer.FONT_HEIGHT - 1, 16777215);
         }
         
         /**
@@ -130,6 +182,8 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
         private final String keyDesc;
         private final GuiButton btnChangeKeyBinding;
         private final GuiButton btnReset;
+
+
         
         private KeyEntry(KeyBinding name) {
             this.keybinding = name;
@@ -139,21 +193,24 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
         }
         
         @Override
-        public void func_192633_a(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_) {
+        public void updatePosition(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_) {
         }
         
         @Override
-        public void func_192634_a(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float p_192634_9_) {
+        public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float p_192634_9_) {
             boolean flag = GuiNewKeyBindingList.this.controlsScreen.buttonId == this.keybinding;
-            GuiNewKeyBindingList.this.mc.fontRendererObj.drawString(this.keyDesc, x + 90 - GuiNewKeyBindingList.this.maxListLabelWidth, y + slotHeight / 2 - GuiNewKeyBindingList.this.mc.fontRendererObj.FONT_HEIGHT / 2, 16777215);
+            int halfScreen = GuiNewKeyBindingList.this.mc.currentScreen.width / 2;
+
+            GuiNewKeyBindingList.this.mc.fontRenderer.drawSplitString(this.keyDesc, Math.max(x + 90 - GuiNewKeyBindingList.this.maxListLabelWidth, 20), y + slotHeight / 2 - GuiNewKeyBindingList.this.mc.fontRenderer.FONT_HEIGHT / 2, halfScreen - 20, 16777215);
             //            GuiNewKeyBindingList.this.mc.fontRendererObj.drawString(String.format("(%s)", I18n.format(keybinding.getKeyCategory())), x - 45 - GuiNewKeyBindingList.this.maxListLabelWidth, y + slotHeight / 2 - GuiNewKeyBindingList.this.mc.fontRendererObj.FONT_HEIGHT / 2, 16777215);
+            wrapped = Math.max(GuiNewKeyBindingList.this.mc.fontRenderer.listFormattedStringToWidth(this.keyDesc, halfScreen - 20).size() / 2 - 1, 0);
             btnReset.visible = !keybinding.isSetToDefaultValue();
-            this.btnReset.xPosition = x + 210;
-            this.btnReset.yPosition = y;
+            this.btnReset.x = halfScreen + 110;
+            this.btnReset.y = y;
             this.btnReset.enabled = !this.keybinding.isSetToDefaultValue();
             
-            this.btnChangeKeyBinding.xPosition = x + 105;
-            this.btnChangeKeyBinding.yPosition = y;
+            this.btnChangeKeyBinding.x = halfScreen + 5;
+            this.btnChangeKeyBinding.y = y;
             this.btnChangeKeyBinding.displayString = this.keybinding.getDisplayName();
             
             boolean flag1 = false;
@@ -173,11 +230,13 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
             } else if(flag1) {
                 this.btnChangeKeyBinding.displayString = (keyCodeModifierConflict ? TextFormatting.GOLD : TextFormatting.RED) + this.btnChangeKeyBinding.displayString;
             }
-            this.btnChangeKeyBinding.func_191745_a(GuiNewKeyBindingList.this.mc, mouseX, mouseY, p_192634_9_);
-            this.btnReset.func_191745_a(GuiNewKeyBindingList.this.mc, mouseX, mouseY, p_192634_9_);
+            this.btnChangeKeyBinding.drawButton(GuiNewKeyBindingList.this.mc, mouseX, mouseY, p_192634_9_);
+            this.btnReset.drawButton(GuiNewKeyBindingList.this.mc, mouseX, mouseY, p_192634_9_);
             //            if(mouseX >= x + 90 - GuiNewKeyBindingList.this.maxListLabelWidth && mouseX <= x + listWidth) {
-            if(mouseY >= y && mouseY <= y + slotHeight) {
-                mc.fontRendererObj.drawString(I18n.format(keybinding.getKeyCategory()), mouseX + 10, mouseY, 0xFFFFFF);
+            if(mouseY >= y && mouseY <= y + slotHeight * wrapped) {
+
+                mc.fontRenderer.drawString(I18n.format(keybinding.getKeyCategory()), mouseX + 10, mouseY, 0xFFFFFF);
+
             }
             //            }
             

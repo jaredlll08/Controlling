@@ -37,10 +37,8 @@ public class GuiNewControls extends ControlsScreen {
     private GuiCheckBox buttonKey;
     private GuiCheckBox buttonCat;
     private Button buttonFree;
-    private Button patreonButton;
     private boolean confirmingReset = false;
     private boolean showFree = false;
-    private String name;
     
     private KeyBindingList customKeyList;
     private GuiFreeKeysList freeKeyList;
@@ -126,41 +124,6 @@ public class GuiNewControls extends ControlsScreen {
                 buttonKey.setIsChecked(false);
                 searchType = this.isChecked() ? SearchType.CATEGORY : SearchType.NAME;
                 filterKeys();
-            }
-        });
-        name = Controlling.PATRON_LIST.stream().skip(Controlling.PATRON_LIST.isEmpty() ? 0 : new Random().nextInt(Controlling.PATRON_LIST.size())).findFirst().orElse("");
-        patreonButton = this.addButton(new Button(this.width / 2 - 155 + 160, this.height - 29 - 24 - 24, 150 / 2, 20, new StringTextComponent("Patreon"), p_onPress_1_ -> this.minecraft.displayGuiScreen(new ConfirmOpenLinkScreen((function) -> {
-            if (function) {
-                Util.getOSType().openURI("https://patreon.com/jaredlll08?s=controllingmod");
-            }
-            this.minecraft.displayGuiScreen(this);
-        }, "https://patreon.com/jaredlll08?s=controllingmod", true))) {
-            private boolean wasHovered;
-            
-            @Override
-            public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
-                
-                if(this.visible) {
-                    this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-                    if(this.wasHovered != this.isHovered()) {
-                        if(this.isHovered()) {
-                            if(this.isFocused()) {
-                                this.nextNarration = Util.milliTime() + 200L;
-                            } else {
-                                this.nextNarration = Util.milliTime() + 750L;
-                            }
-                        } else {
-                            this.nextNarration = Long.MAX_VALUE;
-                        }
-                    }
-                    
-                    if(this.visible) {
-                        this.renderButton(stack, mouseX, mouseY, partialTicks);
-                    }
-                    
-                    this.narrate();
-                    this.wasHovered = this.isHovered();
-                }
             }
         });
         sortOrder = SortOrder.NONE;
@@ -337,20 +300,6 @@ public class GuiNewControls extends ControlsScreen {
         
         ITextComponent text = new TranslationTextComponent("options.search");
         font.func_238407_a_(stack, text.func_241878_f(), this.width / 2f - (155 / 2f) - (font.getStringWidth(text.getString())) - 5, this.height - 29 - 42, 16777215);
-        
-        if(patreonButton.isHovered()) {
-            String str = "Join " + name + " and other patrons!";
-            int tempX = mouseX;
-            int tempY = mouseY;
-            boolean outOfBounds = tempX < patreonButton.x || tempX > patreonButton.x + patreonButton.getWidth();
-            outOfBounds |= tempY < patreonButton.y || tempY > patreonButton.y + patreonButton.getHeightRealms();
-            
-            if(outOfBounds) {
-                tempX = patreonButton.x + patreonButton.getWidth();
-                tempY = patreonButton.y + (patreonButton.getHeightRealms() / 2) + 7;
-            }
-            renderTooltip(stack, new StringTextComponent(str), tempX, tempY);
-        }
     }
     
     @Override

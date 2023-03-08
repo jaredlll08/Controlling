@@ -7,13 +7,25 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3.4'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
+}
+plugins {
+    id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "3.0.11"
-group= "us.getfluxed.controlling" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+apply from: 'https://raw.githubusercontent.com/MinecraftModDevelopment/Gradle-Collection/22e7d543a18cd30675277fbfa3669e3d9e206010/generic/secrets.gradle'
+
+if (project.hasProperty('secretFile')) {
+    loadSecrets(new File((String) findProperty('secretFile')))
+}
+
+version = "3.0.12"
+if (System.getenv('BUILD_NUMBER') != null) {
+    version += "." + System.getenv('BUILD_NUMBER')
+}
+group= "com.blamejared.controlling"
 archivesBaseName = "Controlling"
 
 sourceCompatibility = targetCompatibility = "1.8"
@@ -47,5 +59,41 @@ processResources
         
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+task genGitChangelog() {
+    def stdout = new ByteArrayOutputStream()
+    // first commit to check from, in our case the first commit of the branch
+    String firstCommit = '95b89895de2f266d3d642760ce64c98b3d8576d2';
+    String repoLink = "https://github.com/jaredlll08/Controlling/commit/"
+    // was having issues with grep and spaces in the regex
+    exec {
+        commandLine 'git', 'log', '-i', '--grep=version\\spush', '--grep=open\\sbeta\\sspecific\\scode', '--pretty=tformat:%H', '--date=local', firstCommit + '..@{0}'
+        standardOutput = stdout
+    }
+    if (stdout.toString().trim().indexOf("\n") >= 0) {
+        firstCommit = stdout.toString().split("\n")[0].trim();
+    }
+    System.out.println("Last version hash: \"" + firstCommit + "\"");
+    stdout = new ByteArrayOutputStream()
+    def test = exec {
+        commandLine 'git', 'log', '--pretty=tformat:- [%s](' + repoLink + '%H) - %aN - %cd', '--max-parents=1', '--date=local', firstCommit + "..@"
+        standardOutput = stdout
+    }
+    File file = new File("changelog.md")
+    file.write("### Current version: " + project.version)
+    file.append("\n" + stdout.toString())
+    System.out.println("Changelog generated!")
+}
+
+curseforge {
+    apiKey = findProperty('curseforge_api_token') ?: 0
+    project {
+        id = "250398"
+        releaseType = 'release'
+        changelog = file("changelog.md")
+        changelogType = 'markdown'
+        addGameVersion '1.12.2'
     }
 }

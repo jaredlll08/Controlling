@@ -1,23 +1,33 @@
 package com.blamejared.controlling.client;
 
 import com.blamejared.controlling.ControllingConstants;
-import com.blamejared.controlling.api.events.*;
+import com.blamejared.controlling.api.events.IKeyEntryListenersEvent;
+import com.blamejared.controlling.api.events.IKeyEntryMouseClickedEvent;
+import com.blamejared.controlling.api.events.IKeyEntryMouseReleasedEvent;
 import com.blamejared.controlling.platform.Services;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.*;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.*;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.narration.*;
-import net.minecraft.client.gui.screens.controls.*;
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.*;
-import net.minecraft.util.Mth;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.controls.KeyBindsList;
+import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.UnaryOperator;
 
 public class NewKeyBindsList extends CustomList {
@@ -31,8 +41,8 @@ public class NewKeyBindsList extends CustomList {
         super(controls, mcIn);
         this.width = controls.width + 45;
         this.height = controls.height;
-        this.y0 = 20;
-        this.y1 = controls.height - 80;
+        this.y0 = 48;
+        this.y1 = controls.height - 56;
         this.x1 = controls.width + 45;
         this.controlsScreen = controls;
         this.mc = mcIn;
@@ -47,7 +57,7 @@ public class NewKeyBindsList extends CustomList {
             if(!category.equals(lastCategory)) {
                 lastCategory = category;
                 if(!category.endsWith(".hidden")) {
-                    addEntry(new NewKeyBindsList.CategoryEntry(category));
+                    addEntry(new NewKeyBindsList.CategoryEntry(Component.translatable(category)));
                 }
             }
             
@@ -77,25 +87,18 @@ public class NewKeyBindsList extends CustomList {
     
     public class CategoryEntry extends Entry {
         
-        private final String labelText;
+        private final Component name;
         private final int labelWidth;
-        private final String name;
         
-        public CategoryEntry(String name) {
+        public CategoryEntry(Component name) {
             
-            this.labelText = I18n.get(name);
-            this.labelWidth = NewKeyBindsList.this.mc.font.width(this.labelText);
             this.name = name;
-        }
-        
-        public String getName() {
-            
-            return name;
+            this.labelWidth = NewKeyBindsList.this.mc.font.width(this.name);
         }
         
         public void render(PoseStack stack, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             
-            NewKeyBindsList.this.minecraft.font.draw(stack, this.labelText, (float) (Objects.requireNonNull(minecraft.screen).width / 2 - this.labelWidth / 2), (float) (y + rowWidth - 9 - 1), 16777215);
+            NewKeyBindsList.this.minecraft.font.draw(stack, this.name, (float) (Objects.requireNonNull(minecraft.screen).width / 2 - this.labelWidth / 2), (float) (y + rowWidth - 9 - 1), 16777215);
         }
         
         public List<? extends NarratableEntry> narratables() {
@@ -108,7 +111,7 @@ public class NewKeyBindsList extends CustomList {
                 
                 public void updateNarration(NarrationElementOutput neo) {
                     
-                    neo.add(NarratedElementType.TITLE, labelText);
+                    neo.add(NarratedElementType.TITLE, name);
                 }
             });
         }
@@ -123,7 +126,13 @@ public class NewKeyBindsList extends CustomList {
         protected void refreshEntry() {
         
         }
+    
+    
+        public Component name() {
         
+            return name;
+        }
+    
     }
     
     public class KeyEntry extends KeyBindsList.Entry {
@@ -140,6 +149,8 @@ public class NewKeyBindsList extends CustomList {
         private final Button btnResetKeyBinding;
         
         private boolean hasCollision;
+        
+        private final Component categoryName;
         
         private KeyEntry(final KeyMapping key, final Component keyDesc) {
             
@@ -160,6 +171,7 @@ public class NewKeyBindsList extends CustomList {
                     .createNarration(supp -> Component.translatable("narrator.controls.reset", keyDesc))
                     .build();
             
+            this.categoryName = Component.translatable(this.key.getCategory());
             refreshEntry();
         }
         
@@ -226,7 +238,12 @@ public class NewKeyBindsList extends CustomList {
             
             return keyDesc;
         }
+    
+        public Component categoryName() {
         
+            return categoryName;
+        }
+    
         public Button getBtnResetKeyBinding() {
             
             return btnResetKeyBinding;

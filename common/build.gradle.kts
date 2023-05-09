@@ -17,4 +17,5 @@ minecraft {
 
 dependencies {
     compileOnly("org.spongepowered:mixin:0.8.5")
+    implementation("com.blamejared.searchables:Searchables-common-${Versions.MINECRAFT}:${Versions.SEARCHABLES}")
 }

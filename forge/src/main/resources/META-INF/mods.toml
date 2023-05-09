@@ -1,29 +1,35 @@
-modLoader="javafml"
-loaderVersion="[41,)"
-issueTrackerURL="https://github.com/jaredlll08/Controlling/issues"
-license="MIT"
+modLoader = "javafml"
+loaderVersion = "[41,)"
+issueTrackerURL = "https://github.com/jaredlll08/Controlling/issues"
+license = "MIT"
 
 [[mods]]
-modId="controlling"
-updateJSONURL="https://updates.blamejared.com/get?n=controlling&gv=1.19.3"
-version="${file.jarVersion}"
-displayName="Controlling"
-displayURL="https://minecraft.curseforge.com/projects/controlling"
-authors="Jaredlll08"
-logoFile="icon.png"
-description='''
+modId = "controlling"
+updateJSONURL = "https://updates.blamejared.com/get?n=controlling&gv=1.19.3"
+version = "${file.jarVersion}"
+displayName = "Controlling"
+displayURL = "https://minecraft.curseforge.com/projects/controlling"
+authors = "Jaredlll08"
+logoFile = "icon.png"
+description = '''
 Adds the ability to search for keybinds using their name in the KeyBinding menu, this allows players to easily find a key binding in the menu.
 '''
-itemIcon="minecraft:compass"
-  [[dependencies.controlling]]
-	modId="forge"
-	mandatory=true
-	versionRange="[41,)"
-	ordering="NONE"
-	side="CLIENT"
-  [[dependencies.controlling]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.19,)"
-    ordering="NONE"
-    side="CLIENT"
+itemIcon = "minecraft:compass"
+[[dependencies.controlling]]
+modId = "forge"
+mandatory = true
+versionRange = "[41,)"
+ordering = "NONE"
+side = "CLIENT"
+[[dependencies.controlling]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.19,)"
+ordering = "NONE"
+side = "CLIENT"
+[[dependencies.controlling]]
+modId = "searchables"
+mandatory = true
+versionRange = "[1.0,)"
+ordering = "NONE"
+side = "CLIENT"

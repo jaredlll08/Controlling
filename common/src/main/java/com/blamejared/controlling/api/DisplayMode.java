@@ -2,8 +2,8 @@ package com.blamejared.controlling.api;
 
 import com.blamejared.controlling.client.NewKeyBindsList;
 import com.blamejared.controlling.mixin.AccessKeyMapping;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.*;
+import net.minecraft.client.gui.screens.controls.KeyBindsList;
 
 import java.util.function.Predicate;
 
@@ -29,8 +29,8 @@ public enum DisplayMode {
         this.predicate = predicate;
     }
     
-    public Predicate<NewKeyBindsList.KeyEntry> getPredicate() {
+    public Predicate<KeyBindsList.Entry> getPredicate() {
         
-        return predicate;
+        return entry -> entry instanceof NewKeyBindsList.KeyEntry keyEntry && predicate.test(keyEntry);
     }
 }

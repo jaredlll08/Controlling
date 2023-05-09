@@ -40,6 +40,7 @@ dependencies {
     "minecraft"("net.minecraftforge:forge:${Versions.MINECRAFT}-${Versions.FORGE}")
     compileOnly(project(":common"))
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
+    implementation(fg.deobf("com.blamejared.searchables:Searchables-forge-${Versions.MINECRAFT}:${Versions.SEARCHABLES}"))
 }
 
 tasks.create<TaskPublishCurseForge>("publishCurseForge") {
@@ -50,6 +51,7 @@ tasks.create<TaskPublishCurseForge>("publishCurseForge") {
     mainFile.changelog = Utils.getFullChangelog(project)
     mainFile.releaseType = CFG_Constants.RELEASE_TYPE_RELEASE
     mainFile.addJavaVersion("Java ${Versions.JAVA}")
+    mainFile.addRequirement("searchables")
 
     doLast {
         project.ext.set("curse_file_url", "${Properties.CURSE_HOMEPAGE}/files/${mainFile.curseFileId}")

@@ -19,6 +19,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${Versions.FABRIC_LOADER}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${Versions.FABRIC}")
     implementation(project(":common"))
+    modImplementation("com.blamejared.searchables:Searchables-fabric-${Versions.MINECRAFT}:${Versions.SEARCHABLES}")
 }
 
 loom {
@@ -43,6 +44,7 @@ tasks.create<TaskPublishCurseForge>("publishCurseForge") {
     mainFile.addJavaVersion("Java ${Versions.JAVA}")
     mainFile.addGameVersion(Versions.MINECRAFT)
     mainFile.addRequirement("fabric-api")
+    mainFile.addRequirement("searchables")
 
     doLast {
         project.ext.set("curse_file_url", "${Properties.CURSE_HOMEPAGE}/files/${mainFile.curseFileId}")

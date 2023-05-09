@@ -2,22 +2,18 @@ package com.blamejared.controlling.client;
 
 import com.blamejared.controlling.ControllingConstants;
 import com.blamejared.controlling.api.DisplayMode;
-import com.blamejared.controlling.api.SearchType;
 import com.blamejared.controlling.api.SortOrder;
 import com.blamejared.controlling.mixin.AccessKeyBindsScreen;
 import com.blamejared.controlling.mixin.AccessKeyMapping;
-import com.blamejared.controlling.mixin.AccessScreen;
 import com.blamejared.controlling.platform.Services;
+import com.blamejared.searchables.api.autcomplete.AutoCompletingEditBox;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.controls.KeyBindsList;
@@ -25,39 +21,30 @@ import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.LinkedHashSet;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
 
 public class NewKeyBindsScreen extends KeyBindsScreen {
     
-    
-    private Button buttonReset;
-    private final Options options;
-    
-    private String lastSearch;
-    private EditBox search;
-    
+    private AutoCompletingEditBox<KeyBindsList.Entry> search;
     private DisplayMode displayMode;
-    private SearchType searchType;
-    private SortOrder sortOrder;
-    
+    private SortOrder sortOrder = SortOrder.NONE;
     private Button buttonNone;
     private Button buttonConflicting;
-    private FancyCheckbox buttonKey;
-    private FancyCheckbox buttonCat;
-    private boolean confirmingReset;
+    private Button buttonSort;
+    private final DisplayableBoolean confirmingReset = new DisplayableBoolean(false, ControllingConstants.COMPONENT_OPTIONS_CONFIRM_RESET, ControllingConstants.COMPONENT_CONTROLS_RESET_ALL);
     private boolean showFree;
-    
-    private KeyBindsList customKeyList;
+    private Supplier<NewKeyBindsList> newKeyList;
     private Supplier<FreeKeysList> freeKeyList;
     
     public NewKeyBindsScreen(Screen screen, Options settings) {
         
         super(screen, settings);
-        this.options = settings;
     }
     
     /**
@@ -66,317 +53,140 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
      */
     protected void init() {
         
-        this.customKeyList = new NewKeyBindsList(this, this.minecraft);
+        super.init();
+        int searchX = getKeyBindsList().getRowWidth();
+        int btnWidth = Button.DEFAULT_WIDTH / 2 - 1;
+        int groupPadding = 5;
+        int centerX = this.width / 2;
+        int leftX = centerX - Button.DEFAULT_WIDTH - groupPadding;
+        int rightX = centerX + groupPadding;
+        
+        int bottomY = this.height - 29;
+        int rowSpacing = 24;
+        int topRowY = bottomY - rowSpacing;
+        
+        Supplier<List<KeyBindsList.Entry>> listSupplier = () -> getCustomList().getAllEntries();
+        this.search = addRenderableWidget(new AutoCompletingEditBox<>(font, centerX - searchX / 2, 22, searchX, Button.DEFAULT_HEIGHT, search, Component.translatable("selectWorld.search"), ControllingConstants.SEARCHABLE_KEYBINDINGS, listSupplier));
+        this.search.addResponder(this::filterKeys);
+        this.addRenderableOnly(this.search.autoComplete());
+        
+        this.newKeyList = Suppliers.memoize(() -> new NewKeyBindsList(this, this.minecraft));
         this.freeKeyList = Suppliers.memoize(() -> new FreeKeysList(this, this.minecraft));
-        this.setKeyBindsList(showFree ? this.freeKeyList.get() : this.customKeyList);
+        this.removeWidget(getKeyBindsList());
+        this.setKeyBindsList(showFree ? this.freeKeyList.get() : this.newKeyList.get());
         this.addWidget(getKeyBindsList());
-        this.setFocused(getKeyBindsList());
-        this.addRenderableWidget(Button.builder(ControllingConstants.COMPONENT_GUI_DONE, (btn) -> Objects.requireNonNull(this.minecraft)
-                .setScreen(this.lastScreen)).bounds(this.width / 2 - 155 + 160, this.height - 29, 150, 20).build());
         
-        this.buttonReset = this.addRenderableWidget(Button.builder(confirmingReset ? ControllingConstants.COMPONENT_OPTIONS_CONFIRM_RESET : ControllingConstants.COMPONENT_CONTROLS_RESET_ALL, btn -> {
-            
-            if(!confirmingReset) {
-                confirmingReset = true;
-                btn.setMessage(ControllingConstants.COMPONENT_OPTIONS_CONFIRM_RESET);
-                return;
-            }
-            confirmingReset = false;
-            btn.setMessage(ControllingConstants.COMPONENT_CONTROLS_RESET_ALL);
-            for(KeyMapping keybinding : Objects.requireNonNull(minecraft).options.keyMappings) {
-                Services.PLATFORM.setToDefault(minecraft.options, keybinding);
-            }
-    
-            this.getKeyBindsList().resetMappingAndUpdateButtons();
-        }).bounds(this.width / 2 - 155, this.height - 29, 74, 20).build());
-        this.buttonNone = this.addRenderableWidget(Button.builder(ControllingConstants.COMPONENT_OPTIONS_SHOW_NONE, (btn) -> {
-            if(displayMode == DisplayMode.NONE) {
-                buttonNone.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_NONE);
-                displayMode = DisplayMode.ALL;
-            } else {
-                displayMode = DisplayMode.NONE;
-                buttonNone.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_ALL);
-                buttonConflicting.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_CONFLICTS);
-            }
-            filterKeys();
-        }).bounds(this.width / 2 - 155 + 160 + 76, this.height - 29 - 24, 150 / 2, 20).build());
-        this.buttonConflicting = this.addRenderableWidget(Button.builder(ControllingConstants.COMPONENT_OPTIONS_SHOW_CONFLICTS, (btn) -> {
-            if(displayMode == DisplayMode.CONFLICTING) {
-                buttonConflicting.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_CONFLICTS);
-                displayMode = DisplayMode.ALL;
-            } else {
-                displayMode = DisplayMode.CONFLICTING;
-                buttonConflicting.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_ALL);
-                buttonNone.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_NONE);
-            }
-            filterKeys();
-        }).bounds(this.width / 2 - 155 + 160, this.height - 29 - 24, 150 / 2, 20).build());
-        search = new EditBox(font, this.width / 2 - 154, this.height - 29 - 23, 148, 18, Component.empty());
-        addWidget(search);
-        this.buttonKey = this.addRenderableWidget(new FancyCheckbox(this.width / 2 - (155 / 2), this.height - 29 - 37, 11, 11, ControllingConstants.COMPONENT_OPTIONS_KEY, false, btn -> {
-            buttonCat.selected(false);
-            searchType = btn.selected() ? SearchType.KEY : SearchType.NAME;
-            filterKeys();
-        }));
-        this.buttonCat = this.addRenderableWidget(new FancyCheckbox(this.width / 2 - (155 / 2), this.height - 29 - 50, 11, 11, ControllingConstants.COMPONENT_OPTIONS_CATEGORY, false, btn -> {
-            buttonKey.selected(false);
-            searchType = btn.selected() ? SearchType.CATEGORY : SearchType.NAME;
-            filterKeys();
-        }));
-        sortOrder = SortOrder.NONE;
-        Button buttonSort = this.addRenderableWidget(Button.builder(ControllingConstants.COMPONENT_OPTIONS_SORT.copy()
-                .append(": " + sortOrder.getName()), (btn) -> {
-            sortOrder = sortOrder.cycle();
-            btn.setMessage(ControllingConstants.COMPONENT_OPTIONS_SORT.copy().append(": " + sortOrder.getName()));
-            filterKeys();
-        }).bounds(this.width / 2 - 155 + 160 + 76, this.height - 29 - 24 - 24, 150 / 2, 20).build());
+        this.removeWidget(resetButton());
+        this.resetButton(addRenderableWidget(Button.builder(confirmingReset.currentDisplay(), PRESS_RESET)
+                .bounds(leftX, bottomY, Button.DEFAULT_WIDTH, Button.DEFAULT_HEIGHT)
+                .build()));
         
-        this.addRenderableWidget(Button.builder(ControllingConstants.COMPONENT_OPTIONS_TOGGLE_FREE, (btn) -> {
-            this.removeWidget(getKeyBindsList());
-            if(showFree) {
-                buttonSort.active = true;
-                buttonCat.active = true;
-                buttonKey.active = true;
-                buttonNone.active = true;
-                buttonConflicting.active = true;
-                buttonReset.active = true;
-                setKeyBindsList(customKeyList);
-            } else {
-                freeKeyList.get().recalculate();
-                buttonSort.active = false;
-                buttonCat.active = false;
-                buttonKey.active = false;
-                buttonNone.active = false;
-                buttonConflicting.active = false;
-                buttonReset.active = false;
-                setKeyBindsList(freeKeyList.get());
-            }
-            this.addWidget(getKeyBindsList());
-            this.setFocused(getKeyBindsList());
-            showFree = !showFree;
-        }).bounds(this.width / 2 - 155 + 76, this.height - 29, 74, 20).build());
+        addRenderableWidget(Button.builder(ControllingConstants.COMPONENT_OPTIONS_TOGGLE_FREE, PRESS_FREE)
+                .bounds(leftX, topRowY, btnWidth, Button.DEFAULT_HEIGHT)
+                .build());
         
-        lastSearch = "";
+        this.buttonSort = addRenderableWidget(Button.builder(sortOrder.getDisplay(), PRESS_SORT)
+                .bounds(leftX + btnWidth + 2, topRowY, btnWidth, Button.DEFAULT_HEIGHT)
+                .build());
+        
+        this.buttonNone = addRenderableWidget(Button.builder(ControllingConstants.COMPONENT_OPTIONS_SHOW_NONE, PRESS_NONE)
+                .bounds(rightX, topRowY, btnWidth, Button.DEFAULT_HEIGHT)
+                .build());
+        
+        this.buttonConflicting = addRenderableWidget(Button.builder(ControllingConstants.COMPONENT_OPTIONS_SHOW_CONFLICTS, PRESS_CONFLICTING)
+                .bounds(rightX + btnWidth + 2, topRowY, btnWidth, Button.DEFAULT_HEIGHT)
+                .build());
+        
         displayMode = DisplayMode.ALL;
-        searchType = SearchType.NAME;
+        setInitialFocus(this.search);
+        // Trigger an initial auto complete
+        this.search.moveCursor(0);
+        // This is so dumb, but it works.
+        // The only reason this is needed is that we don't replace the vanilla "Done" button.
+        this.children()
+                .sort(Comparator.comparingInt((ToIntFunction<GuiEventListener>) value -> value.getRectangle().top())
+                        .thenComparingInt(listener -> listener.getRectangle().left()));
     }
     
-    @Override
-    public boolean charTyped(char character, int code) {
+    public Button resetButton() {
         
-        return search.charTyped(character, code);
+        return this.getAccess().controlling$getResetButton();
+    }
+    
+    public void resetButton(Button button) {
+        
+        this.getAccess().controlling$setResetButton(button);
+    }
+    
+    public void filterKeys() {
+        
+        filterKeys(search.getValue());
+    }
+    
+    public void filterKeys(String lastSearch) {
+        
+        getKeyBindsList().children().clear();
+        getKeyBindsList().setScrollAmount(0);
+        if(lastSearch.isEmpty() && displayMode == DisplayMode.ALL && sortOrder == SortOrder.NONE) {
+            getKeyBindsList().children().addAll(getCustomList().getAllEntries());
+            return;
+        }
+        
+        Predicate<KeyBindsList.Entry> extraPredicate = entry -> true;
+        Consumer<List<KeyBindsList.Entry>> postConsumer = entries -> {};
+        CustomList list = getCustomList();
+        
+        if(list instanceof NewKeyBindsList) {
+            extraPredicate = displayMode.getPredicate();
+            postConsumer = entries -> sortOrder.sort(entries);
+        }
+        list.children()
+                .addAll(ControllingConstants.SEARCHABLE_KEYBINDINGS.filterEntries(list.getAllEntries(), lastSearch, extraPredicate));
+        postConsumer.accept(list.children());
     }
     
     @Override
     public void tick() {
         
         this.search.tick();
-        if(!lastSearch.equals(search.getValue())) {
-            filterKeys();
-        }
-    }
-    
-    public void filterKeys() {
-        
-        lastSearch = search.getValue();
-        getKeyBindsList().children().clear();
-        if(getKeyBindsList() instanceof NewKeyBindsList) {
-            
-            if(lastSearch.isEmpty() && displayMode == DisplayMode.ALL && sortOrder == SortOrder.NONE) {
-                getKeyBindsList().children().addAll(((CustomList) getKeyBindsList()).getAllEntries());
-                return;
-            }
-            getKeyBindsList().setScrollAmount(0);
-            Predicate<NewKeyBindsList.KeyEntry> filters = switch(searchType) {
-                case NAME -> displayMode.getPredicate()
-                        .and(keyEntry -> keyEntry.getKeyDesc()
-                                .getString()
-                                .toLowerCase()
-                                .contains(lastSearch.toLowerCase()));
-                case CATEGORY -> displayMode.getPredicate()
-                        .and(keyEntry -> Component.translatable(keyEntry.getKey().getCategory()).getString()
-                                .toLowerCase()
-                                .contains(lastSearch.toLowerCase()));
-                case KEY -> displayMode.getPredicate()
-                        .and(keyEntry -> keyEntry.getKey()
-                                .getTranslatedKeyMessage()
-                                .getString()
-                                .toLowerCase()
-                                .contains(lastSearch.toLowerCase()));
-            };
-            
-            
-            for(NewKeyBindsList.Entry entry : ((CustomList) getKeyBindsList()).getAllEntries()) {
-                if(searchType == SearchType.CATEGORY && sortOrder == SortOrder.NONE && displayMode == DisplayMode.ALL) {
-                    if(entry instanceof NewKeyBindsList.KeyEntry keyEntry) {
-                        if(filters.test(keyEntry)) {
-                            getKeyBindsList().children().add(entry);
-                        }
-                    } else {
-                        getKeyBindsList().children().add(entry);
-                    }
-                } else {
-                    if(entry instanceof NewKeyBindsList.KeyEntry keyEntry) {
-                        if(filters.test(keyEntry)) {
-                            getKeyBindsList().children().add(entry);
-                        }
-                    }
-                }
-                
-            }
-            if(searchType == SearchType.CATEGORY && sortOrder == SortOrder.NONE && displayMode == DisplayMode.ALL) {
-                Set<NewKeyBindsList.CategoryEntry> categories = new LinkedHashSet<>();
-                
-                for(KeyBindsList.Entry entry : getKeyBindsList().children()) {
-                    if(entry instanceof NewKeyBindsList.CategoryEntry cEntry) {
-                        categories.add(cEntry);
-                        for(KeyBindsList.Entry child : getKeyBindsList().children()) {
-                            if(child instanceof NewKeyBindsList.KeyEntry childEntry) {
-                                if(childEntry.getKey().getCategory().equals(cEntry.getName())) {
-                                    categories.remove(cEntry);
-                                }
-                            }
-                        }
-                    }
-                }
-                getKeyBindsList().children().removeAll(categories);
-            }
-            sortOrder.sort(getKeyBindsList().children());
-            
-        } else if(getKeyBindsList() instanceof FreeKeysList) {
-            if(lastSearch.isEmpty()) {
-                getKeyBindsList().children().addAll(((CustomList) getKeyBindsList()).getAllEntries());
-                return;
-            }
-            getKeyBindsList().setScrollAmount(0);
-            
-            for(FreeKeysList.Entry entry : ((CustomList) getKeyBindsList()).getAllEntries()) {
-                if(entry instanceof FreeKeysList.InputEntry inputEntry) {
-                    if(inputEntry.getInput().toString().toLowerCase().contains(lastSearch.toLowerCase())) {
-                        getKeyBindsList().children().add(entry);
-                    }
-                } else {
-                    getKeyBindsList().children().add(entry);
-                }
-                
-            }
-        }
-    }
-    
-    /**
-     * Draws the screen and all the components in it.
-     */
-    @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        
-        this.renderBackground(stack);
-        getKeyBindsList().render(stack, mouseX, mouseY, partialTicks);
-        drawCenteredString(stack, this.font, this.title.getString(), this.width / 2, 8, 16777215);
-        boolean flag = false;
-        
-        if(!showFree) {
-            for(KeyMapping keybinding : this.options.keyMappings) {
-                if(!keybinding.isDefault()) {
-                    flag = true;
-                    break;
-                }
-            }
-        }
-        search.render(stack, mouseX, mouseY, partialTicks);
-        this.buttonReset.active = flag;
-        if(!flag) {
-            confirmingReset = false;
-            buttonReset.setMessage(ControllingConstants.COMPONENT_CONTROLS_RESET_ALL);
-        }
-        
-        font.draw(stack, ControllingConstants.COMPONENT_OPTIONS_SEARCH, this.width / 2f - (155 / 2f) - (font.width(ControllingConstants.COMPONENT_OPTIONS_SEARCH.getString())) - 5, this.height - 29 - 42, 16777215);
-        
-        for(Renderable renderable : getScreenAccess().controlling$getRenderables()) {
-            renderable.render(stack, mouseX, mouseY, partialTicks);
-        }
     }
     
     @Override
-    public boolean mouseClicked(double mx, double my, int mb) {
+    public boolean mouseScrolled(double xpos, double ypos, double delta) {
         
-        boolean valid;
-        if(this.selectedKey != null) {
-            this.options.setKey(this.selectedKey, InputConstants.Type.MOUSE.getOrCreate(mb));
-            this.selectedKey = null;
-            this.getKeyBindsList().resetMappingAndUpdateButtons();
-            valid = true;
-            search.setFocused(false);
-        } else if(mb == 0 && getKeyBindsList().mouseClicked(mx, my, mb)) {
-            this.setDragging(true);
-            this.setFocused(getKeyBindsList());
-            valid = true;
-            search.setFocused(false);
-        } else {
-            valid = search.mouseClicked(mx, my, mb);
-            if(!valid && search.isFocused() && mb == 1) {
-                search.setValue("");
-                valid = true;
-            }
-        }
-        
-        if(!valid) {
-            
-            for(GuiEventListener listeners : this.children()) {
-                if(listeners.mouseClicked(mx, my, mb)) {
-                    this.setFocused(listeners);
-                    if(mb == 0) {
-                        this.setDragging(true);
-                    }
-                    
-                    return true;
-                }
-            }
-            
-        }
-        
-        
-        return valid;
-    }
-    
-    @Override
-    public boolean mouseReleased(double mx, double my, int mb) {
-        
-        if(mb == 0 && getKeyBindsList().mouseReleased(mx, my, mb)) {
-            this.setDragging(false);
+        if(search.autoComplete().mouseScrolled(xpos, ypos, delta)) {
             return true;
-        } else if(search.isFocused()) {
-            return search.mouseReleased(mx, my, mb);
-        } else {
-            this.setDragging(false);
-            return false;
         }
+        return super.mouseScrolled(xpos, ypos, delta);
     }
     
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifier) {
+    public boolean keyPressed(int key, int scancode, int mods) {
         
         if(!search.isFocused() && this.selectedKey == null) {
             if(hasControlDown()) {
-                if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_F)) {
+                if(InputConstants.isKeyDown(Minecraft.getInstance()
+                        .getWindow()
+                        .getWindow(), GLFW.GLFW_KEY_F)) {
                     search.setFocused(true);
                     return true;
                 }
             }
         }
-        if(search.keyPressed(keyCode, scanCode, modifier)) {
+        if(search.keyPressed(key, scancode, mods)) {
             return true;
         }
         if(search.isFocused()) {
-            if(keyCode == 256) {
+            if(key == 256) {
                 search.setFocused(false);
                 return true;
             }
         }
         if(this.selectedKey != null) {
-            if(keyCode == 256) {
+            if(key == 256) {
                 Services.PLATFORM.setKey(options, this.selectedKey, InputConstants.UNKNOWN);
             } else {
-                Services.PLATFORM.setKey(options, this.selectedKey, InputConstants.getKey(keyCode, scanCode));
+                Services.PLATFORM.setKey(options, this.selectedKey, InputConstants.getKey(key, scancode));
             }
             if(!Services.PLATFORM.isKeyCodeModifier(((AccessKeyMapping) this.selectedKey).controlling$getKey())) {
                 this.selectedKey = null;
@@ -385,30 +195,98 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
             this.getKeyBindsList().resetMappingAndUpdateButtons();
             return true;
         } else {
-            return super.keyPressed(keyCode, scanCode, modifier);
+            return super.keyPressed(key, scancode, mods);
         }
     }
     
+    private CustomList getCustomList() {
+        
+        if(this.getKeyBindsList() instanceof CustomList cl) {
+            return cl;
+        }
+        throw new IllegalStateException("keyBindsList('%s') was not an instance of CustomList! You're either too early or another mod is messing with things.".formatted(this.getKeyBindsList()
+                .getClass()));
+    }
     
     private KeyBindsList getKeyBindsList() {
         
         return getAccess().controlling$getKeyBindsList();
     }
     
-    
     private void setKeyBindsList(KeyBindsList newList) {
         
         getAccess().controlling$setKeyBindsList(newList);
-    }
-    
-    private AccessScreen getScreenAccess() {
-        
-        return ((AccessScreen) this);
     }
     
     private AccessKeyBindsScreen getAccess() {
         
         return ((AccessKeyBindsScreen) this);
     }
+    
+    private final Button.OnPress PRESS_RESET = btn -> {
+        NewKeyBindsScreen screen = NewKeyBindsScreen.this;
+        Minecraft minecraft = Objects.requireNonNull(screen.minecraft);
+        
+        if(!confirmingReset.toggle()) {
+            for(KeyMapping keybinding : minecraft.options.keyMappings) {
+                Services.PLATFORM.setToDefault(minecraft.options, keybinding);
+            }
+            
+            getKeyBindsList().resetMappingAndUpdateButtons();
+        }
+        btn.setMessage(confirmingReset.currentDisplay());
+    };
+    
+    private final Button.OnPress PRESS_NONE = btn -> {
+        if(displayMode == DisplayMode.NONE) {
+            buttonNone.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_NONE);
+            displayMode = DisplayMode.ALL;
+        } else {
+            displayMode = DisplayMode.NONE;
+            buttonNone.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_ALL);
+            buttonConflicting.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_CONFLICTS);
+        }
+        filterKeys();
+    };
+    
+    private final Button.OnPress PRESS_SORT = btn -> {
+        sortOrder = sortOrder.cycle();
+        btn.setMessage(sortOrder.getDisplay());
+        filterKeys();
+    };
+    
+    private final Button.OnPress PRESS_CONFLICTING = btn -> {
+        if(displayMode == DisplayMode.CONFLICTING) {
+            buttonConflicting.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_CONFLICTS);
+            displayMode = DisplayMode.ALL;
+        } else {
+            displayMode = DisplayMode.CONFLICTING;
+            buttonConflicting.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_ALL);
+            buttonNone.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_NONE);
+        }
+        filterKeys();
+    };
+    
+    private final Button.OnPress PRESS_FREE = btn -> {
+        removeWidget(getKeyBindsList());
+        if(showFree) {
+            buttonSort.active = true;
+            buttonNone.active = true;
+            buttonConflicting.active = true;
+            resetButton().active = true;
+            setKeyBindsList(newKeyList.get());
+        } else {
+            freeKeyList.get().recalculate();
+            buttonSort.active = false;
+            buttonNone.active = false;
+            buttonConflicting.active = false;
+            resetButton().active = false;
+            setKeyBindsList(freeKeyList.get());
+        }
+        filterKeys();
+        addWidget(getKeyBindsList());
+        setFocused(getKeyBindsList());
+        showFree = !showFree;
+    };
     
 }

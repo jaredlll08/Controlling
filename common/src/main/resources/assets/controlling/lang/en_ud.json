@@ -1,18 +1,13 @@
 {
-  "options.search": "ɥɔɹɐǝS",
   "options.category": "ʎɹoᵷǝʇɐƆ",
   "options.key": "ʎǝꞰ",
-
   "options.showNone": "punoqu∩ ʍoɥS",
   "options.showConflicts": "sʇɔılɟuoƆ ʍoɥS",
   "options.showAll": "ꞁꞁⱯ ʍoɥS",
-
   "options.sort": "ʇɹoS",
   "options.sortNone": "ǝuoN",
   "options.sortAZ": "Z<-Ɐ",
   "options.sortZA": "Ɐ<-Z",
-
   "options.availableKeys": "sʎǝꞰ ǝlqɐlᴉɐʌ∀",
-
   "options.confirmReset": "¡ʇǝsǝɹ ɯɹıɟuoɔ oʇ ʞɔᴉꞁƆ"
 }

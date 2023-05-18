@@ -173,11 +173,8 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
                 }
             }
         }
-        if(search.keyPressed(key, scancode, mods)) {
-            return true;
-        }
         if(search.isFocused()) {
-            if(key == 256) {
+            if(key == GLFW.GLFW_KEY_ESCAPE) {
                 search.setFocused(false);
                 return true;
             }

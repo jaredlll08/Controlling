@@ -1,23 +1,31 @@
 package com.blamejared.controlling.api;
 
+import com.blamejared.controlling.ControllingConstants;
 import com.blamejared.controlling.client.NewKeyBindsList;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 
 import java.util.Comparator;
 import java.util.List;
 
 public enum SortOrder {
-    NONE(entries -> {
+    NONE("options.sortNone", entries -> {
     }),
-    AZ(entries -> entries.sort(Comparator.comparing(o -> ((NewKeyBindsList.KeyEntry) o).getKeyDesc().getString()))),
-    ZA(entries -> entries.sort(Comparator.comparing(o -> ((NewKeyBindsList.KeyEntry) o).getKeyDesc().getString())
+    AZ("options.sortAZ", entries -> entries.sort(Comparator.comparing(o -> ((NewKeyBindsList.KeyEntry) o).getKeyDesc()
+            .getString()))),
+    ZA("options.sortZA", entries -> entries.sort(Comparator.comparing(o -> ((NewKeyBindsList.KeyEntry) o).getKeyDesc()
+                    .getString())
             .reversed()));
     
     private final ISort sorter;
+    private final Component display;
     
-    SortOrder(ISort sorter) {
+    SortOrder(String key, ISort sorter) {
         
         this.sorter = sorter;
+        this.display = ControllingConstants.COMPONENT_OPTIONS_SORT.copy()
+                .append(": ")
+                .append(Component.translatable(key));
     }
     
     public SortOrder cycle() {
@@ -30,12 +38,8 @@ public enum SortOrder {
         this.sorter.sort(list);
     }
     
-    public String getName() {
+    public Component getDisplay() {
         
-        return switch(this) {
-            case NONE -> I18n.get("options.sortNone");
-            case AZ -> I18n.get("options.sortAZ");
-            case ZA -> I18n.get("options.sortZA");
-        };
+        return this.display;
     }
 }

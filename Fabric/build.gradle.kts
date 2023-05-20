@@ -22,6 +22,7 @@ val curseHomepageLink: String by project
 val gitFirstCommit: String by project
 val gitRepo: String by project
 val modJavaVersion: String by project
+val searchablesVersion: String by project
 
 val baseArchiveName = "${modName}-fabric-${minecraftVersion}"
 
@@ -39,6 +40,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${fabricLoaderVersion}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${fabricVersion}")
     implementation(project(":Common"))
+    modImplementation("com.blamejared.searchables:Searchables-fabric-${minecraftVersion}:${searchablesVersion}")
 }
 
 loom {
@@ -117,7 +119,7 @@ tasks.create<TaskPublishCurseForge>("publishCurseForge") {
     mainFile.releaseType = CFG_Constants.RELEASE_TYPE_RELEASE
     mainFile.addJavaVersion("Java $modJavaVersion")
     mainFile.addGameVersion(minecraftVersion)
-
+    mainFile.addRequirement("searchables")
     doLast {
         project.ext.set("curse_file_url", "${curseHomepageLink}/files/${mainFile.curseFileId}")
     }

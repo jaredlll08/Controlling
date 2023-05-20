@@ -26,6 +26,7 @@ val curseHomepageLink: String by project
 val gitFirstCommit: String by project
 val gitRepo: String by project
 val modJavaVersion: String by project
+val searchablesVersion: String by project
 
 val baseArchiveName = "${modName}-forge-${minecraftVersion}"
 
@@ -117,6 +118,7 @@ dependencies {
     "minecraft"("net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}")
     compileOnly(project(":Common"))
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
+    implementation(fg.deobf("com.blamejared.searchables:Searchables-forge-${minecraftVersion}:${searchablesVersion}"))
 }
 
 tasks.withType<JavaCompile> {
@@ -175,7 +177,7 @@ tasks.create<TaskPublishCurseForge>("publishCurseForge") {
     mainFile.changelog = Utils.getFullChangelog(project)
     mainFile.releaseType = CFG_Constants.RELEASE_TYPE_RELEASE
     mainFile.addJavaVersion("Java $modJavaVersion")
-
+    mainFile.addRequirement("searchables")
     doLast {
         project.ext.set("curse_file_url", "${curseHomepageLink}/files/${mainFile.curseFileId}")
     }

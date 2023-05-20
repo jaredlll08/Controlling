@@ -3,6 +3,7 @@ import com.blamejared.modtemplate.Utils
 val minecraftVersion: String by project
 val modName: String by project
 val modVersion: String by project
+val searchablesVersion: String by project
 
 plugins {
     `java-library`
@@ -32,6 +33,7 @@ minecraft {
 
 dependencies {
     compileOnly("org.spongepowered:mixin:0.8.5")
+    implementation("com.blamejared.searchables:Searchables-common-${minecraftVersion}:${searchablesVersion}")
 }
 
 publishing {

@@ -11,14 +11,16 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.controls.KeyBindsList;
 import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
-import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -36,8 +38,8 @@ public class NewKeyBindsList extends CustomList {
         super(controls, mcIn);
         this.width = controls.width + 45;
         this.height = controls.height;
-        this.y0 = 20;
-        this.y1 = controls.height - 80;
+        this.y0 = 48;
+        this.y1 = controls.height - 56;
         this.x1 = controls.width + 45;
         this.controlsScreen = controls;
         this.mc = mcIn;
@@ -68,17 +70,6 @@ public class NewKeyBindsList extends CustomList {
         
     }
     
-    @Override
-    protected void renderDecorations(PoseStack matrixStack, int mouseX, int mouseY) {
-        
-        Entry entry = this.getEntryAtPos(mouseY);
-        if(entry instanceof KeyEntry keyEntry) {
-            
-            controlsScreen.renderTooltip(matrixStack, Component.translatable(keyEntry.getKeybinding()
-                    .getCategory()), mouseX, mouseY);
-        }
-    }
-    
     public Entry getEntryAtPos(double mouseY) {
         
         if(mouseY <= this.y0 || mouseY >= this.y1) {
@@ -103,25 +94,23 @@ public class NewKeyBindsList extends CustomList {
     
     public class CategoryEntry extends KeyBindsList.Entry {
         
-        private final String labelText;
+        private final Component name;
         private final int labelWidth;
-        private final String name;
         
         public CategoryEntry(String name) {
             
-            this.labelText = I18n.get(name);
-            this.labelWidth = NewKeyBindsList.this.mc.font.width(this.labelText);
-            this.name = name;
+            this.name = Component.translatable(name);
+            this.labelWidth = NewKeyBindsList.this.mc.font.width(this.name);
         }
         
-        public String getName() {
+        public Component name() {
             
             return name;
         }
         
         public void render(PoseStack stack, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             
-            NewKeyBindsList.this.minecraft.font.draw(stack, this.labelText, (float) (Objects.requireNonNull(minecraft.screen).width / 2 - this.labelWidth / 2), (float) (y + rowWidth - 9 - 1), 16777215);
+            NewKeyBindsList.this.minecraft.font.draw(stack, this.name, (float) (Objects.requireNonNull(minecraft.screen).width / 2 - this.labelWidth / 2), (float) (y + rowWidth - 9 - 1), 16777215);
         }
         
         public List<? extends NarratableEntry> narratables() {
@@ -134,7 +123,7 @@ public class NewKeyBindsList extends CustomList {
                 
                 public void updateNarration(NarrationElementOutput neo) {
                     
-                    neo.add(NarratedElementType.TITLE, labelText);
+                    neo.add(NarratedElementType.TITLE, name);
                 }
             });
         }
@@ -160,6 +149,7 @@ public class NewKeyBindsList extends CustomList {
         private final Button btnChangeKeyBinding;
         private final Button btnResetKeyBinding;
         
+        private final Component categoryName;
         
         private KeyEntry(final KeyMapping name, final Component keyDesc) {
             
@@ -176,7 +166,8 @@ public class NewKeyBindsList extends CustomList {
                     }).bounds(0, 0, 50, 20)
                     .createNarration(supp -> Component.translatable("narrator.controls.reset", keyDesc))
                     .build();
-            
+            this.categoryName = Component.translatable(this.keybinding.getCategory());
+            this.btnChangeKeyBinding.setTooltip(Tooltip.create(Component.translatable(keybinding.getCategory())));
         }
         
         @Override
@@ -280,6 +271,11 @@ public class NewKeyBindsList extends CustomList {
         public Button getBtnChangeKeyBinding() {
             
             return btnChangeKeyBinding;
+        }
+        
+        public Component categoryName() {
+            
+            return categoryName;
         }
         
     }

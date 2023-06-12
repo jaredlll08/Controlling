@@ -10,7 +10,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -96,9 +96,8 @@ public class NewKeyBindsList extends CustomList {
             this.labelWidth = NewKeyBindsList.this.mc.font.width(this.name);
         }
         
-        public void render(PoseStack stack, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
-            
-            NewKeyBindsList.this.minecraft.font.draw(stack, this.name, (float) (Objects.requireNonNull(minecraft.screen).width / 2 - this.labelWidth / 2), (float) (y + rowWidth - 9 - 1), 16777215);
+        public void render(GuiGraphics guiGraphics, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+            guiGraphics.drawString(NewKeyBindsList.this.mc.font, this.name, Objects.requireNonNull(minecraft.screen).width / 2 - this.labelWidth / 2,  y + rowWidth - 9 - 1, 16777215);
         }
         
         public List<? extends NarratableEntry> narratables() {
@@ -176,14 +175,14 @@ public class NewKeyBindsList extends CustomList {
         }
         
         @Override
-        public void render(PoseStack stack, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+        public void render(GuiGraphics guiGraphics, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             
-            Services.EVENT.fireKeyEntryRenderEvent(this, stack, slotIndex, y, x, rowLeft, rowWidth, mouseX, mouseY, hovered, partialTicks);
+            Services.EVENT.fireKeyEntryRenderEvent(this, guiGraphics, slotIndex, y, x, rowLeft, rowWidth, mouseX, mouseY, hovered, partialTicks);
             int length = Math.max(0, x + 90 - NewKeyBindsList.this.maxListLabelWidth);
-            NewKeyBindsList.this.mc.font.draw(stack, this.keyDesc, (float) (length), (float) (y + rowWidth / 2 - 9 / 2), 16777215);
+            guiGraphics.drawString(NewKeyBindsList.this.mc.font, this.keyDesc, length, y + rowWidth / 2 - 9 / 2, 16777215);
             this.btnResetKeyBinding.setX(x + 190 + 20);
             this.btnResetKeyBinding.setY(y);
-            this.btnResetKeyBinding.render(stack, mouseX, mouseY, partialTicks);
+            this.btnResetKeyBinding.render(guiGraphics, mouseX, mouseY, partialTicks);
             
             this.btnChangeKeyBinding.setX(x + 105);
             this.btnChangeKeyBinding.setY(y);
@@ -191,9 +190,9 @@ public class NewKeyBindsList extends CustomList {
             if(this.hasCollision) {
                 int markerWidth = 3;
                 int minX = this.btnChangeKeyBinding.getX() - 6;
-                GuiComponent.fill(stack, minX, y + 2, minX + markerWidth, y + rowWidth + 2, ChatFormatting.RED.getColor() | -16777216);
+                guiGraphics.fill(minX, y + 2, minX + markerWidth, y + rowWidth + 2, ChatFormatting.RED.getColor() | -16777216);
             }
-            this.btnChangeKeyBinding.render(stack, mouseX, mouseY, partialTicks);
+            this.btnChangeKeyBinding.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
         
         public List<GuiEventListener> children() {

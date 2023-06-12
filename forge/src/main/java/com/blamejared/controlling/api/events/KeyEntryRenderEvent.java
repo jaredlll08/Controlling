@@ -2,17 +2,18 @@ package com.blamejared.controlling.api.events;
 
 import com.blamejared.controlling.client.NewKeyBindsList;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.eventbus.api.Event;
 
 /**
- * RenderKeyEntryEvent is called at the top of {@link NewKeyBindsList.KeyEntry#render(PoseStack, int, int, int, int, int, int, int, boolean, float)}
+ * RenderKeyEntryEvent is called at the top of {@link NewKeyBindsList.KeyEntry#render(GuiGraphics, int, int, int, int, int, int, int, boolean, float)}
  * is called, allowing mods to render additional info.
  */
 public class KeyEntryRenderEvent extends Event implements IKeyEntryRenderEvent {
     
     private final NewKeyBindsList.KeyEntry entry;
     
-    private final PoseStack stack;
+    private final GuiGraphics guiGraphics;
     private final int slotIndex;
     private final int y;
     private final int x;
@@ -23,10 +24,10 @@ public class KeyEntryRenderEvent extends Event implements IKeyEntryRenderEvent {
     private final boolean hovered;
     private final float partialTicks;
     
-    public KeyEntryRenderEvent(NewKeyBindsList.KeyEntry entry, PoseStack stack, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+    public KeyEntryRenderEvent(NewKeyBindsList.KeyEntry entry, GuiGraphics guiGraphics, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         
         this.entry = entry;
-        this.stack = stack;
+        this.guiGraphics = guiGraphics;
         this.slotIndex = slotIndex;
         this.y = y;
         this.x = x;
@@ -43,9 +44,9 @@ public class KeyEntryRenderEvent extends Event implements IKeyEntryRenderEvent {
         return entry;
     }
     
-    public PoseStack getStack() {
+    public GuiGraphics getGuiGraphics() {
         
-        return stack;
+        return guiGraphics;
     }
     
     public int getSlotIndex() {

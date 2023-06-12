@@ -11,6 +11,7 @@ import com.blamejared.controlling.api.events.KeyEntryRenderEvent;
 import com.blamejared.controlling.client.NewKeyBindsList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Either;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.util.Unit;
 import net.minecraftforge.common.MinecraftForge;
@@ -44,9 +45,9 @@ public class ForgeEventHandler implements IEventHelper {
     }
     
     @Override
-    public Either<IKeyEntryRenderEvent, Unit> fireKeyEntryRenderEvent(NewKeyBindsList.KeyEntry entry, PoseStack stack, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+    public Either<IKeyEntryRenderEvent, Unit> fireKeyEntryRenderEvent(NewKeyBindsList.KeyEntry entry, GuiGraphics guiGraphics, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         
-        KeyEntryRenderEvent event = new KeyEntryRenderEvent(entry, stack, slotIndex, y, x, rowLeft, rowWidth, mouseX, mouseY, hovered, partialTicks);
+        KeyEntryRenderEvent event = new KeyEntryRenderEvent(entry, guiGraphics, slotIndex, y, x, rowLeft, rowWidth, mouseX, mouseY, hovered, partialTicks);
         MinecraftForge.EVENT_BUS.post(event);
         return Either.left(event);
     }

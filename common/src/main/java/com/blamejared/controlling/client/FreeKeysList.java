@@ -5,9 +5,9 @@ import com.blamejared.controlling.mixin.AccessInputConstantsKey;
 import com.blamejared.controlling.mixin.AccessKeyMapping;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
@@ -97,13 +97,13 @@ public class FreeKeysList extends CustomList {
         }
         
         @Override
-        public void render(PoseStack stack, int slotIndex, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+        public void render(GuiGraphics guiGraphics, int slotIndex, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             
             String str = this.input.toString() + " - " + input.getValue();
             int length = mc.font.width(input.getDisplayName().getString());
             
-            FreeKeysList.this.mc.font.draw(stack, str, x, (float) (y + height / 2 - 9 / 2), 16777215);
-            controlsScreen.renderTooltip(stack, input.getDisplayName(), x + width - (length), y + height);
+            guiGraphics.drawString(FreeKeysList.this.mc.font, str, x,  y + height / 2 - 9 / 2, 16777215);
+            guiGraphics.renderTooltip(FreeKeysList.this.mc.font, input.getDisplayName(), x + width - (length), y + height);
         }
         
         @Override
@@ -146,9 +146,8 @@ public class FreeKeysList extends CustomList {
         }
         
         @Override
-        public void render(PoseStack stack, int slotIndex, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTicks) {
-            
-            drawCenteredString(stack, mc.font, ControllingConstants.COMPONENT_OPTIONS_AVAILABLE_KEYS, (Objects.requireNonNull(mc.screen).width / 2 - this.text.length() / 2), (y + height - 9 - 1), 16777215);
+        public void render(GuiGraphics guiGraphics, int slotIndex, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+            guiGraphics.drawCenteredString(mc.font, ControllingConstants.COMPONENT_OPTIONS_AVAILABLE_KEYS, (Objects.requireNonNull(mc.screen).width / 2 - this.text.length() / 2), (y + height - 9 - 1), 16777215);
         }
     
         @Override

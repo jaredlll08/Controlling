@@ -13,6 +13,7 @@ import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -37,7 +38,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     private Button buttonNone;
     private Button buttonConflicting;
     private Button buttonSort;
-    private final DisplayableBoolean confirmingReset = new DisplayableBoolean(false, ControllingConstants.COMPONENT_OPTIONS_CONFIRM_RESET, ControllingConstants.COMPONENT_CONTROLS_RESET_ALL);
+    private final DisplayableBoolean confirmingReset = new DisplayableBoolean(canReset(), ControllingConstants.COMPONENT_OPTIONS_CONFIRM_RESET, ControllingConstants.COMPONENT_CONTROLS_RESET_ALL);
     private boolean showFree;
     private Supplier<NewKeyBindsList> newKeyList;
     private Supplier<FreeKeysList> freeKeyList;
@@ -68,7 +69,6 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         Supplier<List<KeyBindsList.Entry>> listSupplier = () -> getCustomList().getAllEntries();
         this.search = addRenderableWidget(new AutoCompletingEditBox<>(font, centerX - searchX / 2, 22, searchX, Button.DEFAULT_HEIGHT, search, Component.translatable("selectWorld.search"), ControllingConstants.SEARCHABLE_KEYBINDINGS, listSupplier));
         this.search.addResponder(this::filterKeys);
-        this.addRenderableOnly(this.search.autoComplete());
         
         this.newKeyList = Suppliers.memoize(() -> new NewKeyBindsList(this, this.minecraft));
         this.freeKeyList = Suppliers.memoize(() -> new FreeKeysList(this, this.minecraft));
@@ -80,6 +80,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         this.resetButton(addRenderableWidget(Button.builder(confirmingReset.currentDisplay(), PRESS_RESET)
                 .bounds(leftX, bottomY, Button.DEFAULT_WIDTH, Button.DEFAULT_HEIGHT)
                 .build()));
+        resetButton().active = canReset();
         
         addRenderableWidget(Button.builder(ControllingConstants.COMPONENT_OPTIONS_TOGGLE_FREE, PRESS_FREE)
                 .bounds(leftX, topRowY, btnWidth, Button.DEFAULT_HEIGHT)
@@ -100,12 +101,19 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         displayMode = DisplayMode.ALL;
         setInitialFocus(this.search);
         // Trigger an initial auto complete
-        this.search.moveCursor(0);
+        this.search.moveCursor(0, false);
         // This is so dumb, but it works.
         // The only reason this is needed is that we don't replace the vanilla "Done" button.
         this.children()
                 .sort(Comparator.comparingInt((ToIntFunction<GuiEventListener>) value -> value.getRectangle().top())
                         .thenComparingInt(listener -> listener.getRectangle().left()));
+    }
+    
+    @Override
+    public void render(GuiGraphics guiGraphics, int mxPos, int myPos, float partialTicks) {
+        
+        super.render(guiGraphics, mxPos, myPos, partialTicks);
+        this.search.autoComplete().render(guiGraphics, mxPos, myPos, partialTicks);
     }
     
     public Button resetButton() {
@@ -146,18 +154,12 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     }
     
     @Override
-    public void tick() {
+    public boolean mouseScrolled(double xpos, double ypos, double xDelta, double yDelta) {
         
-        this.search.tick();
-    }
-    
-    @Override
-    public boolean mouseScrolled(double xpos, double ypos, double delta) {
-        
-        if(search.autoComplete().mouseScrolled(xpos, ypos, delta)) {
+        if(search.autoComplete().mouseScrolled(xpos, ypos, xDelta, yDelta)) {
             return true;
         }
-        return super.mouseScrolled(xpos, ypos, delta);
+        return super.mouseScrolled(xpos, ypos, xDelta, yDelta);
     }
     
     @Override
@@ -220,6 +222,16 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         return ((AccessKeyBindsScreen) this);
     }
     
+    private boolean canReset() {
+        
+        for(KeyMapping key : this.options.keyMappings) {
+            if(!key.isDefault()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     private final Button.OnPress PRESS_RESET = btn -> {
         NewKeyBindsScreen screen = NewKeyBindsScreen.this;
         Minecraft minecraft = Objects.requireNonNull(screen.minecraft);
@@ -270,7 +282,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
             buttonSort.active = true;
             buttonNone.active = true;
             buttonConflicting.active = true;
-            resetButton().active = true;
+            resetButton().active = canReset(); // Fixes
             setKeyBindsList(newKeyList.get());
         } else {
             freeKeyList.get().recalculate();

@@ -19,8 +19,8 @@
   "depends": {
     "fabricloader": ">=0.14",
     "java": ">=17",
-    "minecraft": "1.20.1",
-    "searchables": "1.0.x",
+    "minecraft": "1.20.2",
+    "searchables": ">=1.0.2",
     "fabric": "*"
   },
   "mixins": [

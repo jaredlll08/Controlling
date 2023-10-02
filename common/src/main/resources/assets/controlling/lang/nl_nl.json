@@ -1,0 +1,14 @@
+{
+  "options.showAll": "Toon alles",
+  "options.showConflicts": "Toon conflicten",
+  "options.showNone": "Toon niet-toegewezen",
+  "options.availableKeys": "Beschikbare toetsen",
+  "options.sort": "Sorteren",
+  "options.category": "Categorie",
+  "options.key": "Toets",
+  "options.sortNone": "Geen",
+  "options.sortAZ": "A->Z",
+  "options.sortZA": "Z->A",
+  "options.toggleFree": "Schakel beschikbaar",
+  "options.confirmReset": "Weet je het zeker?"
+}

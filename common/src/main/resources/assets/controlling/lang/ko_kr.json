@@ -1,7 +1,7 @@
 {
   "options.showAll": "모두 표시",
   "options.showConflicts": "충돌 표시",
-  "options.showNone": "언바운드 표시",
+  "options.showNone": "미지정 표시",
   "options.availableKeys": "사용 가능한 키",
   "options.sort": "정렬",
   "options.category": "범주",
@@ -9,6 +9,6 @@
   "options.sortNone": "없음",
   "options.sortAZ": "A->Z",
   "options.sortZA": "Z->A",
-  "options.toggleFree": "자유 설정/해제",
-  "options.confirmReset": "클릭하여 재설정을 확인!"
+  "options.toggleFree": "미사용 전환",
+  "options.confirmReset": "확실한가요?"
 }

@@ -45,9 +45,10 @@ dependencies {
 }
 
 tasks.create<TaskPublishCurseForge>("publishCurseForge") {
+    dependsOn(tasks.jar)
     apiToken = GMUtils.locateProperty(project, "curseforgeApiToken") ?: 0
 
-    val mainFile = upload(Properties.CURSE_PROJECT_ID, file("${project.buildDir}/libs/${base.archivesName.get()}-$version.jar"))
+    val mainFile = upload(Properties.CURSE_PROJECT_ID, tasks.jar.get().archiveFile)
     mainFile.changelogType = "markdown"
     mainFile.changelog = GMUtils.smallChangelog(project, Properties.GIT_REPO)
     mainFile.releaseType = CFG_Constants.RELEASE_TYPE_RELEASE
@@ -70,3 +71,4 @@ modrinth {
         required.project("searchables")
     }
 }
+tasks.modrinth.get().dependsOn(tasks.jar)

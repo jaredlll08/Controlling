@@ -19,6 +19,7 @@ out
 .metadata/*
 *.eml
 run/
+runs
 usernamecache.json
 *.stackdump
 secrets.json

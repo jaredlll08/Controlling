@@ -151,7 +151,7 @@ public class NewKeyBindsList extends CustomList {
         
         private final Component categoryName;
         
-        private KeyEntry(final KeyMapping key, final Component keyDesc) {
+        public KeyEntry(final KeyMapping key, final Component keyDesc) {
             
             this.key = key;
             this.keyDesc = keyDesc;

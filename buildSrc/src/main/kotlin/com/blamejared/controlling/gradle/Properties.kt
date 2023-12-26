@@ -9,6 +9,7 @@ object Properties {
     const val CURSE_PROJECT_ID = "250398"
     const val CURSE_HOMEPAGE = "https://www.curseforge.com/minecraft/mc-mods/controlling"
     const val MODRINTH_PROJECT_ID = "xv94TkTM"
-    const val FIRST_COMMIT = "8fe2a7f083198973e48571bc36ff0cda1b7a2d57"
     const val GIT_REPO = "https://github.com/jaredlll08/controlling"
+    const val DESCRIPTION = "Adds the ability to search for keybinds using their name in the KeyBinding menu, this allows players to easily find a key binding in the menu."
+    const val ITEM_ICON = "minecraft:compass"
 }

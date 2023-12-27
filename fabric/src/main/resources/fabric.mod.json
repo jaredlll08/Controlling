@@ -18,7 +18,7 @@
   "depends": {
     "fabricloader": ">=${FABRIC_LOADER}",
     "java": ">=${JAVA}",
-    "minecraft": "${JAVA}",
+    "minecraft": "${MINECRAFT}",
     "searchables": ">=${SEARCHABLES}",
     "fabric": "*"
   },

@@ -3,7 +3,7 @@ package com.blamejared.controlling.gradle
 object Properties {
     const val GROUP = "com.blamejared.controlling"
     const val NAME = "Controlling"
-    const val AUTHOR = "Jared"
+    const val AUTHOR = "Jaredlll08"
     const val MODID = "controlling"
     const val AVATAR = "https://media.forgecdn.net/avatars/49/603/636079972364045115.png"
     const val CURSE_PROJECT_ID = "250398"

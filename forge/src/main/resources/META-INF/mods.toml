@@ -27,6 +27,6 @@ side = "CLIENT"
 [[dependencies.${MODID}]]
 modId = "searchables"
 mandatory = true
-versionRange = "[1.0,)"
+versionRange = "[${SEARCHABLES},)"
 ordering = "NONE"
 side = "CLIENT"

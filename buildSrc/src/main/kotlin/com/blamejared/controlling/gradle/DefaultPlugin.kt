@@ -122,6 +122,7 @@ class DefaultPlugin : Plugin<Project> {
                         "GIT_REPO" to Properties.GIT_REPO,
                         "DESCRIPTION" to Properties.DESCRIPTION,
                         "ITEM_ICON" to Properties.ITEM_ICON,
+                        "SEARCHABLES" to Versions.SEARCHABLES
                 )
                 inputs.properties(properties)
                 filesMatching(setOf("fabric.mod.json", "META-INF/mods.toml", "pack.mcmeta")) {

@@ -38,7 +38,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     private Button buttonNone;
     private Button buttonConflicting;
     private Button buttonSort;
-    private final DisplayableBoolean confirmingReset = new DisplayableBoolean(canReset(), ControllingConstants.COMPONENT_OPTIONS_CONFIRM_RESET, ControllingConstants.COMPONENT_CONTROLS_RESET_ALL);
+    private final DisplayableBoolean confirmingReset = new DisplayableBoolean(false, ControllingConstants.COMPONENT_OPTIONS_CONFIRM_RESET, ControllingConstants.COMPONENT_CONTROLS_RESET_ALL);
     private boolean showFree;
     private Supplier<NewKeyBindsList> newKeyList;
     private Supplier<FreeKeysList> freeKeyList;

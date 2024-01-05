@@ -1,12 +1,13 @@
 package com.blamejared.controlling.client;
 
 import com.blamejared.controlling.ControllingConstants;
+import com.blamejared.controlling.api.entries.ICategoryEntry;
+import com.blamejared.controlling.api.entries.IKeyEntry;
 import com.blamejared.controlling.api.events.IKeyEntryListenersEvent;
 import com.blamejared.controlling.api.events.IKeyEntryMouseClickedEvent;
 import com.blamejared.controlling.api.events.IKeyEntryMouseReleasedEvent;
 import com.blamejared.controlling.platform.Services;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -39,11 +40,8 @@ public class NewKeyBindsList extends CustomList {
     public NewKeyBindsList(KeyBindsScreen controls, Minecraft mcIn) {
         
         super(controls, mcIn);
-        this.width = controls.width + 45;
-        this.height = controls.height;
-        this.y0 = 48;
-        this.y1 = controls.height - 56;
-        this.x1 = controls.width + 45;
+        this.height -= 52;
+        this.setY(48);
         this.controlsScreen = controls;
         this.mc = mcIn;
         children().clear();
@@ -74,6 +72,18 @@ public class NewKeyBindsList extends CustomList {
     }
     
     @Override
+    public int getBottom() {
+        
+        return this.controlsScreen.height - 56;
+    }
+    
+    @Override
+    public int getRight() {
+        
+        return this.controlsScreen.width + 45;
+    }
+    
+    @Override
     protected int getScrollbarPosition() {
         
         return super.getScrollbarPosition() + 15 + 20;
@@ -85,7 +95,7 @@ public class NewKeyBindsList extends CustomList {
         return super.getRowWidth() + 32;
     }
     
-    public class CategoryEntry extends Entry {
+    public class CategoryEntry extends Entry implements ICategoryEntry {
         
         private final Component name;
         private final int labelWidth;
@@ -97,7 +107,8 @@ public class NewKeyBindsList extends CustomList {
         }
         
         public void render(GuiGraphics guiGraphics, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
-            guiGraphics.drawString(NewKeyBindsList.this.mc.font, this.name, Objects.requireNonNull(minecraft.screen).width / 2 - this.labelWidth / 2,  y + rowWidth - 9 - 1, 16777215);
+            
+            guiGraphics.drawString(NewKeyBindsList.this.mc.font, this.name, Objects.requireNonNull(minecraft.screen).width / 2 - this.labelWidth / 2, y + rowWidth - 9 - 1, 16777215);
         }
         
         public List<? extends NarratableEntry> narratables() {
@@ -125,16 +136,16 @@ public class NewKeyBindsList extends CustomList {
         protected void refreshEntry() {
         
         }
-    
-    
-        public Component name() {
         
+        
+        public Component name() {
+            
             return name;
         }
-    
+        
     }
     
-    public class KeyEntry extends KeyBindsList.Entry {
+    public class KeyEntry extends KeyBindsList.Entry implements IKeyEntry {
         
         /**
          * The keybinding specified for this KeyEntry
@@ -237,12 +248,12 @@ public class NewKeyBindsList extends CustomList {
             
             return keyDesc;
         }
-    
-        public Component categoryName() {
         
+        public Component categoryName() {
+            
             return categoryName;
         }
-    
+        
         public Button getBtnResetKeyBinding() {
             
             return btnResetKeyBinding;

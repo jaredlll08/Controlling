@@ -1,6 +1,7 @@
 package com.blamejared.controlling.client;
 
 import com.blamejared.controlling.ControllingConstants;
+import com.blamejared.controlling.api.entries.IInputEntry;
 import com.blamejared.controlling.mixin.AccessInputConstantsKey;
 import com.blamejared.controlling.mixin.AccessKeyMapping;
 import com.google.common.collect.ImmutableList;
@@ -31,11 +32,8 @@ public class FreeKeysList extends CustomList {
     public FreeKeysList(KeyBindsScreen controls, Minecraft mcIn) {
         
         super(controls, mcIn);
-        this.width = controls.width + 45;
-        this.height = controls.height;
-        this.y0 = 48;
-        this.y1 = controls.height - 56;
-        this.x1 = controls.width + 45;
+        this.height -= 52;
+        this.setY(48);
         this.controlsScreen = controls;
         this.mc = mcIn;
         children().clear();
@@ -43,7 +41,18 @@ public class FreeKeysList extends CustomList {
         this.keyBindings = Arrays.stream(mc.options.keyMappings).collect(Collectors.toList());
         
         recalculate();
+    }
+    
+    @Override
+    public int getBottom() {
         
+        return this.controlsScreen.height - 56;
+    }
+    
+    @Override
+    public int getRight() {
+        
+        return this.controlsScreen.width + 45;
     }
     
     public void recalculate() {
@@ -83,7 +92,7 @@ public class FreeKeysList extends CustomList {
         return super.getRowWidth() + 32;
     }
     
-    public class InputEntry extends Entry {
+    public class InputEntry extends Entry implements IInputEntry {
         private final InputConstants.Key input;
         
         public InputEntry(InputConstants.Key input) {

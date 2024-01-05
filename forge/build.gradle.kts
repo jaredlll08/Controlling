@@ -44,6 +44,12 @@ dependencies {
     implementation(fg.deobf("com.blamejared.searchables:Searchables-forge-${Versions.MINECRAFT}:${Versions.SEARCHABLES}"))
 }
 
+sourceSets.configureEach {
+    val dir = layout.buildDirectory.dir("sourcesSets/$this.name")
+    this.output.setResourcesDir(dir)
+    this.java.destinationDirectory.set(dir)
+}
+
 tasks.create<TaskPublishCurseForge>("publishCurseForge") {
     dependsOn(tasks.jar)
     apiToken = GMUtils.locateProperty(project, "curseforgeApiToken") ?: 0

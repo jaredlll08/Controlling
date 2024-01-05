@@ -74,7 +74,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         this.freeKeyList = Suppliers.memoize(() -> new FreeKeysList(this, this.minecraft));
         this.removeWidget(getKeyBindsList());
         this.setKeyBindsList(showFree ? this.freeKeyList.get() : this.newKeyList.get());
-        this.addWidget(getKeyBindsList());
+        this.addRenderableWidget(getKeyBindsList());
         
         this.removeWidget(resetButton());
         this.resetButton(addRenderableWidget(Button.builder(confirmingReset.currentDisplay(), PRESS_RESET)
@@ -151,6 +151,18 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         list.children()
                 .addAll(ControllingConstants.SEARCHABLE_KEYBINDINGS.filterEntries(list.getAllEntries(), lastSearch, extraPredicate));
         postConsumer.accept(list.children());
+    }
+    
+    @Override
+    public boolean mouseClicked(double xpos, double ypos, int buttonId) {
+        
+        boolean b = super.mouseClicked(xpos, ypos, buttonId);
+        if(!b && search.isFocused() && !search.autoComplete().mouseClicked(xpos, ypos, buttonId)) {
+            search.setFocused(false);
+            clearFocus();
+            b = true;
+        }
+        return b;
     }
     
     @Override
@@ -293,7 +305,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
             setKeyBindsList(freeKeyList.get());
         }
         filterKeys();
-        addWidget(getKeyBindsList());
+        addRenderableWidget(getKeyBindsList());
         setFocused(getKeyBindsList());
         showFree = !showFree;
     };

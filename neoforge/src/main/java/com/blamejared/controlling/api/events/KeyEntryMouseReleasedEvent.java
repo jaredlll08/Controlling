@@ -1,23 +1,23 @@
 package com.blamejared.controlling.api.events;
 
-import com.blamejared.controlling.client.NewKeyBindsList;
+import com.blamejared.controlling.api.entries.IKeyEntry;
 import net.neoforged.bus.api.Event;
 
 /**
- * KeyEntryMouseReleasedEvent is called at the start of {@link NewKeyBindsList.KeyEntry#mouseReleased(double, double, int)}.
+ * KeyEntryMouseReleasedEvent is called at the start of {@link IKeyEntry#mouseReleased(double, double, int)}.
  *
  * If you are consuming this event, call {@link KeyEntryMouseReleasedEvent#setHandled(boolean)} with a value of {@code true}.
  */
 public class KeyEntryMouseReleasedEvent extends Event implements IKeyEntryMouseReleasedEvent {
     
-    private final NewKeyBindsList.KeyEntry entry;
+    private final IKeyEntry entry;
     private final double mouseX;
     private final double mouseY;
     private final int buttonId;
     
     private boolean handled;
     
-    public KeyEntryMouseReleasedEvent(NewKeyBindsList.KeyEntry entry, double mouseX, double mouseY, int buttonId) {
+    public KeyEntryMouseReleasedEvent(IKeyEntry entry, double mouseX, double mouseY, int buttonId) {
         
         this.entry = entry;
         this.mouseX = mouseX;
@@ -25,7 +25,7 @@ public class KeyEntryMouseReleasedEvent extends Event implements IKeyEntryMouseR
         this.buttonId = buttonId;
     }
     
-    public NewKeyBindsList.KeyEntry getEntry() {
+    public IKeyEntry getEntry() {
         
         return entry;
     }

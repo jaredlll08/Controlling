@@ -1,24 +1,25 @@
 package com.blamejared.controlling.api.events;
 
+import com.blamejared.controlling.api.entries.IKeyEntry;
 import com.blamejared.controlling.client.NewKeyBindsList;
 import net.minecraftforge.eventbus.api.Event;
 
 
 /**
- * KeyEntryMouseClickedEvent is called at the start of {@link NewKeyBindsList.KeyEntry#mouseClicked(double, double, int)}.
+ * KeyEntryMouseClickedEvent is called at the start of {@link IKeyEntry#mouseClicked(double, double, int)}.
  * <p>
  * If you are consuming this event, call {@link KeyEntryMouseClickedEvent#setHandled(boolean)} with a value of {@code true}.
  */
 public class KeyEntryMouseClickedEvent extends Event implements IKeyEntryMouseClickedEvent {
     
-    private final NewKeyBindsList.KeyEntry entry;
+    private final IKeyEntry entry;
     private final double mouseX;
     private final double mouseY;
     private final int buttonId;
     
     private boolean handled;
     
-    public KeyEntryMouseClickedEvent(NewKeyBindsList.KeyEntry entry, double mouseX, double mouseY, int buttonId) {
+    public KeyEntryMouseClickedEvent(IKeyEntry entry, double mouseX, double mouseY, int buttonId) {
         
         this.entry = entry;
         this.mouseX = mouseX;
@@ -26,7 +27,7 @@ public class KeyEntryMouseClickedEvent extends Event implements IKeyEntryMouseCl
         this.buttonId = buttonId;
     }
     
-    public NewKeyBindsList.KeyEntry getEntry() {
+    public IKeyEntry getEntry() {
         
         return entry;
     }

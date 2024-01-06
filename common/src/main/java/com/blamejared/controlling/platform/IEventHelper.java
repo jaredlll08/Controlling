@@ -1,6 +1,7 @@
 package com.blamejared.controlling.platform;
 
 
+import com.blamejared.controlling.api.entries.IKeyEntry;
 import com.blamejared.controlling.api.events.IKeyEntryListenersEvent;
 import com.blamejared.controlling.api.events.IKeyEntryMouseClickedEvent;
 import com.blamejared.controlling.api.events.IKeyEntryMouseReleasedEvent;
@@ -16,12 +17,12 @@ import java.util.List;
 
 public interface IEventHelper {
     
-    Either<IKeyEntryListenersEvent, List<GuiEventListener>> fireKeyEntryListenersEvent(NewKeyBindsList.KeyEntry entry);
+    Either<IKeyEntryListenersEvent, List<GuiEventListener>> fireKeyEntryListenersEvent(IKeyEntry entry);
     
-    Either<IKeyEntryMouseClickedEvent, Boolean> fireKeyEntryMouseClickedEvent(NewKeyBindsList.KeyEntry entry, double mouseX, double mouseY, int buttonId);
+    Either<IKeyEntryMouseClickedEvent, Boolean> fireKeyEntryMouseClickedEvent(IKeyEntry entry, double mouseX, double mouseY, int buttonId);
     
-    Either<IKeyEntryMouseReleasedEvent, Boolean> fireKeyEntryMouseReleasedEvent(NewKeyBindsList.KeyEntry entry, double mouseX, double mouseY, int buttonId);
+    Either<IKeyEntryMouseReleasedEvent, Boolean> fireKeyEntryMouseReleasedEvent(IKeyEntry entry, double mouseX, double mouseY, int buttonId);
     
-    Either<IKeyEntryRenderEvent, Unit> fireKeyEntryRenderEvent(NewKeyBindsList.KeyEntry entry, GuiGraphics stack, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks);
+    Either<IKeyEntryRenderEvent, Unit> fireKeyEntryRenderEvent(IKeyEntry entry, GuiGraphics stack, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks);
     
 }

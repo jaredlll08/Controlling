@@ -1,6 +1,7 @@
 package com.blamejared.controlling.api;
 
 import com.blamejared.controlling.ControllingConstants;
+import com.blamejared.controlling.api.entries.IKeyEntry;
 import com.blamejared.controlling.client.NewKeyBindsList;
 import net.minecraft.network.chat.Component;
 
@@ -9,9 +10,9 @@ import java.util.*;
 public enum SortOrder {
     NONE("options.sortNone", entries -> {
     }),
-    AZ("options.sortAZ", entries -> entries.sort(Comparator.comparing(o -> ((NewKeyBindsList.KeyEntry) o).getKeyDesc()
+    AZ("options.sortAZ", entries -> entries.sort(Comparator.comparing(o -> ((IKeyEntry) o).getKeyDesc()
             .getString()))),
-    ZA("options.sortZA", entries -> entries.sort(Comparator.comparing(o -> ((NewKeyBindsList.KeyEntry) o).getKeyDesc()
+    ZA("options.sortZA", entries -> entries.sort(Comparator.comparing(o -> ((IKeyEntry) o).getKeyDesc()
                     .getString())
             .reversed()));
     
@@ -33,7 +34,7 @@ public enum SortOrder {
     
     public void sort(List<NewKeyBindsList.Entry> list) {
         
-        list.removeIf(entry -> !(entry instanceof NewKeyBindsList.KeyEntry));
+        list.removeIf(entry -> !(entry instanceof IKeyEntry));
         this.sorter.sort(list);
     }
     

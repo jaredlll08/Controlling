@@ -1,10 +1,10 @@
 package com.blamejared.controlling.api.events;
 
-import com.blamejared.controlling.client.NewKeyBindsList;
+import com.blamejared.controlling.api.entries.IKeyEntry;
 
 public interface IKeyEntryMouseClickedEvent {
     
-    NewKeyBindsList.KeyEntry getEntry();
+    IKeyEntry getEntry();
     
     double getMouseX();
     

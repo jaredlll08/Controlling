@@ -1,5 +1,6 @@
 package com.blamejared.controlling.api;
 
+import com.blamejared.controlling.api.entries.IKeyEntry;
 import com.blamejared.controlling.client.NewKeyBindsList;
 import com.blamejared.controlling.mixin.AccessKeyMapping;
 import net.minecraft.client.*;
@@ -22,15 +23,15 @@ public enum DisplayMode {
     });
     
     
-    private final Predicate<NewKeyBindsList.KeyEntry> predicate;
+    private final Predicate<IKeyEntry> predicate;
     
-    DisplayMode(Predicate<NewKeyBindsList.KeyEntry> predicate) {
+    DisplayMode(Predicate<IKeyEntry> predicate) {
         
         this.predicate = predicate;
     }
     
     public Predicate<KeyBindsList.Entry> getPredicate() {
         
-        return entry -> entry instanceof NewKeyBindsList.KeyEntry keyEntry && predicate.test(keyEntry);
+        return entry -> entry instanceof IKeyEntry keyEntry && predicate.test(keyEntry);
     }
 }

@@ -1,5 +1,6 @@
 package com.blamejared.controlling.platform;
 
+import com.blamejared.controlling.api.entries.IKeyEntry;
 import com.blamejared.controlling.api.event.ControllingEvents;
 import com.blamejared.controlling.api.event.KeyEntryListenersEvent;
 import com.blamejared.controlling.api.event.KeyEntryMouseClickedEvent;
@@ -21,7 +22,7 @@ import java.util.List;
 public class FabricEventHandler implements IEventHelper {
     
     @Override
-    public Either<IKeyEntryListenersEvent, List<GuiEventListener>> fireKeyEntryListenersEvent(NewKeyBindsList.KeyEntry entry) {
+    public Either<IKeyEntryListenersEvent, List<GuiEventListener>> fireKeyEntryListenersEvent(IKeyEntry entry) {
         KeyEntryListenersEvent event = new KeyEntryListenersEvent(entry);
         if(FabricLoader.getInstance().isModLoaded("fabric")) {
             return Either.right(ControllingEvents.KEY_ENTRY_LISTENERS_EVENT.invoker().handle(event));
@@ -31,7 +32,7 @@ public class FabricEventHandler implements IEventHelper {
     }
     
     @Override
-    public Either<IKeyEntryMouseClickedEvent, Boolean> fireKeyEntryMouseClickedEvent(NewKeyBindsList.KeyEntry entry, double mouseX, double mouseY, int buttonId) {
+    public Either<IKeyEntryMouseClickedEvent, Boolean> fireKeyEntryMouseClickedEvent(IKeyEntry entry, double mouseX, double mouseY, int buttonId) {
         KeyEntryMouseClickedEvent event = new KeyEntryMouseClickedEvent(entry, mouseX, mouseY, buttonId);
         if(FabricLoader.getInstance().isModLoaded("fabric")) {
             return Either.right(ControllingEvents.KEY_ENTRY_MOUSE_CLICKED_EVENT.invoker().handle(event));
@@ -41,7 +42,7 @@ public class FabricEventHandler implements IEventHelper {
     }
     
     @Override
-    public Either<IKeyEntryMouseReleasedEvent, Boolean> fireKeyEntryMouseReleasedEvent(NewKeyBindsList.KeyEntry entry, double mouseX, double mouseY, int buttonId) {
+    public Either<IKeyEntryMouseReleasedEvent, Boolean> fireKeyEntryMouseReleasedEvent(IKeyEntry entry, double mouseX, double mouseY, int buttonId) {
         KeyEntryMouseReleasedEvent event = new KeyEntryMouseReleasedEvent(entry, mouseX, mouseY, buttonId);
         if(FabricLoader.getInstance().isModLoaded("fabric")) {
             return Either.right(ControllingEvents.KEY_ENTRY_MOUSE_RELEASED_EVENT.invoker().handle(event));
@@ -51,7 +52,7 @@ public class FabricEventHandler implements IEventHelper {
     }
     
     @Override
-    public Either<IKeyEntryRenderEvent, Unit> fireKeyEntryRenderEvent(NewKeyBindsList.KeyEntry entry, GuiGraphics guiGraphics, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+    public Either<IKeyEntryRenderEvent, Unit> fireKeyEntryRenderEvent(IKeyEntry entry, GuiGraphics guiGraphics, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         
         if(FabricLoader.getInstance().isModLoaded("fabric")) {
             return Either.right(ControllingEvents.KEY_ENTRY_RENDER_EVENT.invoker().handle(new KeyEntryRenderEvent(entry, guiGraphics, slotIndex, y, x, rowLeft, rowWidth, mouseX, mouseY, hovered, partialTicks)));

@@ -3,6 +3,7 @@ package com.blamejared.controlling.api;
 import com.blamejared.controlling.ControllingConstants;
 import com.blamejared.controlling.api.entries.IKeyEntry;
 import com.blamejared.controlling.client.NewKeyBindsList;
+import net.minecraft.client.gui.screens.controls.KeyBindsList;
 import net.minecraft.network.chat.Component;
 
 import java.util.*;
@@ -32,7 +33,7 @@ public enum SortOrder {
         return SortOrder.values()[(this.ordinal() + 1) % SortOrder.values().length];
     }
     
-    public void sort(List<NewKeyBindsList.Entry> list) {
+    public void sort(List<KeyBindsList.Entry> list) {
         
         list.removeIf(entry -> !(entry instanceof IKeyEntry));
         this.sorter.sort(list);

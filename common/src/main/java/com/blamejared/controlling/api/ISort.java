@@ -1,11 +1,11 @@
 package com.blamejared.controlling.api;
 
-import com.blamejared.controlling.client.NewKeyBindsList;
+import net.minecraft.client.gui.screens.controls.KeyBindsList;
 
 import java.util.List;
 
 public interface ISort {
     
-    void sort(List<NewKeyBindsList.Entry> entries);
+    void sort(List<KeyBindsList.Entry> entries);
     
 }

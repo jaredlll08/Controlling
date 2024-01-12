@@ -24,13 +24,13 @@ ordering = "NONE"
 side = "CLIENT"
 [[dependencies.${MODID}]]
 modId = "minecraft"
-mandatory = true
+type = "required"
 versionRange = "[${MINECRAFT}]"
 ordering = "NONE"
 side = "CLIENT"
 [[dependencies.${MODID}]]
 modId = "searchables"
-mandatory = true
+type = "required"
 versionRange = "[${SEARCHABLES},)"
 ordering = "NONE"
 side = "CLIENT"

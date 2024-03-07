@@ -5,8 +5,11 @@
   "options.showNone": "显示未绑定键位",
   "options.availableKeys": "可用的快捷键",
   "options.sort": "排序",
-  "options.category": "搜索分类",
-  "options.key": "搜索键位",
+  "options.category": "分类",
+  "options.key": "键位",
+  "options.sortNone": "无",
+  "options.sortAZ": "A->Z",
+  "options.sortZA": "Z->A",
   "options.toggleFree": "自由切换",
-  "options.confirmReset": "点击确认重置！"
+  "options.confirmReset": "确定？"
 }

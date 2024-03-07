@@ -10,6 +10,6 @@
   "options.sortNone": "Aucun",
   "options.sortAZ": "A->Z",
   "options.sortZA": "Z->A",
-  "options.toggleFree": "Touches disp."
+  "options.toggleFree": "Touches disp.",
   "options.confirmReset": "Confirmer ?"
 }

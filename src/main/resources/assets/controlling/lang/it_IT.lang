@@ -1,0 +1,13 @@
+options.search=Ricerca
+options.showAll=Vedi tutti
+options.showConflicts=Vedi conflitti
+options.showNone=Vedi mancanti
+options.availableKeys=Tasti disponibili
+options.sort=Ordine
+options.category=Categoria
+options.key=Tasto
+options.sortNone=no
+options.sortAZ=A->Z
+options.sortZA=Z->A
+options.toggleFree=Tasti liberi
+options.confirmReset=Conferma ripristino

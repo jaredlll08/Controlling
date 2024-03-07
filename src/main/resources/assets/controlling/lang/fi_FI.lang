@@ -1,0 +1,13 @@
+options.search=Etsi
+options.showAll=Näytä kaikki
+options.showConflicts=Näytä ristiriidat
+options.showNone=Näytä määrittämättömät
+options.availableKeys=Vapaat näppäimet
+options.sort=Lajittele
+options.category=Kategoria
+options.key=Näppäin
+options.sortNone=Älä lajittele
+options.sortAZ=A->Ö
+options.sortZA=Ö->A
+options.toggleFree=Näytä vapaat
+options.confirmReset=Oikeasti?

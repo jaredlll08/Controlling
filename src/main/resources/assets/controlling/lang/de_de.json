@@ -1,8 +1,15 @@
 {
   "options.search": "Suchen",
   "options.showAll": "Alle anzeigen",
-  "options.showConflicts": "Konflikte anzeigen",
-  "options.showNone": "Unbenutze anzeigen",
+  "options.showConflicts": "Konfl. anzeig.",
+  "options.showNone": "Unben. anzeig.",
   "options.availableKeys": "Verfügbare Tasten",
-  "options.sort": "Sortieren nach"
+  "options.sort": "Sortieren nach",
+  "options.category": "Kategorie",
+  "options.key": "Taste",
+  "options.sortNone": "(nichts)",
+  "options.sortAZ": "A->Z",
+  "options.sortZA": "Z->A",
+  "options.toggleFree": "Freie Tasten anzeig.",
+  "options.confirmReset": "Möchtest du wirklich zurücksetzen?"
 }

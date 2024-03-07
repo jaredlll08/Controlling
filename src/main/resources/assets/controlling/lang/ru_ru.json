@@ -1,18 +1,15 @@
 {
   "options.search": "Поиск",
+  "options.showAll": "Показать все",
+  "options.showConflicts": "Показать конфликтующие",
+  "options.showNone": "Показать не привязанные",
+  "options.availableKeys": "Доступные клавиши",
+  "options.sort": "Сортировать",
   "options.category": "Категория",
   "options.key": "Клавиша",
-
-  "options.showNone": "Несвязанные",
-  "options.showConflicts": "Конфликты",
-  "options.showAll": "Все",
-
-  "options.sort": "Сортировать",
-  "options.sortNone": "Нет",
+  "options.sortNone": "Ничего",
   "options.sortAZ": "А->Я",
   "options.sortZA": "Я->А",
-
-  "options.availableKeys": "Доступные клавиши",
-
-  "options.confirmReset": "Подтвердить сброс!"
+  "options.toggleFree": "Переключить свободные",
+  "options.confirmReset": "Подтвердить?"
 }

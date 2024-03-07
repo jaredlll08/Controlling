@@ -11,5 +11,5 @@
   "options.sortAZ": "A->Z",
   "options.sortZA": "Z->A",
   "options.toggleFree": "미사용 전환",
-  "options.confirmReset": "정말로 재설정하려면 클릭!"
+  "options.confirmReset": "확실한가요?"
 }

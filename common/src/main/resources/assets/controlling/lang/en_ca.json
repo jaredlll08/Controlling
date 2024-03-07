@@ -10,5 +10,5 @@
   "options.sortAZ": "A->Zed",
   "options.sortZA": "Zed->A",
   "options.toggleFree": "Toggle Free",
-  "options.confirmReset": "Click to confirm reset!"
+  "options.confirmReset": "Confirm?"
 }

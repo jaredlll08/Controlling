@@ -7,5 +7,9 @@
   "options.sort": "Tri",
   "options.category": "Catégorie",
   "options.key": "Touche",
-  "options.toggleFree": "Touches disp."
+  "options.sortNone": "Aucun",
+  "options.sortAZ": "A->Z",
+  "options.sortZA": "Z->A",
+  "options.toggleFree": "Touches disp.",
+  "options.confirmReset": "Confirmer ?"
 }

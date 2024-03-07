@@ -1,15 +1,15 @@
- ​{ 
- ​  ​"options.search"​: ​"​Arama"​, 
- ​  ​"options.showAll"​: ​"​Hepsini Göster​"​, 
- ​  ​"options.showConflicts"​: ​"​Çakışmaları göster"​, 
- ​  ​"options.showNone"​: ​"​Atanmamışları Göster"​, 
- ​  ​"options.availableKeys"​: ​"Boşta Anahtarlar​"​, 
- ​  ​"options.sort"​: ​"​Sırala​"​, 
- ​  ​"options.category"​: ​"​Kategori​"​, 
- ​  ​"options.key"​: ​"​Anahtar​"​, 
- ​  ​"options.sortNone"​: ​"​Hiç"​, 
- ​  ​"options.sortAZ"​: ​"​A->Z​"​, 
- ​  ​"options.sortZA"​: ​"​Z->A​"​, 
- ​  ​"options.toggleFree"​: ​"​Serbest Geçiş"​, 
- ​  ​"options.confirmReset"​: ​"​Onayla?​" 
- ​}
+{
+  "options.search": "Arama",
+  "options.showAll": "Hepsini Göster",
+  "options.showConflicts": "Çakışmaları Göster",
+  "options.showNone": "Atanmamışları Göster",
+  "options.availableKeys": "Boşta Anahtarlar",
+  "options.sort": "Sırala",
+  "options.category": "Kategori",
+  "options.key": "Anahtar",
+  "options.sortNone": "Hiç",
+  "options.sortAZ": "A->Z",
+  "options.sortZA": "Z->A",
+  "options.toggleFree": "Serbest Geçiş",
+  "options.confirmReset": "Onayla?"
+}

@@ -1,0 +1,15 @@
+{
+  "options.search": "तलाश",
+  "options.showAll": "सब दिखाएं",
+  "options.showConflicts": "संघर्ष दिखाएँ",
+  "options.showNone": "अनबाउंड दिखाएं",
+  "options.availableKeys": "उपलब्ध कुंजियाँ",
+  "options.sort": "छंटाई",
+  "options.category": "श्रेणी",
+  "options.key": "चाभी",
+  "options.sortNone": "कोई भी नहीं",
+  "options.sortAZ": "A->Z",
+  "options.sortZA": "Z->A",
+  "options.toggleFree": "टॉगल मुक्त",
+  "options.confirmReset": "पुष्टि करें?"
+}

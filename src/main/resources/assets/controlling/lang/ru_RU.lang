@@ -1,4 +1,13 @@
 options.search=Поиск
 options.showAll=Показать все
-options.showConflicts=Показать конфликты
-options.availableKeys=Доступные кнопки
+options.showConflicts=Показать конфликтующие
+options.showNone=Показать не привязанные
+options.availableKeys=Доступные клавиши
+options.sort=Сортировать
+options.category=Категория
+options.key=Клавиша
+options.sortNone=Ничего
+options.sortAZ=A->Я
+options.sortZA=Я->A
+options.toggleFree=Переключить свободные
+options.confirmReset=Подтвердить?

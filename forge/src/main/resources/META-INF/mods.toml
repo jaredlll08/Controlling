@@ -2,6 +2,7 @@ modLoader = "javafml"
 loaderVersion = "${FORGE_LOADER}"
 issueTrackerURL = "${GIT_REPO}/issues"
 license = "MIT"
+clientSideOnly = true
 [[mods]]
 modId = "${MODID}"
 updateJSONURL = "https://updates.blamejared.com/get?n=${MODID}&gv=${MINECRAFT}&ml=forge"

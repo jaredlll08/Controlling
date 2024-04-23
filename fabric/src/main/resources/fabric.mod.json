@@ -21,7 +21,7 @@
     "java": ">=17",
     "minecraft": "1.19.x",
     "searchables": "1.0.x",
-    "fabric": "*"
+    "fabric-api": "*"
   },
   "mixins": [
     {

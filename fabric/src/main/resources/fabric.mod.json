@@ -20,7 +20,7 @@
     "java": ">=${JAVA}",
     "minecraft": "${MINECRAFT}",
     "searchables": ">=${SEARCHABLES}",
-    "fabric": "*"
+    "fabric-api": "*"
   },
   "mixins": [
     {

@@ -2,20 +2,23 @@ package com.blamejared.controlling.api;
 
 import com.blamejared.controlling.ControllingConstants;
 import com.blamejared.controlling.api.entries.IKeyEntry;
-import com.blamejared.controlling.client.NewKeyBindsList;
 import net.minecraft.client.gui.screens.controls.KeyBindsList;
 import net.minecraft.network.chat.Component;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
 
 public enum SortOrder {
     NONE("options.sortNone", entries -> {
     }),
-    AZ("options.sortAZ", entries -> entries.sort(Comparator.comparing(o -> ((IKeyEntry) o).getKeyDesc()
+    AZ("options.sortAZ", entries -> entries.sort(Comparator.comparing(o -> o.getKeyDesc()
             .getString()))),
-    ZA("options.sortZA", entries -> entries.sort(Comparator.comparing(o -> ((IKeyEntry) o).getKeyDesc()
-                    .getString())
-            .reversed()));
+    ZA("options.sortZA", entries -> entries.sort(Comparator.comparing(o -> o.getKeyDesc()
+            .getString(), Comparator.reverseOrder()))),
+    KEY_AZ("options.sortKeyAZ", entries -> entries.sort(Comparator.<IKeyEntry, String>comparing(o -> o.getKeyDesc()
+            .getString()).thenComparing(o -> o.getKeyDesc().getString()))),
+    KEY_ZA("options.sortKeyZA", entries -> entries.sort(Comparator.<IKeyEntry, String>comparing(o -> o.getKeyDesc()
+            .getString(), Comparator.reverseOrder()).thenComparing(o -> o.getKeyDesc().getString(), Comparator.reverseOrder())));
     
     private final ISort sorter;
     private final Component display;
@@ -36,7 +39,8 @@ public enum SortOrder {
     public void sort(List<KeyBindsList.Entry> list) {
         
         list.removeIf(entry -> !(entry instanceof IKeyEntry));
-        this.sorter.sort(list);
+        //noinspection rawtypes,unchecked
+        this.sorter.sort((List<IKeyEntry>)(List)list);
     }
     
     public Component getDisplay() {

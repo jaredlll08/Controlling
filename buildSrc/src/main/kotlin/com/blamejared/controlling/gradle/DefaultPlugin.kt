@@ -46,10 +46,6 @@ class DefaultPlugin : Plugin<Project> {
         project.version = GMUtils.updatingVersion(Versions.MOD)
         project.group = Properties.GROUP
 
-        project.tasks.withType<GenerateModuleMetadata>().all {
-            enabled = false
-        }
-
         project.repositories {
             this.add(this.maven("https://repo.spongepowered.org/repository/maven-public/") {
                 name = "Sponge"
@@ -65,7 +61,7 @@ class DefaultPlugin : Plugin<Project> {
         project.plugins.apply(JavaLibraryPlugin::class.java)
 
         with(project.extensions.getByType(JavaPluginExtension::class.java)) {
-            toolchain.languageVersion.set(JavaLanguageVersion.of(JavaVersion.VERSION_17.majorVersion))
+            toolchain.languageVersion.set(JavaLanguageVersion.of(JavaVersion.VERSION_21.majorVersion))
             withSourcesJar()
             withJavadocJar()
             sourceSets {
@@ -125,7 +121,7 @@ class DefaultPlugin : Plugin<Project> {
                         "SEARCHABLES" to Versions.SEARCHABLES
                 )
                 inputs.properties(properties)
-                filesMatching(setOf("fabric.mod.json", "META-INF/mods.toml", "pack.mcmeta")) {
+                filesMatching(setOf("fabric.mod.json",  "META-INF/neoforge.mods.toml","META-INF/mods.toml", "pack.mcmeta")) {
                     expand(properties)
                 }
             }

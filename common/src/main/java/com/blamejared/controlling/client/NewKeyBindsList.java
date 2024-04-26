@@ -82,17 +82,10 @@ public class NewKeyBindsList extends CustomList {
         
         return this.controlsScreen.width + 45;
     }
-    
     @Override
     protected int getScrollbarPosition() {
         
         return super.getScrollbarPosition() + 15 + 20;
-    }
-    
-    @Override
-    public int getRowWidth() {
-        
-        return super.getRowWidth() + 32;
     }
     
     public class CategoryEntry extends Entry implements ICategoryEntry {

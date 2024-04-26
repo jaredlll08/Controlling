@@ -86,12 +86,6 @@ public class FreeKeysList extends CustomList {
         return super.getScrollbarPosition() + 15 + 20;
     }
     
-    @Override
-    public int getRowWidth() {
-        
-        return super.getRowWidth() + 32;
-    }
-    
     public class InputEntry extends Entry implements IInputEntry {
         private final InputConstants.Key input;
         

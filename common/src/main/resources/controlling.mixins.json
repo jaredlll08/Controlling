@@ -10,7 +10,8 @@
     "AccessKeyBindsScreen",
     "AccessKeyMapping",
     "AccessOptionsSubScreen",
-    "AccessScreen"
+    "AccessScreen",
+    "MixinKeyBindsScreen"
   ],
   "server": [
   ],

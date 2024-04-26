@@ -9,6 +9,8 @@
   "options.sortNone": "None",
   "options.sortAZ": "A->Z",
   "options.sortZA": "Z->A",
+  "options.sortKeyAZ": "Key A->Z",
+  "options.sortKeyZA": "Key Z->A",
   "options.toggleFree": "Toggle Free",
   "options.confirmReset": "Confirm?"
 }

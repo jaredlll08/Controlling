@@ -15,11 +15,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.LayoutSettings;
+import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.controls.KeyBindsList;
 import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.ApiStatus;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Comparator;
@@ -38,6 +44,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     private Button buttonNone;
     private Button buttonConflicting;
     private Button buttonSort;
+    private Button toggleFreeButton;
     private final DisplayableBoolean confirmingReset = new DisplayableBoolean(false, ControllingConstants.COMPONENT_OPTIONS_CONFIRM_RESET, ControllingConstants.COMPONENT_CONTROLS_RESET_ALL);
     private boolean showFree;
     private Supplier<NewKeyBindsList> newKeyList;
@@ -48,65 +55,94 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         super(screen, settings);
     }
     
-    /**
-     * Adds the buttons (and other controls) to the screen in question. Called when the GUI is displayed and when the
-     * window resizes, the buttonList is cleared beforehand.
-     */
-    protected void init() {
+    @ApiStatus.Internal
+    public void hijackInit() {
         
-        super.init();
-        int searchX = getKeyBindsList().getRowWidth();
-        int btnWidth = Button.DEFAULT_WIDTH / 2 - 1;
-        int groupPadding = 5;
-        int centerX = this.width / 2;
-        int leftX = centerX - Button.DEFAULT_WIDTH - groupPadding;
-        int rightX = centerX + groupPadding;
-        
-        int bottomY = this.height - 29;
-        int rowSpacing = 24;
-        int topRowY = bottomY - rowSpacing;
-        
-        Supplier<List<KeyBindsList.Entry>> listSupplier = () -> getCustomList().getAllEntries();
-        this.search = addRenderableWidget(new AutoCompletingEditBox<>(font, centerX - searchX / 2, 22, searchX, Button.DEFAULT_HEIGHT, search, Component.translatable("selectWorld.search"), ControllingConstants.SEARCHABLE_KEYBINDINGS, listSupplier));
-        this.search.addResponder(this::filterKeys);
-        
-        this.newKeyList = Suppliers.memoize(() -> new NewKeyBindsList(this, this.minecraft));
-        this.freeKeyList = Suppliers.memoize(() -> new FreeKeysList(this, this.minecraft));
-        this.removeWidget(getKeyBindsList());
-        this.setKeyBindsList(showFree ? this.freeKeyList.get() : this.newKeyList.get());
-        this.addRenderableWidget(getKeyBindsList());
-        
-        this.removeWidget(resetButton());
-        this.resetButton(addRenderableWidget(Button.builder(confirmingReset.currentDisplay(), PRESS_RESET)
-                .bounds(leftX, bottomY, Button.DEFAULT_WIDTH, Button.DEFAULT_HEIGHT)
-                .build()));
+        this.resetButton(Button.builder(confirmingReset.currentDisplay(), PRESS_RESET)
+                .build());
         resetButton().active = canReset();
         
-        addRenderableWidget(Button.builder(ControllingConstants.COMPONENT_OPTIONS_TOGGLE_FREE, PRESS_FREE)
-                .bounds(leftX, topRowY, btnWidth, Button.DEFAULT_HEIGHT)
-                .build());
+        layout.setHeaderHeight(48);
+        layout.setFooterHeight(56);
         
-        this.buttonSort = addRenderableWidget(Button.builder(sortOrder.getDisplay(), PRESS_SORT)
-                .bounds(leftX + btnWidth + 2, topRowY, btnWidth, Button.DEFAULT_HEIGHT)
-                .build());
+        int searchX = getKeyBindsList().getRowWidth();
+        int btnWidth = Button.DEFAULT_WIDTH / 2 - 1;
+        int centerX = this.width / 2;
         
-        this.buttonNone = addRenderableWidget(Button.builder(ControllingConstants.COMPONENT_OPTIONS_SHOW_NONE, PRESS_NONE)
-                .bounds(rightX, topRowY, btnWidth, Button.DEFAULT_HEIGHT)
-                .build());
+        Supplier<List<KeyBindsList.Entry>> listSupplier = () -> getCustomList().getAllEntries();
+        this.search = new AutoCompletingEditBox<>(font, centerX - searchX / 2, 20, searchX, Button.DEFAULT_HEIGHT, search, Component.translatable("selectWorld.search"), ControllingConstants.SEARCHABLE_KEYBINDINGS, listSupplier);
+        this.search.addResponder(this::filterKeys);
         
-        this.buttonConflicting = addRenderableWidget(Button.builder(ControllingConstants.COMPONENT_OPTIONS_SHOW_CONFLICTS, PRESS_CONFLICTING)
-                .bounds(rightX + btnWidth + 2, topRowY, btnWidth, Button.DEFAULT_HEIGHT)
-                .build());
+        this.toggleFreeButton = Button.builder(ControllingConstants.COMPONENT_OPTIONS_TOGGLE_FREE, PRESS_FREE)
+                .size(btnWidth, Button.DEFAULT_HEIGHT)
+                .build();
+        
+        this.buttonSort = Button.builder(sortOrder.getDisplay(), PRESS_SORT)
+                .size(btnWidth, Button.DEFAULT_HEIGHT)
+                .build();
+        
+        this.buttonNone = Button.builder(ControllingConstants.COMPONENT_OPTIONS_SHOW_NONE, PRESS_NONE)
+                .size(btnWidth, Button.DEFAULT_HEIGHT)
+                .build();
+        
+        this.buttonConflicting = Button.builder(ControllingConstants.COMPONENT_OPTIONS_SHOW_CONFLICTS, PRESS_CONFLICTING)
+                .size(btnWidth, Button.DEFAULT_HEIGHT)
+                .build();
         
         displayMode = DisplayMode.ALL;
         setInitialFocus(this.search);
         // Trigger an initial auto complete
         this.search.moveCursor(0, false);
-        // This is so dumb, but it works.
-        // The only reason this is needed is that we don't replace the vanilla "Done" button.
+        
+    }
+    
+    @Override
+    protected void repositionElements() {
+        
+        super.repositionElements();
+        resetButton().active = canReset();
+        // Since we insert elements above the keybinding list, we need to
+        // sort the elements to ensure that tab navigation works as intended.
         this.children()
                 .sort(Comparator.comparingInt((ToIntFunction<GuiEventListener>) value -> value.getRectangle().top())
                         .thenComparingInt(listener -> listener.getRectangle().left()));
+    }
+    
+    public KeyBindsList hijackKeyBindsList() {
+        
+        this.newKeyList = Suppliers.memoize(() -> new NewKeyBindsList(this, this.minecraft));
+        this.freeKeyList = Suppliers.memoize(() -> new FreeKeysList(this, this.minecraft));
+        return showFree ? this.freeKeyList.get() : this.newKeyList.get();
+    }
+    
+    
+    @Override
+    protected void addTitle() {
+        
+        LinearLayout header = this.layout.addToHeader(LinearLayout.vertical(), layoutSettings -> layoutSettings.paddingVertical(8));
+        header.addChild(new StringWidget(this.title, this.font), LayoutSettings::alignHorizontallyCenter);
+        header.addChild(this.search, layoutSettings -> layoutSettings.paddingVertical(4));
+    }
+    
+    @Override
+    protected void addFooter() {
+        
+        GridLayout grid = this.layout.addToFooter(new GridLayout());
+        grid.rowSpacing(4);
+        grid.columnSpacing(8);
+        GridLayout.RowHelper rowHelper = grid.createRowHelper(2);
+        LinearLayout topLeft = rowHelper.addChild(LinearLayout.horizontal());
+        topLeft.spacing(4);
+        topLeft.addChild(this.toggleFreeButton);
+        topLeft.addChild(this.buttonSort);
+        
+        LinearLayout topRight = rowHelper.addChild(LinearLayout.horizontal());
+        topRight.spacing(4);
+        topRight.addChild(this.buttonNone);
+        topRight.addChild(this.buttonConflicting);
+        
+        rowHelper.addChild(resetButton());
+        rowHelper.addChild(Button.builder(CommonComponents.GUI_DONE, $$0x -> this.onClose()).build());
     }
     
     @Override
@@ -227,6 +263,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     private void setKeyBindsList(KeyBindsList newList) {
         
         getAccess().controlling$setKeyBindsList(newList);
+        repositionElements();
     }
     
     private AccessKeyBindsScreen getAccess() {

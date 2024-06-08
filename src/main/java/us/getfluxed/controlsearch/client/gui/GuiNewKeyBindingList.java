@@ -233,7 +233,7 @@ public class GuiNewKeyBindingList extends GuiKeyBindingList {
             this.btnChangeKeyBinding.drawButton(GuiNewKeyBindingList.this.mc, mouseX, mouseY, p_192634_9_);
             this.btnReset.drawButton(GuiNewKeyBindingList.this.mc, mouseX, mouseY, p_192634_9_);
             //            if(mouseX >= x + 90 - GuiNewKeyBindingList.this.maxListLabelWidth && mouseX <= x + listWidth) {
-            if(mouseY >= y && mouseY <= y + slotHeight * wrapped) {
+            if(mouseY >= y && mouseY <= y + slotHeight * (wrapped + 1)) {
 
                 mc.fontRenderer.drawString(I18n.format(keybinding.getKeyCategory()), mouseX + 10, mouseY, 0xFFFFFF);
 

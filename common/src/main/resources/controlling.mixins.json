@@ -9,9 +9,7 @@
     "AccessInputConstantsKey",
     "AccessKeyBindsScreen",
     "AccessKeyMapping",
-    "AccessOptionsSubScreen",
-    "AccessScreen",
-    "MixinKeyBindsScreen"
+    "AccessOptionsSubScreen"
   ],
   "server": [
   ],

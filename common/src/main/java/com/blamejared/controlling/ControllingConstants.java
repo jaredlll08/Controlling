@@ -5,7 +5,7 @@ import com.blamejared.controlling.api.entries.IInputEntry;
 import com.blamejared.controlling.api.entries.IKeyEntry;
 import com.blamejared.searchables.api.SearchableComponent;
 import com.blamejared.searchables.api.SearchableType;
-import net.minecraft.client.gui.screens.controls.KeyBindsList;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 

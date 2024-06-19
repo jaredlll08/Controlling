@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -18,15 +19,19 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.controls.KeyBindsList;
-import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsList;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.CommonColors;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
@@ -82,6 +87,7 @@ public class NewKeyBindsList extends CustomList {
         
         return this.controlsScreen.width + 45;
     }
+    
     @Override
     protected int getScrollbarPosition() {
         
@@ -122,7 +128,14 @@ public class NewKeyBindsList extends CustomList {
         @Override
         public List<? extends GuiEventListener> children() {
             
-            return ImmutableList.of();
+            return Collections.emptyList();
+        }
+        
+        @Nullable
+        @Override
+        public ComponentPath nextFocusPath(FocusNavigationEvent $$0) {
+            
+            return null;
         }
         
         @Override
@@ -182,19 +195,22 @@ public class NewKeyBindsList extends CustomList {
         public void render(GuiGraphics guiGraphics, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             
             Services.EVENT.fireKeyEntryRenderEvent(this, guiGraphics, slotIndex, y, x, rowLeft, rowWidth, mouseX, mouseY, hovered, partialTicks);
-            int length = Math.max(0, x + 90 - NewKeyBindsList.this.maxListLabelWidth);
-            guiGraphics.drawString(NewKeyBindsList.this.mc.font, this.keyDesc, length, y + rowWidth / 2 - 9 / 2, 16777215);
-            this.btnResetKeyBinding.setX(x + 190 + 20);
-            this.btnResetKeyBinding.setY(y);
+            
+            int resetKeyX = NewKeyBindsList.this.getScrollbarPosition() - this.btnResetKeyBinding.getWidth() - 10;
+            this.btnResetKeyBinding.setX(resetKeyX);
+            int top = y - 2;
+            this.btnResetKeyBinding.setY(top);
             this.btnResetKeyBinding.render(guiGraphics, mouseX, mouseY, partialTicks);
             
-            this.btnChangeKeyBinding.setX(x + 105);
-            this.btnChangeKeyBinding.setY(y);
+            this.btnChangeKeyBinding.setX(resetKeyX - 5 - this.btnChangeKeyBinding.getWidth());
+            this.btnChangeKeyBinding.setY(top);
+            
+            guiGraphics.drawString(NewKeyBindsList.this.mc.font, this.keyDesc, x, (y + rowWidth / 2) - (9 / 2), CommonColors.WHITE);
             
             if(this.hasCollision) {
                 int markerWidth = 3;
                 int minX = this.btnChangeKeyBinding.getX() - 6;
-                guiGraphics.fill(minX, y + 2, minX + markerWidth, y + rowWidth + 2, ChatFormatting.RED.getColor() | -16777216);
+                guiGraphics.fill(minX, y + 2, minX + markerWidth, y + rowWidth + 2, CommonColors.RED);
             }
             this.btnChangeKeyBinding.render(guiGraphics, mouseX, mouseY, partialTicks);
         }

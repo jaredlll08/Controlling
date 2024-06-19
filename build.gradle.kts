@@ -1,5 +1,5 @@
-import com.blamejared.controlling.gradle.Properties
-import com.blamejared.controlling.gradle.Versions
+import com.blamejared.Properties
+import com.blamejared.Versions
 import com.blamejared.gradle.mod.utils.GMUtils
 import com.diluv.schoomp.Webhook
 import com.diluv.schoomp.message.Message

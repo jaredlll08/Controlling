@@ -1,29 +1,32 @@
+import com.blamejared.Properties
+import com.blamejared.Versions
 import com.blamejared.gradle.mod.utils.GMUtils
-import com.blamejared.controlling.gradle.Properties
-import com.blamejared.controlling.gradle.Versions
 import net.darkhax.curseforgegradle.Constants
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 
 plugins {
-    id("com.blamejared.controlling.default")
-    id("com.blamejared.controlling.loader")
-    id("net.neoforged.gradle.userdev") version ("7.0.107")
+    id("blamejared-modloader-conventions")
+    id("net.neoforged.moddev") version ("0.1.93")
     id("com.modrinth.minotaur")
 }
 
-minecraft.accessTransformers.file(project.file("src/main/resources/META-INF/accesstransformer.cfg"))
-
-runs {
-    configureEach {
-        modSource(project.sourceSets.main.get())
+neoForge {
+    version = Versions.NEO_FORGE
+    accessTransformers.add(file("src/main/resources/META-INF/accesstransformer.cfg").absolutePath)
+    runs {
+        register("client") {
+            client()
+        }
     }
-    register("client") {
+
+    mods {
+        register(Properties.MODID) {
+            sourceSet(sourceSets.main.get())
+        }
     }
 }
 
 dependencies {
-    implementation("net.neoforged:neoforge:${Versions.NEO_FORGE}")
-    compileOnly(project(":common"))
     implementation("com.blamejared.searchables:Searchables-neoforge-${Versions.MINECRAFT}:${Versions.SEARCHABLES}")
 }
 
@@ -56,5 +59,6 @@ modrinth {
     dependencies {
         required.project("searchables")
     }
+    loaders.add("neoforge")
 }
 tasks.modrinth.get().dependsOn(tasks.jar)

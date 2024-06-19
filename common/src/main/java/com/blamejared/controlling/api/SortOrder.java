@@ -2,7 +2,7 @@ package com.blamejared.controlling.api;
 
 import com.blamejared.controlling.ControllingConstants;
 import com.blamejared.controlling.api.entries.IKeyEntry;
-import net.minecraft.client.gui.screens.controls.KeyBindsList;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsList;
 import net.minecraft.network.chat.Component;
 
 import java.util.Comparator;
@@ -15,9 +15,9 @@ public enum SortOrder {
             .getString()))),
     ZA("options.sortZA", entries -> entries.sort(Comparator.comparing(o -> o.getKeyDesc()
             .getString(), Comparator.reverseOrder()))),
-    KEY_AZ("options.sortKeyAZ", entries -> entries.sort(Comparator.<IKeyEntry, String>comparing(o -> o.getKeyDesc()
+    KEY_AZ("options.sortKeyAZ", entries -> entries.sort(Comparator.<IKeyEntry, String>comparing(o -> o.getKey().getTranslatedKeyMessage()
             .getString()).thenComparing(o -> o.getKeyDesc().getString()))),
-    KEY_ZA("options.sortKeyZA", entries -> entries.sort(Comparator.<IKeyEntry, String>comparing(o -> o.getKeyDesc()
+    KEY_ZA("options.sortKeyZA", entries -> entries.sort(Comparator.<IKeyEntry, String>comparing(o -> o.getKey().getTranslatedKeyMessage()
             .getString(), Comparator.reverseOrder()).thenComparing(o -> o.getKeyDesc().getString(), Comparator.reverseOrder())));
     
     private final ISort sorter;

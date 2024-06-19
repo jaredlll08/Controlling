@@ -1,10 +1,9 @@
 package com.blamejared.controlling.api;
 
 import com.blamejared.controlling.api.entries.IKeyEntry;
-import com.blamejared.controlling.client.NewKeyBindsList;
 import com.blamejared.controlling.mixin.AccessKeyMapping;
 import net.minecraft.client.*;
-import net.minecraft.client.gui.screens.controls.KeyBindsList;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsList;
 
 import java.util.function.Predicate;
 

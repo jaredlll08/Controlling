@@ -1,2 +1,2 @@
 accessWidener   v1      named
-extendable      method  net/minecraft/client/gui/screens/controls/KeyBindsList$Entry refreshEntry ()V
+extendable      method  net/minecraft/client/gui/screens/options/controls/KeyBindsList$Entry refreshEntry ()V

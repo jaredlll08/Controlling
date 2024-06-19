@@ -18,16 +18,3 @@ dependencies {
     implementation(group = "com.modrinth.minotaur", name = "Minotaur", version = "2.+")
     implementation(group = "com.diluv.schoomp", name= "Schoomp", version="1.2.6")
 }
-
-gradlePlugin {
-    plugins {
-        create("default") {
-            id = "com.blamejared.controlling.default"
-            implementationClass = "com.blamejared.controlling.gradle.DefaultPlugin"
-        }
-        create("loader") {
-            id = "com.blamejared.controlling.loader"
-            implementationClass = "com.blamejared.controlling.gradle.LoaderPlugin"
-        }
-    }
-}

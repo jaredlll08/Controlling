@@ -1,13 +1,12 @@
-import com.blamejared.controlling.gradle.Properties
-import com.blamejared.controlling.gradle.Versions
+import com.blamejared.Properties
+import com.blamejared.Versions
 import com.blamejared.gradle.mod.utils.GMUtils
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.Constants as CFG_Constants
 
 plugins {
+    id("blamejared-modloader-conventions")
     id("fabric-loom") version "1.6-SNAPSHOT"
-    id("com.blamejared.controlling.default")
-    id("com.blamejared.controlling.loader")
     id("com.modrinth.minotaur")
 }
 
@@ -16,7 +15,6 @@ dependencies {
     mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:${Versions.FABRIC_LOADER}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${Versions.FABRIC}")
-    implementation(project(":common"))
     modImplementation("com.blamejared.searchables:Searchables-fabric-${Versions.MINECRAFT}:${Versions.SEARCHABLES}")
 }
 

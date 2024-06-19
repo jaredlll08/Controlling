@@ -11,7 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -120,12 +120,12 @@ public class FreeKeysList extends CustomList {
             
             return ImmutableList.of();
         }
-    
+        
         @Override
         protected void refreshEntry() {
         
         }
-    
+        
     }
     
     public class HeaderEntry extends Entry {

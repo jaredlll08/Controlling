@@ -1,6 +1,5 @@
 package com.blamejared.controlling.client.gui;
 
-import com.blamejared.controlling.Controlling;
 import cpw.mods.fml.client.config.GuiCheckBox;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -43,8 +42,6 @@ public class GuiNewControls extends GuiControls {
     private GuiCheckBox buttonCat;
     private GuiButton sortOrderButton;
     private boolean confirmingReset = false;
-
-    private String name;
 
     public GuiNewControls(GuiScreen screen, GameSettings settings) {
         super(screen, settings);
@@ -142,12 +139,6 @@ public class GuiNewControls extends GuiControls {
             false
         );
         this.buttonList.add(this.buttonCat);
-
-        this.name = Controlling.PATRON_LIST
-            .stream()
-            .skip(Controlling.PATRON_LIST.isEmpty() ? 0 : new Random().nextInt(Controlling.PATRON_LIST.size()))
-            .findFirst()
-            .orElse("");
 
         this.sortOrderButton = new GuiButton(
             1008,

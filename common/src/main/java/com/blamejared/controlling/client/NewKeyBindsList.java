@@ -82,18 +82,6 @@ public class NewKeyBindsList extends CustomList {
         return this.controlsScreen.height - 56;
     }
     
-    @Override
-    public int getRight() {
-        
-        return this.controlsScreen.width + 45;
-    }
-    
-    @Override
-    protected int getScrollbarPosition() {
-        
-        return super.getScrollbarPosition() + 15 + 20;
-    }
-    
     public class CategoryEntry extends Entry implements ICategoryEntry {
         
         private final Component name;

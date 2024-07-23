@@ -133,18 +133,13 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         
         super.repositionElements();
         resetButton().active = canReset();
-        // Since we insert elements above the keybinding list, we need to
-        // sort the elements to ensure that tab navigation works as intended.
-        //        this.children()
-        //                .sort(Comparator.comparingInt((ToIntFunction<GuiEventListener>) value -> value.getRectangle().top())
-        //                        .thenComparingInt(listener -> listener.getRectangle().left()));
     }
     
     @Override
     public void render(GuiGraphics guiGraphics, int mxPos, int myPos, float partialTicks) {
         
         super.render(guiGraphics, mxPos, myPos, partialTicks);
-                this.search.autoComplete().render(guiGraphics, mxPos, myPos, partialTicks);
+        this.search.autoComplete().render(guiGraphics, mxPos, myPos, partialTicks);
     }
     
     public Button resetButton() {

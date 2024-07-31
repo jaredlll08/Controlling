@@ -220,16 +220,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
             }
         }
         if(this.selectedKey != null) {
-            if(key == 256) {
-                Services.PLATFORM.setKey(options, this.selectedKey, InputConstants.UNKNOWN);
-            } else {
-                Services.PLATFORM.setKey(options, this.selectedKey, InputConstants.getKey(key, scancode));
-            }
-            if(!Services.PLATFORM.isKeyCodeModifier(((AccessKeyMapping) this.selectedKey).controlling$getKey())) {
-                this.selectedKey = null;
-            }
-            this.lastKeySelection = Util.getMillis();
-            this.getKeyBindsList().resetMappingAndUpdateButtons();
+            Services.PLATFORM.handleKeyPress(this, this.options, key, scancode, mods);
             return true;
         } else {
             return super.keyPressed(key, scancode, mods);
@@ -245,7 +236,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
                 .getClass()));
     }
     
-    private KeyBindsList getKeyBindsList() {
+    public KeyBindsList getKeyBindsList() {
         
         return getAccess().controlling$getKeyBindsList();
     }

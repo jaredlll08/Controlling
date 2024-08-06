@@ -1,12 +1,12 @@
-import com.blamejared.controlling.gradle.Properties
-import com.blamejared.controlling.gradle.Versions
+import com.blamejared.Properties
+import com.blamejared.Versions
 import com.blamejared.gradle.mod.utils.GMUtils
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
+import org.gradle.jvm.tasks.Jar
 import net.darkhax.curseforgegradle.Constants as CFG_Constants
 
 plugins {
-    id("com.blamejared.controlling.default")
-    id("com.blamejared.controlling.loader")
+    id("blamejared-modloader-conventions")
     id("net.minecraftforge.gradle") version ("[6.0,6.2)")
     id("org.spongepowered.mixin") version ("0.7-SNAPSHOT")
     id("com.modrinth.minotaur")
@@ -21,6 +21,7 @@ mixin {
 minecraft {
     mappings("official", Versions.MINECRAFT)
     accessTransformer(file("src/main/resources/META-INF/accesstransformer.cfg"))
+    reobf = false
     runs {
         create("client") {
             taskName("Client")
@@ -30,7 +31,7 @@ minecraft {
             mods {
                 create(Properties.MODID) {
                     source(sourceSets.main.get())
-                    source(project(":common").sourceSets.main.get())
+//                    source(project(":common").sourceSets.main.get())
                 }
             }
         }
@@ -39,9 +40,9 @@ minecraft {
 
 dependencies {
     "minecraft"("net.minecraftforge:forge:${Versions.MINECRAFT}-${Versions.FORGE}")
-    compileOnly(project(":common"))
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
-    implementation(fg.deobf("com.blamejared.searchables:Searchables-forge-${Versions.MINECRAFT}:${Versions.SEARCHABLES}"))
+    implementation("com.blamejared.searchables:Searchables-forge-${Versions.MINECRAFT}:${Versions.SEARCHABLES}")
+    implementation("net.sf.jopt-simple:jopt-simple:5.0.4") { version { strictly("5.0.4") } }
 }
 
 sourceSets.configureEach {
@@ -60,7 +61,7 @@ tasks.create<TaskPublishCurseForge>("publishCurseForge") {
     mainFile.releaseType = CFG_Constants.RELEASE_TYPE_RELEASE
     mainFile.addJavaVersion("Java ${Versions.JAVA}")
     mainFile.addRequirement("searchables")
-
+    mainFile.addModLoader("Forge")
     doLast {
         project.ext.set("curse_file_url", "${Properties.CURSE_HOMEPAGE}/files/${mainFile.curseFileId}")
     }
@@ -73,8 +74,25 @@ modrinth {
     versionName.set("Forge-${Versions.MINECRAFT}-$version")
     versionType.set("release")
     uploadFile.set(tasks.jar.get())
+    loaders.add("forge")
     dependencies {
         required.project("searchables")
     }
 }
 tasks.modrinth.get().dependsOn(tasks.jar)
+
+tasks {
+    named<Jar>("jar").configure {
+        manifest {
+            attributes["MixinConfigs"] = "${Properties.MODID}.mixins.json,${Properties.MODID}.forge.mixins.json"
+        }
+    }
+}
+
+publishing {
+    publications {
+        named("mavenJava", MavenPublication::class) {
+            fg.component(this)
+        }
+    }
+}

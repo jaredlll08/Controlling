@@ -16,7 +16,7 @@ public class ForgePlatformHelper implements IPlatformHelper {
     @Override
     public void setKey(Options options, KeyMapping keybinding, InputConstants.Key key) {
         
-        keybinding.setKeyModifierAndCode(KeyModifier.getActiveModifier(), key);
+        keybinding.setKeyModifierAndCode(null, key);
         IPlatformHelper.super.setKey(options, keybinding, key);
     }
     

@@ -3,7 +3,7 @@ package com.blamejared.controlling.events;
 import com.blamejared.controlling.client.NewKeyBindsScreen;
 import com.blamejared.controlling.mixin.AccessOptionsSubScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 

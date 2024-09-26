@@ -4,8 +4,6 @@
   "options.showNone": "Показать не привязанные",
   "options.availableKeys": "Доступные клавиши",
   "options.sort": "Сортировать",
-  "options.category": "Категория",
-  "options.key": "Клавиша",
   "options.sortNone": "Ничего",
   "options.sortAZ": "А->Я",
   "options.sortZA": "Я->А",

@@ -4,8 +4,6 @@
   "options.showNone": "Nieprzypisane",
   "options.availableKeys": "Dostępne klawisze",
   "options.sort": "Sortow.",
-  "options.category": "Kategoria",
-  "options.key": "Klawisz",
   "options.sortNone": "Brak",
   "options.sortAZ": "A->Z",
   "options.sortZA": "Z->A",

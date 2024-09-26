@@ -4,8 +4,6 @@
   "options.showNone": "வரம்பற்றதைக் காட்டு",
   "options.availableKeys": "இலவச விசைகள்",
   "options.sort": "வகைபடுத்து",
-  "options.category": "வகை",
-  "options.key": "விசை",
   "options.sortNone": "எதுவுமில்லை",
   "options.sortAZ": "A->Z",
   "options.sortZA": "Z->A",

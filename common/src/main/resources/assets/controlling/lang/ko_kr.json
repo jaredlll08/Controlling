@@ -4,8 +4,6 @@
   "options.showNone": "미지정 표시",
   "options.availableKeys": "사용 가능한 키",
   "options.sort": "정렬",
-  "options.category": "범주",
-  "options.key": "키",
   "options.sortNone": "없음",
   "options.sortAZ": "A->Z",
   "options.sortZA": "Z->A",

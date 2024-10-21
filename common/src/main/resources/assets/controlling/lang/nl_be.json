@@ -1,0 +1,16 @@
+{
+  "options.showAll": "Alles zien",
+  "options.showConflicts": "Alle conflicten zien",
+  "options.showNone": "Alle niet-toegewezen zien",
+  "options.availableKeys": "Vrije toetsen",
+  "options.sort": "Sortere",
+  "options.category": "Categorie",
+  "options.key": "Toets",
+  "options.sortNone": "Geen",
+  "options.sortAZ": "A->Z",
+  "options.sortZA": "Z->A",
+  "options.sortKeyAZ": "Toetsen A->Z",
+  "options.sortKeyZA": "Toetsen Z->A",
+  "options.toggleFree": "Vrije toetsen zien",
+  "options.confirmReset": "Ben je zeker?"
+}

@@ -6,6 +6,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Options;
+import net.minecraft.network.chat.Component;
 
 public interface IPlatformHelper {
     
@@ -27,6 +28,11 @@ public interface IPlatformHelper {
     default boolean isKeyCodeModifier(InputConstants.Key key) {
         
         return false;
+    }
+    
+    default Component getKeyName(KeyMapping mapping) {
+        
+        return Component.translatable(mapping.getName());
     }
     
     default void handleKeyPress(NewKeyBindsScreen screen, Options options, int key, int scancode, int mods) {

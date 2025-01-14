@@ -64,7 +64,7 @@ public class NewKeyBindsList extends CustomList {
                 }
             }
             
-            Component component = Component.translatable(keybinding.getName());
+            Component component = Services.PLATFORM.getKeyName(keybinding);
             int width = mcIn.font.width(component);
             if(width > this.maxListLabelWidth) {
                 this.maxListLabelWidth = width;
@@ -278,7 +278,7 @@ public class NewKeyBindsList extends CustomList {
                         }
                         
                         this.hasCollision = true;
-                        duplicates.append(Component.translatable(mapping.getName()));
+                        duplicates.append(Services.PLATFORM.getKeyName(mapping));
                     }
                 }
             }

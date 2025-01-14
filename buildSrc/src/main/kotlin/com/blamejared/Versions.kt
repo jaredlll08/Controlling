@@ -8,7 +8,7 @@ object Versions {
     const val FABRIC = "0.102.1+1.21.1"
     const val FORGE = "52.0.2"
     const val FORGE_LOADER = "[52,)"
-    const val NEO_FORGE = "21.1.8"
+    const val NEO_FORGE = "21.1.94"
     const val NEO_FORGE_LOADER= "[4,)"
     const val SEARCHABLES = "1.0.1"
 }

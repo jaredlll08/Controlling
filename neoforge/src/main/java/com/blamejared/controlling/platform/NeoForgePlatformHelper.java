@@ -5,6 +5,7 @@ import com.blamejared.controlling.mixin.AccessKeyBindsScreenNeoForge;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Options;
+import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.settings.KeyModifier;
 
 public class NeoForgePlatformHelper implements IPlatformHelper {
@@ -27,7 +28,13 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
         
         return KeyModifier.isKeyCodeModifier(key);
     }
+    
+    @Override
+    public Component getKeyName(KeyMapping mapping) {
 
+        return mapping.getDisplayName();
+    }
+    
     @Override
     public void handleKeyPress(NewKeyBindsScreen screen, Options options, int key, int scancode, int mods) {
         IPlatformHelper.super.handleKeyPress(screen, options, key, scancode, mods);

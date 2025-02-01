@@ -1,4 +1,5 @@
 {
+  "modmenu.descriptionTranslation.controlling": "在按键绑定菜单中添加了通过名称搜索的功能，这使玩家能够轻松在菜单中找到任何的按键绑定。",
   "options.showAll": "显示所有键位",
   "options.showConflicts": "显示冲突键位",
   "options.showNone": "显示未绑定键位",

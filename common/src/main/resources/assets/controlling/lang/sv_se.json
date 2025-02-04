@@ -1,0 +1,14 @@
+{
+  "options.showAll": "Visa Alla",
+  "options.showConflicts": "Visa Konflikter",
+  "options.showNone": "Visa Obundna",
+  "options.availableKeys": "Tillgängliga Tangenter",
+  "options.sort": "Sortera",
+  "options.category": "Kategori",
+  "options.key": "Tangent",
+  "options.sortNone": "Ingen",
+  "options.sortAZ": "A->Ö",
+  "options.sortZA": "Ö->A",
+  "options.toggleFree": "Växla Tillgängliga",
+  "options.confirmReset": "Bekräfta?"
+}

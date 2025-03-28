@@ -41,7 +41,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
         if(screen.selectedKey != null) {
             InputConstants.Key pressed = InputConstants.getKey(key, scancode);
             AccessKeyBindsScreenNeoForge access = (AccessKeyBindsScreenNeoForge) screen;
-            if (net.neoforged.neoforge.client.settings.KeyModifier.isKeyCodeModifier(pressed)) {
+            if (access.getLastPressedModifier() == InputConstants.UNKNOWN && net.neoforged.neoforge.client.settings.KeyModifier.isKeyCodeModifier(pressed)) {
                 access.setLastPressedModifier(pressed);
                 access.setIsLastModifierHeldDown(true);
             } else {

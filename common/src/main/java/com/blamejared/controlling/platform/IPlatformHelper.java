@@ -51,4 +51,9 @@ public interface IPlatformHelper {
         }
     }
     
+    default boolean handleKeyReleased(NewKeyBindsScreen screen, Options options, int key, int scancode, int mods) {
+        
+        return false;
+    }
+    
 }

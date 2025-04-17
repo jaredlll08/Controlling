@@ -4,12 +4,10 @@ import com.blamejared.controlling.ControllingConstants;
 import com.blamejared.controlling.api.DisplayMode;
 import com.blamejared.controlling.api.SortOrder;
 import com.blamejared.controlling.mixin.AccessKeyBindsScreen;
-import com.blamejared.controlling.mixin.AccessKeyMapping;
 import com.blamejared.controlling.platform.Services;
 import com.blamejared.searchables.api.autcomplete.AutoCompletingEditBox;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
@@ -225,6 +223,15 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         } else {
             return super.keyPressed(key, scancode, mods);
         }
+    }
+    
+    @Override
+    public boolean keyReleased(int key, int scancode, int mods) {
+        
+        if(Services.PLATFORM.handleKeyReleased(this, this.options, key, scancode, mods)) {
+            return true;
+        }
+        return super.keyReleased(key, scancode, mods);
     }
     
     private CustomList getCustomList() {

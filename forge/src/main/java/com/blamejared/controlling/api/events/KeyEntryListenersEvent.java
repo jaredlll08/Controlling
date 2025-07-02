@@ -1,9 +1,9 @@
 package com.blamejared.controlling.api.events;
 
 import com.blamejared.controlling.api.entries.IKeyEntry;
-import com.blamejared.controlling.client.NewKeyBindsList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.bus.EventBus;
+import net.minecraftforge.eventbus.api.event.MutableEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,9 @@ import java.util.List;
  * GetKeyEntryListenersEvent is called to get the values for {@link IKeyEntry#children()}.
  * Allowing for mods to add more listeners.
  */
-public class KeyEntryListenersEvent extends Event implements IKeyEntryListenersEvent {
+public class KeyEntryListenersEvent extends MutableEvent implements IKeyEntryListenersEvent {
+    
+    public static final EventBus<KeyEntryListenersEvent> BUS = EventBus.create(KeyEntryListenersEvent.class);
     
     private final IKeyEntry entry;
     

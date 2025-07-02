@@ -5,12 +5,10 @@ import com.blamejared.controlling.mixin.AccessOptionsSubScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ClientEventHandler {
     
-    @SubscribeEvent
-    public void openGui(ScreenEvent.Opening event) {
+    public static void openGui(ScreenEvent.Opening event) {
         
         try {
             if(event.getScreen() instanceof KeyBindsScreen gui && !(event.getScreen() instanceof NewKeyBindsScreen)) {

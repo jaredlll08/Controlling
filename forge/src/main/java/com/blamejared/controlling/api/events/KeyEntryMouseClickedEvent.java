@@ -1,8 +1,8 @@
 package com.blamejared.controlling.api.events;
 
 import com.blamejared.controlling.api.entries.IKeyEntry;
-import com.blamejared.controlling.client.NewKeyBindsList;
-import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.bus.EventBus;
+import net.minecraftforge.eventbus.api.event.MutableEvent;
 
 
 /**
@@ -10,7 +10,9 @@ import net.minecraftforge.eventbus.api.Event;
  * <p>
  * If you are consuming this event, call {@link KeyEntryMouseClickedEvent#setHandled(boolean)} with a value of {@code true}.
  */
-public class KeyEntryMouseClickedEvent extends Event implements IKeyEntryMouseClickedEvent {
+public class KeyEntryMouseClickedEvent extends MutableEvent implements IKeyEntryMouseClickedEvent {
+    
+    public static final EventBus<KeyEntryMouseClickedEvent> BUS = EventBus.create(KeyEntryMouseClickedEvent.class);
     
     private final IKeyEntry entry;
     private final double mouseX;

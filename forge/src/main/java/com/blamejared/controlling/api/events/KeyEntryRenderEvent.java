@@ -1,16 +1,17 @@
 package com.blamejared.controlling.api.events;
 
 import com.blamejared.controlling.api.entries.IKeyEntry;
-import com.blamejared.controlling.client.NewKeyBindsList;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.bus.EventBus;
+import net.minecraftforge.eventbus.api.event.MutableEvent;
 
 /**
  * RenderKeyEntryEvent is called at the top of {@link IKeyEntry#render(GuiGraphics, int, int, int, int, int, int, int, boolean, float)}
  * is called, allowing mods to render additional info.
  */
-public class KeyEntryRenderEvent extends Event implements IKeyEntryRenderEvent {
+public class KeyEntryRenderEvent extends MutableEvent implements IKeyEntryRenderEvent {
+    
+    public static final EventBus<KeyEntryRenderEvent> BUS = EventBus.create(KeyEntryRenderEvent.class);
     
     private final IKeyEntry entry;
     

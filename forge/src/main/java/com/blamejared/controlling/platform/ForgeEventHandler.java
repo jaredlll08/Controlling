@@ -25,7 +25,7 @@ public class ForgeEventHandler implements IEventHelper {
     public Either<IKeyEntryListenersEvent, List<GuiEventListener>> fireKeyEntryListenersEvent(IKeyEntry entry) {
         
         KeyEntryListenersEvent event = new KeyEntryListenersEvent(entry);
-        MinecraftForge.EVENT_BUS.post(event);
+        KeyEntryListenersEvent.BUS.post(event);
         return Either.left(event);
     }
     
@@ -33,7 +33,7 @@ public class ForgeEventHandler implements IEventHelper {
     public Either<IKeyEntryMouseClickedEvent, Boolean> fireKeyEntryMouseClickedEvent(IKeyEntry entry, double mouseX, double mouseY, int buttonId) {
         
         KeyEntryMouseClickedEvent event = new KeyEntryMouseClickedEvent(entry, mouseX, mouseY, buttonId);
-        MinecraftForge.EVENT_BUS.post(event);
+        KeyEntryMouseClickedEvent.BUS.post(event);
         return Either.left(event);
     }
     
@@ -41,7 +41,7 @@ public class ForgeEventHandler implements IEventHelper {
     public Either<IKeyEntryMouseReleasedEvent, Boolean> fireKeyEntryMouseReleasedEvent(IKeyEntry entry, double mouseX, double mouseY, int buttonId) {
         
         KeyEntryMouseReleasedEvent event = new KeyEntryMouseReleasedEvent(entry, mouseX, mouseY, buttonId);
-        MinecraftForge.EVENT_BUS.post(event);
+        KeyEntryMouseReleasedEvent.BUS.post(event);
         return Either.left(event);
     }
     
@@ -49,7 +49,7 @@ public class ForgeEventHandler implements IEventHelper {
     public Either<IKeyEntryRenderEvent, Unit> fireKeyEntryRenderEvent(IKeyEntry entry, GuiGraphics guiGraphics, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         
         KeyEntryRenderEvent event = new KeyEntryRenderEvent(entry, guiGraphics, slotIndex, y, x, rowLeft, rowWidth, mouseX, mouseY, hovered, partialTicks);
-        MinecraftForge.EVENT_BUS.post(event);
+        KeyEntryRenderEvent.BUS.post(event);
         return Either.left(event);
     }
     

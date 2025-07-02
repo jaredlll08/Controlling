@@ -11,7 +11,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,6 +91,7 @@ public class FreeKeysList extends CustomList {
     }
     
     public class InputEntry extends Entry implements IInputEntry {
+        
         private final InputConstants.Key input;
         
         public InputEntry(InputConstants.Key input) {
@@ -105,8 +110,10 @@ public class FreeKeysList extends CustomList {
             String str = this.input.toString() + " - " + input.getValue();
             int length = mc.font.width(input.getDisplayName().getString());
             
-            guiGraphics.drawString(FreeKeysList.this.mc.font, str, x,  y + height / 2 - 9 / 2, 16777215);
-            guiGraphics.renderTooltip(FreeKeysList.this.mc.font, input.getDisplayName(), x + width - (length), y + height);
+            guiGraphics.drawString(FreeKeysList.this.mc.font, str, x, y + height / 2 - 9 / 2, ARGB.opaque(16777215));
+            
+            guiGraphics.renderTooltip(FreeKeysList.this.mc.font, List.of(ClientTooltipComponent.create(input.getDisplayName()
+                    .getVisualOrderText())), x + width - (length), y + height / 2 - 9 / 2 + mc.font.lineHeight , DefaultTooltipPositioner.INSTANCE, null);
         }
         
         @Override
@@ -129,6 +136,7 @@ public class FreeKeysList extends CustomList {
     }
     
     public class HeaderEntry extends Entry {
+        
         private final String text;
         
         public HeaderEntry(String text) {
@@ -150,14 +158,15 @@ public class FreeKeysList extends CustomList {
         
         @Override
         public void render(GuiGraphics guiGraphics, int slotIndex, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+            
             guiGraphics.drawCenteredString(mc.font, ControllingConstants.COMPONENT_OPTIONS_AVAILABLE_KEYS, (Objects.requireNonNull(mc.screen).width / 2 - this.text.length() / 2), (y + height - 9 - 1), 16777215);
         }
-    
+        
         @Override
         protected void refreshEntry() {
         
         }
-    
+        
     }
     
 }

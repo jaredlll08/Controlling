@@ -1,6 +1,7 @@
 package com.blamejared.controlling;
 
 import com.blamejared.controlling.events.ClientEventHandler;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 
@@ -8,7 +9,7 @@ import net.minecraftforge.fml.common.Mod;
 public class Controlling {
     
     public Controlling() {
-        MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
+        ScreenEvent.Opening.BUS.addListener(ClientEventHandler::openGui);
     }
     
 }

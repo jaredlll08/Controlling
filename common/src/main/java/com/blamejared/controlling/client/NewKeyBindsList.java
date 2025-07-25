@@ -95,7 +95,7 @@ public class NewKeyBindsList extends CustomList {
         
         public void render(GuiGraphics guiGraphics, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             
-            guiGraphics.drawString(NewKeyBindsList.this.mc.font, this.name, Objects.requireNonNull(minecraft.screen).width / 2 - this.labelWidth / 2, y + rowWidth - 9 - 1, 16777215);
+            guiGraphics.drawString(NewKeyBindsList.this.mc.font, this.name, Objects.requireNonNull(minecraft.screen).width / 2 - this.labelWidth / 2, y + rowWidth - 9 - 1, -1);
         }
         
         public List<? extends NarratableEntry> narratables() {

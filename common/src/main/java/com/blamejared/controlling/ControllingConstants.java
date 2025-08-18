@@ -34,7 +34,7 @@ public class ControllingConstants {
                 return Optional.empty();
             }))
             .component(SearchableComponent.create("key", entry -> {
-                if(entry instanceof IKeyEntry key) {
+                if(entry instanceof IKeyEntry key && !key.getKey().isUnbound()) {
                     return Optional.of(key.getKey().getTranslatedKeyMessage().getString());
                 }
                 return Optional.empty();

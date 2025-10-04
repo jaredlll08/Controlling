@@ -27,7 +27,7 @@ public class ControllingConstants {
     public static final SearchableType<KeyBindsList.Entry> SEARCHABLE_KEYBINDINGS = new SearchableType.Builder<KeyBindsList.Entry>()
             .component(SearchableComponent.create("category", entry -> {
                 if(entry instanceof ICategoryEntry cat) {
-                    return Optional.of(cat.name().getString());
+                    return Optional.of(cat.category().label().getString());
                 } else if(entry instanceof IKeyEntry key) {
                     return Optional.of(key.categoryName().getString());
                 }

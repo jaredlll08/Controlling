@@ -6,9 +6,9 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Options;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.settings.KeyModifier;
-import org.lwjgl.glfw.GLFW;
 
 public class NeoForgePlatformHelper implements IPlatformHelper {
     
@@ -39,10 +39,10 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     }
     
     @Override
-    public void handleKeyPress(NewKeyBindsScreen screen, Options options, int key, int scancode, int mods) {
+    public void handleKeyPress(NewKeyBindsScreen screen, Options options, KeyEvent event) {
         
         if(screen.selectedKey != null) {
-            InputConstants.Key pressed = InputConstants.getKey(key, scancode);
+            InputConstants.Key pressed = InputConstants.getKey(event);
             AccessKeyBindsScreenNeoForge access = (AccessKeyBindsScreenNeoForge) screen;
             if(access.getLastPressedModifier() == InputConstants.UNKNOWN && KeyModifier.isKeyCodeModifier(pressed)) {
                 access.setLastPressedModifier(pressed);
@@ -55,13 +55,13 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     }
     
     @Override
-    public boolean handleKeyReleased(NewKeyBindsScreen screen, Options options, int key, int scancode, int mods) {
+    public boolean handleKeyReleased(NewKeyBindsScreen screen, Options options, KeyEvent event) {
         
         AccessKeyBindsScreenNeoForge access = (AccessKeyBindsScreenNeoForge) screen;
         if(screen.selectedKey == null) {
             return false;
         }
-        if(key == GLFW.GLFW_KEY_ESCAPE) {
+        if(event.isEscape()) {
             screen.selectedKey.setKeyModifierAndCode(KeyModifier.NONE, InputConstants.UNKNOWN);
             screen.selectedKey.setKey(InputConstants.UNKNOWN);
             access.setLastPressedKey(InputConstants.UNKNOWN);
@@ -69,7 +69,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
             access.setIsLastKeyHeldDown(false);
             access.setIsLastModifierHeldDown(false);
         } else {
-            InputConstants.Key pressed = InputConstants.getKey(key, scancode);
+            InputConstants.Key pressed = InputConstants.getKey(event);
             if(access.getLastPressedKey().equals(pressed)) {
                 access.setIsLastKeyHeldDown(false);
             } else if(access.getLastPressedModifier().equals(pressed)) {

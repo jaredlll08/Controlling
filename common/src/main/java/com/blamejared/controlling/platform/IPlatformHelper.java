@@ -6,6 +6,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Options;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 
 public interface IPlatformHelper {
@@ -35,13 +36,13 @@ public interface IPlatformHelper {
         return Component.translatable(mapping.getName());
     }
     
-    default void handleKeyPress(NewKeyBindsScreen screen, Options options, int key, int scancode, int mods) {
+    default void handleKeyPress(NewKeyBindsScreen screen, Options options, KeyEvent event) {
         
         if(screen.selectedKey != null) {
-            if(key == 256) {
+            if(event.isEscape()) {
                 Services.PLATFORM.setKey(options, screen.selectedKey, InputConstants.UNKNOWN);
             } else {
-                Services.PLATFORM.setKey(options, screen.selectedKey, InputConstants.getKey(key, scancode));
+                Services.PLATFORM.setKey(options, screen.selectedKey, InputConstants.getKey(event));
             }
             if(!Services.PLATFORM.isKeyCodeModifier(((AccessKeyMapping) screen.selectedKey).controlling$getKey())) {
                 screen.selectedKey = null;
@@ -51,7 +52,7 @@ public interface IPlatformHelper {
         }
     }
     
-    default boolean handleKeyReleased(NewKeyBindsScreen screen, Options options, int key, int scancode, int mods) {
+    default boolean handleKeyReleased(NewKeyBindsScreen screen, Options options, KeyEvent event) {
         
         return false;
     }

@@ -2,28 +2,26 @@ package com.blamejared.controlling.api.event;
 
 import com.blamejared.controlling.api.entries.IKeyEntry;
 import com.blamejared.controlling.api.events.IKeyEntryMouseClickedEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 
 
 /**
- * KeyEntryMouseClickedEvent is called at the start of {@link IKeyEntry#mouseClicked(double, double, int)}.
+ * KeyEntryMouseClickedEvent is called at the start of {@link IKeyEntry#mouseClicked(MouseButtonEvent, boolean)}.
  * <p>
  * If you are consuming this event, call {@link KeyEntryMouseClickedEvent#setHandled(boolean)} with a value of {@code true}.
  */
 public class KeyEntryMouseClickedEvent implements IKeyEntryMouseClickedEvent {
     
     private final IKeyEntry entry;
-    private final double mouseX;
-    private final double mouseY;
-    private final int buttonId;
-    
+    private final MouseButtonEvent event;
+    private final boolean doubleClick;
     private boolean handled;
     
-    public KeyEntryMouseClickedEvent(IKeyEntry entry, double mouseX, double mouseY, int buttonId) {
+    public KeyEntryMouseClickedEvent(IKeyEntry entry, MouseButtonEvent event, boolean doubleClick) {
         
         this.entry = entry;
-        this.mouseX = mouseX;
-        this.mouseY = mouseY;
-        this.buttonId = buttonId;
+        this.event = event;
+        this.doubleClick = doubleClick;
     }
     
     public IKeyEntry getEntry() {
@@ -31,19 +29,16 @@ public class KeyEntryMouseClickedEvent implements IKeyEntryMouseClickedEvent {
         return entry;
     }
     
-    public double getMouseX() {
+    @Override
+    public MouseButtonEvent event() {
         
-        return mouseX;
+        return event;
     }
     
-    public double getMouseY() {
+    @Override
+    public boolean doubleClick() {
         
-        return mouseY;
-    }
-    
-    public int getButtonId() {
-        
-        return buttonId;
+        return doubleClick;
     }
     
     public boolean isHandled() {

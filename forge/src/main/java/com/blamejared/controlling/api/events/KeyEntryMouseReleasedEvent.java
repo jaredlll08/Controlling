@@ -1,11 +1,12 @@
 package com.blamejared.controlling.api.events;
 
 import com.blamejared.controlling.api.entries.IKeyEntry;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraftforge.eventbus.api.bus.EventBus;
 import net.minecraftforge.eventbus.api.event.MutableEvent;
 
 /**
- * KeyEntryMouseReleasedEvent is called at the start of {@link IKeyEntry#mouseReleased(double, double, int)}.
+ * KeyEntryMouseReleasedEvent is called at the start of {@link IKeyEntry#mouseReleased(MouseButtonEvent)}.
  *
  * If you are consuming this event, call {@link KeyEntryMouseReleasedEvent#setHandled(boolean)} with a value of {@code true}.
  */
@@ -14,18 +15,13 @@ public class KeyEntryMouseReleasedEvent extends MutableEvent implements IKeyEntr
     public static final EventBus<KeyEntryMouseReleasedEvent> BUS = EventBus.create(KeyEntryMouseReleasedEvent.class);
     
     private final IKeyEntry entry;
-    private final double mouseX;
-    private final double mouseY;
-    private final int buttonId;
-    
+    private final MouseButtonEvent event;
     private boolean handled;
     
-    public KeyEntryMouseReleasedEvent(IKeyEntry entry, double mouseX, double mouseY, int buttonId) {
+    public KeyEntryMouseReleasedEvent(IKeyEntry entry, MouseButtonEvent event) {
         
         this.entry = entry;
-        this.mouseX = mouseX;
-        this.mouseY = mouseY;
-        this.buttonId = buttonId;
+        this.event = event;
     }
     
     public IKeyEntry getEntry() {
@@ -33,19 +29,10 @@ public class KeyEntryMouseReleasedEvent extends MutableEvent implements IKeyEntr
         return entry;
     }
     
-    public double getMouseX() {
+    @Override
+    public MouseButtonEvent event() {
         
-        return mouseX;
-    }
-    
-    public double getMouseY() {
-        
-        return mouseY;
-    }
-    
-    public int getButtonId() {
-        
-        return buttonId;
+        return event;
     }
     
     public boolean isHandled() {

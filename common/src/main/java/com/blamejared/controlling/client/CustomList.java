@@ -5,6 +5,7 @@ import net.minecraft.client.gui.screens.options.controls.KeyBindsList;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class CustomList extends KeyBindsList {
@@ -22,14 +23,30 @@ public class CustomList extends KeyBindsList {
     }
     
     @Override
+    public void clearEntries() {
+        
+        super.clearEntries();
+    }
+    
+    @Override
+    public void sort(Comparator<Entry> comp) {
+        
+        super.sort(comp);
+    }
+    
+    @Override
     protected int addEntry(Entry ent) {
         
         if(allEntries == null) {
             allEntries = new ArrayList<>();
         }
         allEntries.add(ent);
-        this.children().add(ent);
-        return this.children().size() - 1;
+        return addEntryInternal(ent);
+    }
+    
+    public int addEntryInternal(Entry ent) {
+        
+        return super.addEntry(ent);
     }
     
 }

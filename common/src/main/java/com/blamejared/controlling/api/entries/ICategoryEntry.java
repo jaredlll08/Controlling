@@ -1,9 +1,9 @@
 package com.blamejared.controlling.api.entries;
 
-import net.minecraft.network.chat.Component;
+import net.minecraft.client.KeyMapping;
 
 public interface ICategoryEntry {
     
-    Component name();
+    KeyMapping.Category category();
     
 }

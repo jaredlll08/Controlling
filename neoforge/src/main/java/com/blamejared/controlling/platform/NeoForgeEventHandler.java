@@ -13,6 +13,7 @@ import com.blamejared.controlling.client.NewKeyBindsList;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Unit;
 import net.neoforged.neoforge.common.NeoForge;
 
@@ -27,21 +28,21 @@ public class NeoForgeEventHandler implements IEventHelper {
     }
     
     @Override
-    public Either<IKeyEntryMouseClickedEvent, Boolean> fireKeyEntryMouseClickedEvent(IKeyEntry entry, double mouseX, double mouseY, int buttonId) {
+    public Either<IKeyEntryMouseClickedEvent, Boolean> fireKeyEntryMouseClickedEvent(IKeyEntry entry, MouseButtonEvent event, boolean doubleClick) {
         
-        return Either.left(NeoForge.EVENT_BUS.post(new KeyEntryMouseClickedEvent(entry, mouseX, mouseY, buttonId)));
+        return Either.left(NeoForge.EVENT_BUS.post(new KeyEntryMouseClickedEvent(entry, event, doubleClick)));
     }
     
     @Override
-    public Either<IKeyEntryMouseReleasedEvent, Boolean> fireKeyEntryMouseReleasedEvent(IKeyEntry entry, double mouseX, double mouseY, int buttonId) {
+    public Either<IKeyEntryMouseReleasedEvent, Boolean> fireKeyEntryMouseReleasedEvent(IKeyEntry entry, MouseButtonEvent event) {
         
-        return Either.left(NeoForge.EVENT_BUS.post(new KeyEntryMouseReleasedEvent(entry, mouseX, mouseY, buttonId)));
+        return Either.left(NeoForge.EVENT_BUS.post(new KeyEntryMouseReleasedEvent(entry, event)));
     }
     
     @Override
-    public Either<IKeyEntryRenderEvent, Unit> fireKeyEntryRenderEvent(IKeyEntry entry, GuiGraphics guiGraphics, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+    public Either<IKeyEntryRenderEvent, Unit> fireKeyEntryRenderEvent(IKeyEntry entry, GuiGraphics guiGraphics, int y, int x, int rowLeft, int rowWidth, boolean hovered, float partialTicks) {
         
-        return Either.left(NeoForge.EVENT_BUS.post(new KeyEntryRenderEvent(entry, guiGraphics, slotIndex, y, x, rowLeft, rowWidth, mouseX, mouseY, hovered, partialTicks)));
+        return Either.left(NeoForge.EVENT_BUS.post(new KeyEntryRenderEvent(entry, guiGraphics, y, x, rowLeft, rowWidth, hovered, partialTicks)));
     }
     
 }

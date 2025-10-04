@@ -1,16 +1,15 @@
 package com.blamejared.controlling.api.events;
 
 import com.blamejared.controlling.api.entries.IKeyEntry;
+import net.minecraft.client.input.MouseButtonEvent;
 
 public interface IKeyEntryMouseClickedEvent {
     
     IKeyEntry getEntry();
     
-    double getMouseX();
+    MouseButtonEvent event();
     
-    double getMouseY();
-    
-    int getButtonId();
+    boolean doubleClick();
     
     boolean isHandled();
     

@@ -11,29 +11,25 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.FocusableTextWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-import net.minecraft.client.gui.narration.NarratedElementType;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsList;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.util.CommonColors;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.UnaryOperator;
 
 public class NewKeyBindsList extends CustomList {
@@ -49,18 +45,18 @@ public class NewKeyBindsList extends CustomList {
         this.setY(48);
         this.controlsScreen = controls;
         this.mc = mcIn;
-        children().clear();
+        this.clearEntries();
         allEntries = new ArrayList<>();
         KeyMapping[] bindings = ArrayUtils.clone(mcIn.options.keyMappings);
         Arrays.sort(bindings);
-        String lastCategory = null;
+        KeyMapping.Category lastCategory = null;
         
         for(KeyMapping keybinding : bindings) {
-            String category = keybinding.getCategory();
+            KeyMapping.Category category = keybinding.getCategory();
             if(!category.equals(lastCategory)) {
                 lastCategory = category;
-                if(!category.endsWith(".hidden")) {
-                    addEntry(new NewKeyBindsList.CategoryEntry(Component.translatable(category)));
+                if(!isHidden(category.label())) {
+                    addEntry(new NewKeyBindsList.CategoryEntry(category));
                 }
             }
             
@@ -69,11 +65,19 @@ public class NewKeyBindsList extends CustomList {
             if(width > this.maxListLabelWidth) {
                 this.maxListLabelWidth = width;
             }
-            if(!category.endsWith(".hidden")) {
+            if(!isHidden(category.label())) {
                 addEntry(new NewKeyBindsList.KeyEntry(keybinding, component));
             }
         }
         
+    }
+    
+    private boolean isHidden(Component component) {
+        
+        if(component.getContents() instanceof TranslatableContents tc) {
+            return tc.getKey().endsWith(".hidden");
+        }
+        return false;
     }
     
     @Override
@@ -84,57 +88,50 @@ public class NewKeyBindsList extends CustomList {
     
     public class CategoryEntry extends Entry implements ICategoryEntry {
         
-        private final Component name;
-        private final int labelWidth;
+        private final KeyMapping.Category category;
+        private final FocusableTextWidget categoryName;
         
-        public CategoryEntry(Component name) {
+        public CategoryEntry(KeyMapping.Category category) {
             
-            this.name = name;
-            this.labelWidth = NewKeyBindsList.this.mc.font.width(this.name);
+            this.category = category;
+            this.categoryName = new FocusableTextWidget(
+                    NewKeyBindsList.this.getRowWidth(), category.label(), NewKeyBindsList.this.minecraft.font, false, FocusableTextWidget.BackgroundFill.ON_FOCUS, 4
+            );
         }
         
-        public void render(GuiGraphics guiGraphics, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+        @Override
+        public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             
-            guiGraphics.drawString(NewKeyBindsList.this.mc.font, this.name, Objects.requireNonNull(minecraft.screen).width / 2 - this.labelWidth / 2, y + rowWidth - 9 - 1, -1);
+            this.categoryName.setPosition(NewKeyBindsList.this.width / 2 - this.categoryName.getWidth() / 2, this.getContentBottom() - 9 - 1);
+            this.categoryName.render(guiGraphics, mouseX, mouseY, partialTicks);
+            //            guiGraphics.drawString(NewKeyBindsList.this.mc.font, this.name, Objects.requireNonNull(minecraft.screen).width / 2 - this.labelWidth / 2, this.getY() + getRowWidth() - 9 - 1, -1);
         }
         
         public List<? extends NarratableEntry> narratables() {
             
-            return ImmutableList.of(new NarratableEntry() {
-                public NarrationPriority narrationPriority() {
-                    
-                    return NarrationPriority.HOVERED;
-                }
-                
-                public void updateNarration(NarrationElementOutput neo) {
-                    
-                    neo.add(NarratedElementType.TITLE, name);
-                }
-            });
+            return List.of(this.categoryName);
         }
         
         @Override
         public List<? extends GuiEventListener> children() {
             
-            return Collections.emptyList();
-        }
-        
-        @Nullable
-        @Override
-        public ComponentPath nextFocusPath(FocusNavigationEvent $$0) {
-            
-            return null;
+            return List.of(this.categoryName);
         }
         
         @Override
         protected void refreshEntry() {
-        
+            
         }
         
-        
-        public Component name() {
+        public FocusableTextWidget categoryName() {
             
-            return name;
+            return categoryName;
+        }
+        
+        @Override
+        public KeyMapping.Category category() {
+            
+            return this.category;
         }
         
     }
@@ -175,32 +172,29 @@ public class NewKeyBindsList extends CustomList {
                     .createNarration(supp -> Component.translatable("narrator.controls.reset", keyDesc))
                     .build();
             
-            this.categoryName = Component.translatable(this.key.getCategory());
+            this.categoryName = this.key.getCategory().label();
             refreshEntry();
         }
         
         @Override
-        public void render(GuiGraphics guiGraphics, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+        public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             
-            Services.EVENT.fireKeyEntryRenderEvent(this, guiGraphics, slotIndex, y, x, rowLeft, rowWidth, mouseX, mouseY, hovered, partialTicks);
+            Services.EVENT.fireKeyEntryRenderEvent(this, guiGraphics, this.getContentX(), this.getContentY(), getRowLeft(), getRowWidth(), hovered, partialTicks);
             
             int resetKeyX = NewKeyBindsList.this.scrollBarX() - this.btnResetKeyBinding.getWidth() - 10;
-            this.btnResetKeyBinding.setX(resetKeyX);
-            int top = y - 2;
-            this.btnResetKeyBinding.setY(top);
+            int top = this.getContentY() - 2;
+            this.btnResetKeyBinding.setPosition(resetKeyX, top);
             this.btnResetKeyBinding.render(guiGraphics, mouseX, mouseY, partialTicks);
             
-            this.btnChangeKeyBinding.setX(resetKeyX - 5 - this.btnChangeKeyBinding.getWidth());
-            this.btnChangeKeyBinding.setY(top);
-            
-            guiGraphics.drawString(NewKeyBindsList.this.mc.font, this.keyDesc, x, (y + rowWidth / 2) - (9 / 2), CommonColors.WHITE);
+            this.btnChangeKeyBinding.setPosition(resetKeyX - 5 - this.btnChangeKeyBinding.getWidth(), top);
+            this.btnChangeKeyBinding.render(guiGraphics, mouseX, mouseY, partialTicks);
+            guiGraphics.drawString(NewKeyBindsList.this.mc.font, this.keyDesc, this.getContentX(), this.getContentYMiddle() - 9 / 2, -1);
             
             if(this.hasCollision) {
                 int markerWidth = 3;
                 int minX = this.btnChangeKeyBinding.getX() - 6;
-                guiGraphics.fill(minX, y + 2, minX + markerWidth, y + rowWidth + 2, CommonColors.RED);
+                guiGraphics.fill(minX, this.getContentY() - 1, minX + markerWidth, this.getContentBottom(), CommonColors.YELLOW);
             }
-            this.btnChangeKeyBinding.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
         
         public List<GuiEventListener> children() {
@@ -214,26 +208,26 @@ public class NewKeyBindsList extends CustomList {
             return ImmutableList.of(this.btnChangeKeyBinding, this.btnResetKeyBinding);
         }
         
+        
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int buttonId) {
+        public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
             
-            if(Services.EVENT.fireKeyEntryMouseClickedEvent(this, mouseX, mouseY, buttonId)
+            if(Services.EVENT.fireKeyEntryMouseClickedEvent(this, event, doubleClick)
                     .map(IKeyEntryMouseClickedEvent::isHandled, UnaryOperator.identity())) {
                 return true;
             }
-            return super.mouseClicked(mouseX, mouseY, buttonId);
+            return super.mouseClicked(event, doubleClick);
         }
         
-        
         @Override
-        public boolean mouseReleased(double mouseX, double mouseY, int buttonId) {
+        public boolean mouseReleased(MouseButtonEvent event) {
             
-            if(Services.EVENT.fireKeyEntryMouseReleasedEvent(this, mouseX, mouseY, buttonId)
+            if(Services.EVENT.fireKeyEntryMouseReleasedEvent(this, event)
                     .map(IKeyEntryMouseReleasedEvent::isHandled, UnaryOperator.identity())) {
                 return true;
             }
             
-            return super.mouseReleased(mouseX, mouseY, buttonId);
+            return super.mouseReleased(event);
         }
         
         public KeyMapping getKey() {
@@ -282,12 +276,12 @@ public class NewKeyBindsList extends CustomList {
                     }
                 }
             }
-            MutableComponent tooltip = Component.translatable(key.getCategory());
+            MutableComponent tooltip = categoryName.copy();
             if(this.hasCollision) {
                 this.btnChangeKeyBinding.setMessage(Component.literal("[ ")
                         .append(this.btnChangeKeyBinding.getMessage().copy().withStyle(ChatFormatting.WHITE))
                         .append(" ]")
-                        .withStyle(ChatFormatting.RED));
+                        .withStyle(ChatFormatting.YELLOW));
                 tooltip.append(CommonComponents.NEW_LINE);
                 tooltip.append(Component.translatable("controls.keybinds.duplicateKeybinds", duplicates));
             }

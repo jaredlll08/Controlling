@@ -3,11 +3,12 @@ package com.blamejared.controlling.client;
 import com.blamejared.controlling.ControllingConstants;
 import com.blamejared.controlling.api.DisplayMode;
 import com.blamejared.controlling.api.SortOrder;
+import com.blamejared.controlling.api.entries.IKeyEntry;
+import com.blamejared.controlling.mixin.AccessAbstractSelectionList;
 import com.blamejared.controlling.mixin.AccessKeyBindsScreen;
 import com.blamejared.controlling.platform.Services;
 import com.blamejared.searchables.api.autcomplete.AutoCompletingEditBox;
 import com.google.common.base.Suppliers;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
@@ -20,6 +21,8 @@ import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsList;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
@@ -76,7 +79,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     protected void addContents() {
         
         this.newKeyList = Suppliers.memoize(() -> new NewKeyBindsList(this, this.minecraft));
-        this.freeKeyList = Suppliers.memoize(() -> new FreeKeysList(this, this.minecraft));
+        this.freeKeyList = () -> new FreeKeysList(this, this.minecraft);
         // Don't call setKeyBindsList as we don't want to reposition elements right now
         getAccess().controlling$setKeyBindsList(showFree ? this.freeKeyList.get() : this.newKeyList.get());
         this.layout.addToContents(getKeyBindsList());
@@ -123,7 +126,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         topRight.addChild(this.buttonConflicting);
         
         rowHelper.addChild(resetButton());
-        rowHelper.addChild(Button.builder(CommonComponents.GUI_DONE, $$0x -> this.onClose()).build());
+        rowHelper.addChild(Button.builder(CommonComponents.GUI_DONE, btn -> this.onClose()).build());
     }
     
     @Override
@@ -157,32 +160,42 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     
     public void filterKeys(String lastSearch) {
         
-        getKeyBindsList().children().clear();
+        CustomList list = getCustomList();
+        
+        list.clearEntries();
         getKeyBindsList().setScrollAmount(0);
         if(lastSearch.isEmpty() && displayMode == DisplayMode.ALL && sortOrder == SortOrder.NONE) {
-            getKeyBindsList().children().addAll(getCustomList().getAllEntries());
+            for(KeyBindsList.Entry allEntry : getCustomList().getAllEntries()) {
+                list.addEntryInternal(allEntry);
+            }
             return;
         }
         
         Predicate<KeyBindsList.Entry> extraPredicate = entry -> true;
-        Consumer<List<KeyBindsList.Entry>> postConsumer = entries -> {};
-        CustomList list = getCustomList();
+        Consumer<List<IKeyEntry>> postConsumer = entries -> {};
+        
         
         if(list instanceof NewKeyBindsList) {
             extraPredicate = displayMode.getPredicate();
-            postConsumer = entries -> sortOrder.sort(entries);
+            postConsumer = entries -> {
+                entries.removeIf(entry -> !(entry instanceof IKeyEntry));
+                list.sort(sortOrder);
+            };
         }
-        list.children()
-                .addAll(ControllingConstants.SEARCHABLE_KEYBINDINGS.filterEntries(list.getAllEntries(), lastSearch, extraPredicate));
-        postConsumer.accept(list.children());
+        List<KeyBindsList.Entry> entries = ControllingConstants.SEARCHABLE_KEYBINDINGS.filterEntries(list.getAllEntries(), lastSearch, extraPredicate);
+        for(KeyBindsList.Entry entry : entries) {
+            list.addEntryInternal(entry);
+        }
+        
+        postConsumer.accept(getAbstractSelectionList().controlling$getChildren());
     }
     
     @Override
-    public boolean mouseClicked(double xpos, double ypos, int buttonId) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         
-        boolean b = super.mouseClicked(xpos, ypos, buttonId);
-        if(!b && search.isFocused() && !search.autoComplete().mouseClicked(xpos, ypos, buttonId)) {
-            search.setFocused(false);
+        boolean b = super.mouseClicked(event, doubleClick);
+        if(!b && search.isFocused() && !search.autoComplete().mouseClicked(event, doubleClick)) {
+            this.setFocused(null);
             clearFocus();
             b = true;
         }
@@ -199,39 +212,35 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     }
     
     @Override
-    public boolean keyPressed(int key, int scancode, int mods) {
+    public boolean keyPressed(KeyEvent event) {
         
         if(!search.isFocused() && this.selectedKey == null) {
-            if(hasControlDown()) {
-                if(InputConstants.isKeyDown(Minecraft.getInstance()
-                        .getWindow()
-                        .getWindow(), GLFW.GLFW_KEY_F)) {
-                    search.setFocused(true);
-                    return true;
-                }
+            if(event.hasControlDown() && event.key() == GLFW.GLFW_KEY_F) {
+                search.setFocused(true);
+                return true;
             }
         }
         if(search.isFocused()) {
-            if(key == GLFW.GLFW_KEY_ESCAPE) {
+            if(event.isEscape()) {
                 search.setFocused(false);
                 return true;
             }
         }
         if(this.selectedKey != null) {
-            Services.PLATFORM.handleKeyPress(this, this.options, key, scancode, mods);
+            Services.PLATFORM.handleKeyPress(this, this.options, event);
             return true;
         } else {
-            return super.keyPressed(key, scancode, mods);
+            return super.keyPressed(event);
         }
     }
     
     @Override
-    public boolean keyReleased(int key, int scancode, int mods) {
+    public boolean keyReleased(KeyEvent event) {
         
-        if(Services.PLATFORM.handleKeyReleased(this, this.options, key, scancode, mods)) {
+        if(Services.PLATFORM.handleKeyReleased(this, this.options, event)) {
             return true;
         }
-        return super.keyReleased(key, scancode, mods);
+        return super.keyReleased(event);
     }
     
     private CustomList getCustomList() {
@@ -246,6 +255,11 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     public KeyBindsList getKeyBindsList() {
         
         return getAccess().controlling$getKeyBindsList();
+    }
+    
+    public AccessAbstractSelectionList getAbstractSelectionList() {
+        
+        return (AccessAbstractSelectionList) this.getKeyBindsList();
     }
     
     private void setKeyBindsList(KeyBindsList newList) {

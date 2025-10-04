@@ -6,26 +6,30 @@ import net.minecraft.client.gui.screens.options.controls.KeyBindsList;
 import net.minecraft.network.chat.Component;
 
 import java.util.Comparator;
-import java.util.List;
 
-public enum SortOrder {
-    NONE("options.sortNone", entries -> {
-    }),
-    AZ("options.sortAZ", entries -> entries.sort(Comparator.comparing(o -> o.getKeyDesc()
-            .getString()))),
-    ZA("options.sortZA", entries -> entries.sort(Comparator.comparing(o -> o.getKeyDesc()
-            .getString(), Comparator.reverseOrder()))),
-    KEY_AZ("options.sortKeyAZ", entries -> entries.sort(Comparator.<IKeyEntry, String>comparing(o -> o.getKey().getTranslatedKeyMessage()
-            .getString()).thenComparing(o -> o.getKeyDesc().getString()))),
-    KEY_ZA("options.sortKeyZA", entries -> entries.sort(Comparator.<IKeyEntry, String>comparing(o -> o.getKey().getTranslatedKeyMessage()
-            .getString(), Comparator.reverseOrder()).thenComparing(o -> o.getKeyDesc().getString(), Comparator.reverseOrder())));
+public enum SortOrder implements Comparator<KeyBindsList.Entry> {
+    NONE("options.sortNone", (o1, o2) -> 0),
+    AZ("options.sortAZ", Comparator.comparing(o -> o.getKeyDesc()
+            .getString())),
+    ZA("options.sortZA", Comparator.comparing(o -> o.getKeyDesc()
+            .getString(), Comparator.reverseOrder())),
+    KEY_AZ("options.sortKeyAZ", Comparator.<IKeyEntry, String> comparing(o -> o.getKey().getTranslatedKeyMessage()
+            .getString()).thenComparing(o -> o.getKeyDesc().getString())),
+    KEY_ZA("options.sortKeyZA", Comparator.<IKeyEntry, String> comparing(o -> o.getKey().getTranslatedKeyMessage()
+                    .getString(), Comparator.reverseOrder())
+            .thenComparing(o -> o.getKeyDesc().getString(), Comparator.reverseOrder()));
     
-    private final ISort sorter;
     private final Component display;
+    private final Comparator<KeyBindsList.Entry> sorter;
     
-    SortOrder(String key, ISort sorter) {
+    SortOrder(String key, Comparator<IKeyEntry> sorter) {
         
-        this.sorter = sorter;
+        this.sorter = (o1, o2) -> {
+            if(o1 instanceof IKeyEntry first && o2 instanceof IKeyEntry second) {
+                return sorter.compare(first, second);
+            }
+            throw new IllegalStateException("Cannot sort non 'IKeyEntry'!");
+        };
         this.display = ControllingConstants.COMPONENT_OPTIONS_SORT.copy()
                 .append(": ")
                 .append(Component.translatable(key));
@@ -36,16 +40,14 @@ public enum SortOrder {
         return SortOrder.values()[(this.ordinal() + 1) % SortOrder.values().length];
     }
     
-    public void sort(List<KeyBindsList.Entry> list) {
-        
-        list.removeIf(entry -> !(entry instanceof IKeyEntry));
-        //noinspection rawtypes,unchecked
-        this.sorter.sort((List<IKeyEntry>)(List)list);
-    }
-    
     public Component getDisplay() {
         
         return this.display;
     }
     
+    @Override
+    public int compare(KeyBindsList.Entry o1, KeyBindsList.Entry o2) {
+        
+        return this.sorter.compare(o1, o2);
+    }
 }

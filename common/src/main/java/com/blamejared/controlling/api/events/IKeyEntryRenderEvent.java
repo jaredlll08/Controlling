@@ -11,8 +11,6 @@ public interface IKeyEntryRenderEvent {
     
     GuiGraphics getGuiGraphics();
     
-    int getSlotIndex();
-    
     int getY();
     
     int getX();
@@ -20,10 +18,6 @@ public interface IKeyEntryRenderEvent {
     int getRowLeft();
     
     int getRowWidth();
-    
-    int getMouseX();
-    
-    int getMouseY();
     
     boolean isHovered();
     

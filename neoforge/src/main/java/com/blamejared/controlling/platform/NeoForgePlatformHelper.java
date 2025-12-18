@@ -3,11 +3,11 @@ package com.blamejared.controlling.platform;
 import com.blamejared.controlling.client.NewKeyBindsScreen;
 import com.blamejared.controlling.mixin.AccessKeyBindsScreenNeoForge;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Options;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import net.neoforged.neoforge.client.settings.KeyModifier;
 
 public class NeoForgePlatformHelper implements IPlatformHelper {

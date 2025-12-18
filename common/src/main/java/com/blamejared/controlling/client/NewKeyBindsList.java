@@ -94,9 +94,10 @@ public class NewKeyBindsList extends CustomList {
         public CategoryEntry(KeyMapping.Category category) {
             
             this.category = category;
-            this.categoryName = new FocusableTextWidget(
-                    NewKeyBindsList.this.getRowWidth(), category.label(), NewKeyBindsList.this.minecraft.font, false, FocusableTextWidget.BackgroundFill.ON_FOCUS, 4
-            );
+            this.categoryName = FocusableTextWidget.builder(category.label(), NewKeyBindsList.this.minecraft.font)
+                    .alwaysShowBorder(false)
+                    .backgroundFill(FocusableTextWidget.BackgroundFill.ON_FOCUS)
+                    .build();
         }
         
         @Override

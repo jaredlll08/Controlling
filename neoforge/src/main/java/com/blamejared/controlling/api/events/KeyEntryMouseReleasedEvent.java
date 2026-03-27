@@ -7,7 +7,7 @@ import net.neoforged.bus.api.Event;
 /**
  * KeyEntryMouseReleasedEvent is called at the start of {@link IKeyEntry#mouseReleased(MouseButtonEvent)}.
  *
- * If you are consuming this event, call {@link KeyEntryMouseReleasedEvent#setHandled(boolean)} with a value of {@code true}.
+ * If you are consuming this event, call {@link KeyEntryMouseReleasedEvent#handled(boolean)} with a value of {@code true}.
  */
 public class KeyEntryMouseReleasedEvent extends Event implements IKeyEntryMouseReleasedEvent {
     
@@ -22,7 +22,7 @@ public class KeyEntryMouseReleasedEvent extends Event implements IKeyEntryMouseR
         this.event = event;
     }
     
-    public IKeyEntry getEntry() {
+    public IKeyEntry entry() {
         
         return entry;
     }
@@ -33,12 +33,12 @@ public class KeyEntryMouseReleasedEvent extends Event implements IKeyEntryMouseR
         return event;
     }
     
-    public boolean isHandled() {
+    public boolean handled() {
         
         return handled;
     }
     
-    public void setHandled(boolean handled) {
+    public void handled(boolean handled) {
         
         this.handled = handled;
     }

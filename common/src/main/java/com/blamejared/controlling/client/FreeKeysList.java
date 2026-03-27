@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -26,18 +26,18 @@ import java.util.stream.Collectors;
 
 public class FreeKeysList extends CustomList {
     
-    private final KeyBindsScreen controlsScreen;
+    private final KeyBindsScreen keyBindsScreen;
     private final Minecraft mc;
     private int maxListLabelWidth;
     
     private final List<KeyMapping> keyBindings;
     
-    public FreeKeysList(KeyBindsScreen controls, Minecraft mcIn) {
+    public FreeKeysList(KeyBindsScreen keyBindsScreen, Minecraft mcIn) {
         
-        super(controls, mcIn);
+        super(keyBindsScreen, mcIn);
         this.height -= 52;
         this.setY(48);
-        this.controlsScreen = controls;
+        this.keyBindsScreen = keyBindsScreen;
         this.mc = mcIn;
         this.clearEntries();
         this.allEntries = new ArrayList<>();
@@ -49,13 +49,13 @@ public class FreeKeysList extends CustomList {
     @Override
     public int getBottom() {
         
-        return this.controlsScreen.height - 56;
+        return this.keyBindsScreen.height - 56;
     }
     
     @Override
     public int getRight() {
         
-        return this.controlsScreen.width + 45;
+        return this.keyBindsScreen.width + 45;
     }
     
     public void recalculate() {
@@ -98,14 +98,14 @@ public class FreeKeysList extends CustomList {
         }
         
         @Override
-        public void renderContent(GuiGraphics guiGraphics, int x, int y, boolean hovered, float partialTicks) {
+        public void extractContent(GuiGraphicsExtractor graphics, int x, int y, boolean hovered, float partialTicks) {
             
-            String str = this.input.toString() + " - " + input.getValue();
+            String str = this.input + " - " + input.getValue();
             int length = mc.font.width(input.getDisplayName().getString());
             
-            guiGraphics.drawString(FreeKeysList.this.mc.font, str, this.getContentX(), this.getContentYMiddle() - 9 / 2, ARGB.opaque(16777215));
+            graphics.text(FreeKeysList.this.mc.font, str, this.getContentX(), this.getContentYMiddle() - 9 / 2, ARGB.opaque(16777215));
             
-            guiGraphics.renderTooltip(FreeKeysList.this.mc.font, List.of(ClientTooltipComponent.create(input.getDisplayName()
+            graphics.tooltip(FreeKeysList.this.mc.font, List.of(ClientTooltipComponent.create(input.getDisplayName()
                     .getVisualOrderText())), this.getContentX() + this.getContentWidth() - (length) - 10, this.getContentYMiddle() - 9 / 2 + mc.font.lineHeight, DefaultTooltipPositioner.INSTANCE, null);
         }
         
@@ -150,9 +150,9 @@ public class FreeKeysList extends CustomList {
         }
         
         @Override
-        public void renderContent(GuiGraphics guiGraphics, int x, int y, boolean hovered, float partialTicks) {
+        public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             
-            guiGraphics.drawCenteredString(mc.font, ControllingConstants.COMPONENT_OPTIONS_AVAILABLE_KEYS, (Objects.requireNonNull(mc.screen).width / 2 - this.text.length() / 2), (y + height - 9 - 1), 16777215);
+            graphics.centeredText(mc.font, ControllingConstants.COMPONENT_OPTIONS_AVAILABLE_KEYS, (Objects.requireNonNull(mc.screen).width / 2 - this.text.length() / 2), (mouseY + height - 9 - 1), 16777215);
             
         }
         

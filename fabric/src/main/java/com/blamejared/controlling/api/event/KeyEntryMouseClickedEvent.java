@@ -8,7 +8,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 /**
  * KeyEntryMouseClickedEvent is called at the start of {@link IKeyEntry#mouseClicked(MouseButtonEvent, boolean)}.
  * <p>
- * If you are consuming this event, call {@link KeyEntryMouseClickedEvent#setHandled(boolean)} with a value of {@code true}.
+ * If you are consuming this event, call {@link KeyEntryMouseClickedEvent#handled(boolean)} with a value of {@code true}.
  */
 public class KeyEntryMouseClickedEvent implements IKeyEntryMouseClickedEvent {
     
@@ -24,7 +24,7 @@ public class KeyEntryMouseClickedEvent implements IKeyEntryMouseClickedEvent {
         this.doubleClick = doubleClick;
     }
     
-    public IKeyEntry getEntry() {
+    public IKeyEntry entry() {
         
         return entry;
     }
@@ -41,12 +41,12 @@ public class KeyEntryMouseClickedEvent implements IKeyEntryMouseClickedEvent {
         return doubleClick;
     }
     
-    public boolean isHandled() {
+    public boolean handled() {
         
         return handled;
     }
     
-    public void setHandled(boolean handled) {
+    public void handled(boolean handled) {
         
         this.handled = handled;
     }

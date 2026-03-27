@@ -9,9 +9,8 @@ import com.blamejared.controlling.api.events.KeyEntryListenersEvent;
 import com.blamejared.controlling.api.events.KeyEntryMouseClickedEvent;
 import com.blamejared.controlling.api.events.KeyEntryMouseReleasedEvent;
 import com.blamejared.controlling.api.events.KeyEntryRenderEvent;
-import com.blamejared.controlling.client.NewKeyBindsList;
 import com.mojang.datafixers.util.Either;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Unit;
@@ -40,9 +39,9 @@ public class NeoForgeEventHandler implements IEventHelper {
     }
     
     @Override
-    public Either<IKeyEntryRenderEvent, Unit> fireKeyEntryRenderEvent(IKeyEntry entry, GuiGraphics guiGraphics, int y, int x, int rowLeft, int rowWidth, boolean hovered, float partialTicks) {
+    public Either<IKeyEntryRenderEvent, Unit> fireKeyEntryRenderEvent(IKeyEntry entry, GuiGraphicsExtractor graphics, int x, int y, int rowLeft, int rowWidth, boolean hovered, float partialTicks) {
         
-        return Either.left(NeoForge.EVENT_BUS.post(new KeyEntryRenderEvent(entry, guiGraphics, y, x, rowLeft, rowWidth, hovered, partialTicks)));
+        return Either.left(NeoForge.EVENT_BUS.post(new KeyEntryRenderEvent(entry, graphics, x, y, rowLeft, rowWidth, hovered, partialTicks)));
     }
     
 }

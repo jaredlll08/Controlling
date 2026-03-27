@@ -8,7 +8,7 @@ import net.minecraft.client.gui.screens.options.controls.KeyBindsList;
 import java.util.function.Predicate;
 
 public enum DisplayMode {
-    ALL(keyEntry -> true), NONE(keyEntry -> keyEntry.getKey().isUnbound()), CONFLICTING(keyEntry -> {
+    ALL(_ -> true), NONE(keyEntry -> keyEntry.getKey().isUnbound()), CONFLICTING(keyEntry -> {
         
         for(KeyMapping key : Minecraft.getInstance().options.keyMappings) {
             if(!key.getName().equals(keyEntry.getKey().getName()) && !key.isUnbound()) {

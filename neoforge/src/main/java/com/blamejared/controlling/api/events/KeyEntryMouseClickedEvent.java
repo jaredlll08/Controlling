@@ -8,7 +8,7 @@ import net.neoforged.bus.api.Event;
 /**
  * KeyEntryMouseClickedEvent is called at the start of {@link IKeyEntry#mouseClicked(MouseButtonEvent, boolean)}.
  * <p>
- * If you are consuming this event, call {@link KeyEntryMouseClickedEvent#setHandled(boolean)} with a value of {@code true}.
+ * If you are consuming this event, call {@link KeyEntryMouseClickedEvent#handled(boolean)} with a value of {@code true}.
  */
 public class KeyEntryMouseClickedEvent extends Event implements IKeyEntryMouseClickedEvent {
     
@@ -24,7 +24,7 @@ public class KeyEntryMouseClickedEvent extends Event implements IKeyEntryMouseCl
         this.doubleClick = doubleClick;
     }
     
-    public IKeyEntry getEntry() {
+    public IKeyEntry entry() {
         
         return entry;
     }
@@ -39,12 +39,12 @@ public class KeyEntryMouseClickedEvent extends Event implements IKeyEntryMouseCl
         return doubleClick;
     }
     
-    public boolean isHandled() {
+    public boolean handled() {
         
         return handled;
     }
     
-    public void setHandled(boolean handled) {
+    public void handled(boolean handled) {
         
         this.handled = handled;
     }

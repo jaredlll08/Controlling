@@ -1,26 +1,24 @@
 package com.blamejared.controlling.api.events;
 
 import com.blamejared.controlling.api.entries.IKeyEntry;
-import com.blamejared.controlling.client.NewKeyBindsList;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public interface IKeyEntryRenderEvent {
     
-    IKeyEntry getEntry();
+    IKeyEntry entry();
     
-    GuiGraphics getGuiGraphics();
+    GuiGraphicsExtractor graphics();
     
-    int getY();
+    int x();
     
-    int getX();
+    int y();
     
-    int getRowLeft();
+    int rowLeft();
     
-    int getRowWidth();
+    int rowWidth();
     
-    boolean isHovered();
+    boolean hovered();
     
-    float getPartialTicks();
+    float partialTicks();
     
 }

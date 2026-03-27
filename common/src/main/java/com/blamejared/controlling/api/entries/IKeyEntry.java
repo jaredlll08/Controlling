@@ -1,7 +1,7 @@
 package com.blamejared.controlling.api.entries;
 
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -15,7 +15,7 @@ public interface IKeyEntry {
     
     KeyMapping getKey();
     
-    Component getKeyDesc();
+    Component getName();
     
     Button getBtnResetKeyBinding();
     
@@ -27,6 +27,6 @@ public interface IKeyEntry {
     
     boolean mouseReleased(MouseButtonEvent event);
     
-    void renderContent(GuiGraphics guiGraphics, int x, int y, boolean hovered, float partialTicks);
+    void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float partialTicks);
     
 }

@@ -3,7 +3,7 @@
 pipeline {
     agent any
     tools {
-        jdk "jdk-21"
+        jdk "jdk-25"
     }
     environment {
         modrinth_token = credentials('modrinth_token')

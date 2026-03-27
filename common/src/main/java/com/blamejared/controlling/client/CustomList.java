@@ -12,9 +12,9 @@ public class CustomList extends KeyBindsList {
     
     public List<Entry> allEntries;
     
-    public CustomList(KeyBindsScreen controls, Minecraft mcIn) {
+    public CustomList(KeyBindsScreen keyBindsScreen, Minecraft minecraft) {
         
-        super(controls, mcIn);
+        super(keyBindsScreen, minecraft);
     }
     
     public List<Entry> getAllEntries() {
@@ -29,24 +29,23 @@ public class CustomList extends KeyBindsList {
     }
     
     @Override
-    public void sort(Comparator<Entry> comp) {
+    public void sort(Comparator<Entry> comparator) {
         
-        super.sort(comp);
+        super.sort(comparator);
     }
     
     @Override
-    protected int addEntry(Entry ent) {
-        
-        if(allEntries == null) {
+    protected int addEntry(Entry entry) {
+        if (allEntries == null) {
             allEntries = new ArrayList<>();
         }
-        allEntries.add(ent);
-        return addEntryInternal(ent);
+        allEntries.add(entry);
+        return addEntryInternal(entry);
     }
     
-    public int addEntryInternal(Entry ent) {
+    public int addEntryInternal(Entry entry) {
         
-        return super.addEntry(ent);
+        return super.addEntry(entry);
     }
     
 }

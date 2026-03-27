@@ -22,17 +22,17 @@ public class KeyEntryListenersEvent extends Event implements IKeyEntryListenersE
         this.entry = entry;
         this.listeners = new ArrayList<>();
         
-        getListeners().add(entry.getBtnChangeKeyBinding());
-        getListeners().add(entry.getBtnResetKeyBinding());
+        listeners().add(entry.getBtnChangeKeyBinding());
+        listeners().add(entry.getBtnResetKeyBinding());
     }
     
     
-    public List<GuiEventListener> getListeners() {
+    public List<GuiEventListener> listeners() {
         
         return listeners;
     }
     
-    public IKeyEntry getEntry() {
+    public IKeyEntry entry() {
         
         return entry;
     }

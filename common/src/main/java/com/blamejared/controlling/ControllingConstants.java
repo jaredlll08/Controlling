@@ -41,7 +41,7 @@ public class ControllingConstants {
             }))
             .defaultComponent(SearchableComponent.create("name", entry -> {
                 if(entry instanceof IKeyEntry key) {
-                    return Optional.of(key.getKeyDesc().getString());
+                    return Optional.of(key.getName().getString());
                 } else if(entry instanceof IInputEntry input) {
                     return Optional.of(input.getInput().getName());
                 }

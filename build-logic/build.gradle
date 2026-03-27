@@ -1,0 +1,36 @@
+plugins {
+    id 'groovy-gradle-plugin'
+    id 'java-gradle-plugin'
+}
+
+repositories {
+    mavenLocal()
+    gradlePluginPortal()
+    maven {
+        url = 'https://maven.blamejared.com'
+        name = 'BlameJared'
+    }
+}
+
+gradlePlugin {
+    plugins {
+        rootPlugin {
+            id = 'com.blamejared.root-plugin'
+            implementationClass = 'com.blamejared.RootPlugin'
+        }
+        commonPlugin {
+            id = 'com.blamejared.common-plugin'
+            implementationClass = 'com.blamejared.CommonPlugin'
+        }
+        loaderPlugin {
+            id = 'com.blamejared.loader-plugin'
+            implementationClass = 'com.blamejared.LoaderPlugin'
+        }
+    }
+}
+
+dependencies {
+    gradleApi()
+    api('com.blamejared:gradle-mod-utils:1.0.5')
+    implementation('com.diluv.schoomp:Schoomp:1.2.6')
+}

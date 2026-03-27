@@ -1,0 +1,96 @@
+import com.blamejared.gradle.mod.utils.GMUtils
+import com.blamejared.gradle.mod.utils.values.GitChangelogValue
+import net.darkhax.curseforgegradle.Constants
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
+plugins {
+    id 'com.blamejared.loader-plugin'
+    id 'net.neoforged.moddev'
+    id 'com.modrinth.minotaur'
+}
+
+neoForge {
+    version = neoforge
+    def at = project(":common").file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }
+    runs {
+        register('client') {
+            client()
+        }
+        register('server') {
+            server()
+            programArgument('--nogui')
+        }
+    }
+
+    mods {
+        register("${modid}") {
+            sourceSet sourceSets.main
+        }
+    }
+    addModdingDependenciesTo sourceSets.test
+}
+
+dependencies {
+
+    implementation "com.blamejared.searchables:Searchables-neoforge-${minecraft}:${searchables}"
+}
+
+tasks.register('publishCurseForge', TaskPublishCurseForge) {
+    dependsOn(tasks.jar)
+    apiToken = GMUtils.locateProperty(project, 'curseforgeApiToken')
+
+    def mainFile = upload(curse_project_id, tasks.jar.archiveFile)
+    mainFile.changelogType = 'markdown'
+    mainFile.changelog = providers.of(GitChangelogValue) {
+        parameters.repository.set(git_repo)
+    }.get()
+    mainFile.releaseType = Constants.RELEASE_TYPE_RELEASE
+    mainFile.addJavaVersion("Java ${java_version}")
+    mainFile.addGameVersion(minecraft)
+    mainFile.addModLoader('NeoForge')
+    mainFile.addRequirement('searchables')
+
+    doLast {
+        project.ext.set('curse_file_url', "${curse_homepage}/files/${mainFile.curseFileId}")
+    }
+}
+
+modrinth {
+    token.set(GMUtils.locateProperty(project, 'modrinth_token'))
+    projectId.set(modrinth_project_id)
+    changelog.set(providers.of(GitChangelogValue) {
+        parameters.repository.set(git_repo)
+    }.get())
+    versionName.set("NeoForge-${minecraft}-$version")
+    versionType.set('release')
+    gameVersions.set([minecraft])
+    uploadFile.set(tasks.jar)
+    loaders.add('neoforge')
+    dependencies {
+        required.project("searchables")
+    }
+}
+tasks.modrinth.dependsOn(tasks.jar)
+
+
+// Implement mcgradleconventions loader attribute
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements'].each { variant ->
+    configurations.named("$variant") {
+        attributes {
+            attribute(loaderAttribute, 'neoforge')
+        }
+    }
+}
+sourceSets.configureEach {
+    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName, it.getTaskName(null, 'jarJar')].each { variant ->
+        configurations.named("$variant") {
+            attributes {
+                attribute(loaderAttribute, 'neoforge')
+            }
+        }
+    }
+}

@@ -8,16 +8,16 @@ import net.minecraft.network.chat.Component;
 import java.util.Comparator;
 
 public enum SortOrder implements Comparator<KeyBindsList.Entry> {
-    NONE("options.sortNone", (o1, o2) -> 0),
-    AZ("options.sortAZ", Comparator.comparing(o -> o.getKeyDesc()
+    NONE("options.sortNone", (_, _) -> 0),
+    AZ("options.sortAZ", Comparator.comparing(o -> o.getName()
             .getString())),
-    ZA("options.sortZA", Comparator.comparing(o -> o.getKeyDesc()
+    ZA("options.sortZA", Comparator.comparing(o -> o.getName()
             .getString(), Comparator.reverseOrder())),
     KEY_AZ("options.sortKeyAZ", Comparator.<IKeyEntry, String> comparing(o -> o.getKey().getTranslatedKeyMessage()
-            .getString()).thenComparing(o -> o.getKeyDesc().getString())),
+            .getString()).thenComparing(o -> o.getName().getString())),
     KEY_ZA("options.sortKeyZA", Comparator.<IKeyEntry, String> comparing(o -> o.getKey().getTranslatedKeyMessage()
                     .getString(), Comparator.reverseOrder())
-            .thenComparing(o -> o.getKeyDesc().getString(), Comparator.reverseOrder()));
+            .thenComparing(o -> o.getName().getString(), Comparator.reverseOrder()));
     
     private final Component display;
     private final Comparator<KeyBindsList.Entry> sorter;

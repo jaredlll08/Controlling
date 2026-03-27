@@ -1,0 +1,23 @@
+pluginManagement {
+    repositories {
+        maven {
+            url = 'https://maven.blamejared.com'
+        }
+        maven {
+            url = 'https://maven.neoforged.net/releases'
+        }
+        gradlePluginPortal()
+        maven {
+            url = 'https://maven.fabricmc.net/'
+        }
+    }
+}
+plugins {
+    id('org.gradle.toolchains.foojay-resolver-convention') version '1.0.0'
+}
+rootProject.name = 'Controlling'
+include('common')
+include('fabric')
+include('neoforge')
+
+includeBuild('build-logic')

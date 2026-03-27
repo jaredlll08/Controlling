@@ -12,7 +12,7 @@ import com.google.common.base.Suppliers;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -46,9 +46,9 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     private Supplier<NewKeyBindsList> newKeyList;
     private Supplier<FreeKeysList> freeKeyList;
     
-    public NewKeyBindsScreen(Screen screen, Options settings) {
+    public NewKeyBindsScreen(Screen lastScreen, Options options) {
         
-        super(screen, settings);
+        super(lastScreen, options);
         this.layout.setHeaderHeight(48);
         this.layout.setFooterHeight(56);
     }
@@ -84,6 +84,8 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         getAccess().controlling$setKeyBindsList(showFree ? this.freeKeyList.get() : this.newKeyList.get());
         this.layout.addToContents(getKeyBindsList());
         displayMode = DisplayMode.ALL;
+        // Trigger initial display of suggestions, needs to be after we set the keybinds list
+        this.search.autoComplete().accept("");
     }
     
     @Override
@@ -126,7 +128,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         topRight.addChild(this.buttonConflicting);
         
         rowHelper.addChild(resetButton());
-        rowHelper.addChild(Button.builder(CommonComponents.GUI_DONE, btn -> this.onClose()).build());
+        rowHelper.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> this.onClose()).build());
     }
     
     @Override
@@ -137,10 +139,10 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     }
     
     @Override
-    public void render(GuiGraphics guiGraphics, int mxPos, int myPos, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         
-        super.render(guiGraphics, mxPos, myPos, partialTicks);
-        this.search.autoComplete().render(guiGraphics, mxPos, myPos, partialTicks);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+        this.search.autoComplete().extractRenderState(graphics, mouseX, mouseY, partialTicks);
     }
     
     public Button resetButton() {
@@ -171,8 +173,8 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
             return;
         }
         
-        Predicate<KeyBindsList.Entry> extraPredicate = entry -> true;
-        Consumer<List<IKeyEntry>> postConsumer = entries -> {};
+        Predicate<KeyBindsList.Entry> extraPredicate = _ -> true;
+        Consumer<List<IKeyEntry>> postConsumer = _ -> {};
         
         
         if(list instanceof NewKeyBindsList) {
@@ -203,12 +205,12 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     }
     
     @Override
-    public boolean mouseScrolled(double xpos, double ypos, double xDelta, double yDelta) {
+    public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
         
-        if(search.autoComplete().mouseScrolled(xpos, ypos, xDelta, yDelta)) {
+        if(search.autoComplete().mouseScrolled(x, y, scrollX, scrollY)) {
             return true;
         }
-        return super.mouseScrolled(xpos, ypos, xDelta, yDelta);
+        return super.mouseScrolled(x, y, scrollX, scrollY);
     }
     
     @Override
@@ -297,7 +299,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         btn.setMessage(confirmingReset.currentDisplay());
     };
     
-    private final Button.OnPress PRESS_NONE = btn -> {
+    private final Button.OnPress PRESS_NONE = _ -> {
         if(displayMode == DisplayMode.NONE) {
             buttonNone.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_NONE);
             displayMode = DisplayMode.ALL;
@@ -315,7 +317,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         filterKeys();
     };
     
-    private final Button.OnPress PRESS_CONFLICTING = btn -> {
+    private final Button.OnPress PRESS_CONFLICTING = _ -> {
         if(displayMode == DisplayMode.CONFLICTING) {
             buttonConflicting.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_CONFLICTS);
             displayMode = DisplayMode.ALL;
@@ -327,7 +329,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         filterKeys();
     };
     
-    private final Button.OnPress PRESS_FREE = btn -> {
+    private final Button.OnPress PRESS_FREE = _ -> {
         removeWidget(getKeyBindsList());
         if(showFree) {
             buttonSort.active = true;

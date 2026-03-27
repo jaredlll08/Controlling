@@ -5,14 +5,14 @@ import net.minecraft.client.input.MouseButtonEvent;
 
 public interface IKeyEntryMouseClickedEvent {
     
-    IKeyEntry getEntry();
+    IKeyEntry entry();
     
     MouseButtonEvent event();
     
     boolean doubleClick();
     
-    boolean isHandled();
+    boolean handled();
     
-    void setHandled(boolean handled);
+    void handled(boolean handled);
     
 }

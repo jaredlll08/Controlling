@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.FocusableTextWidget;
 import net.minecraft.client.gui.components.Tooltip;
@@ -38,16 +38,16 @@ public class NewKeyBindsList extends CustomList {
     private final Minecraft mc;
     private int maxListLabelWidth;
     
-    public NewKeyBindsList(KeyBindsScreen controls, Minecraft mcIn) {
+    public NewKeyBindsList(KeyBindsScreen keyBindsScreen, Minecraft minecraft) {
         
-        super(controls, mcIn);
+        super(keyBindsScreen, minecraft);
         this.height -= 52;
         this.setY(48);
-        this.controlsScreen = controls;
-        this.mc = mcIn;
+        this.controlsScreen = keyBindsScreen;
+        this.mc = minecraft;
         this.clearEntries();
-        allEntries = new ArrayList<>();
-        KeyMapping[] bindings = ArrayUtils.clone(mcIn.options.keyMappings);
+        this.allEntries = new ArrayList<>();
+        KeyMapping[] bindings = ArrayUtils.clone(minecraft.options.keyMappings);
         Arrays.sort(bindings);
         KeyMapping.Category lastCategory = null;
         
@@ -55,29 +55,29 @@ public class NewKeyBindsList extends CustomList {
             KeyMapping.Category category = keybinding.getCategory();
             if(!category.equals(lastCategory)) {
                 lastCategory = category;
-                if(!isHidden(category.label())) {
+                if(!shouldShow(category.label())) {
                     addEntry(new NewKeyBindsList.CategoryEntry(category));
                 }
             }
             
             Component component = Services.PLATFORM.getKeyName(keybinding);
-            int width = mcIn.font.width(component);
+            int width = minecraft.font.width(component);
             if(width > this.maxListLabelWidth) {
                 this.maxListLabelWidth = width;
             }
-            if(!isHidden(category.label())) {
+            if(shouldShow(category.label())) {
                 addEntry(new NewKeyBindsList.KeyEntry(keybinding, component));
             }
         }
         
     }
     
-    private boolean isHidden(Component component) {
+    private boolean shouldShow(Component component) {
         
         if(component.getContents() instanceof TranslatableContents tc) {
-            return tc.getKey().endsWith(".hidden");
+            return !tc.getKey().endsWith(".hidden");
         }
-        return false;
+        return true;
     }
     
     @Override
@@ -101,11 +101,10 @@ public class NewKeyBindsList extends CustomList {
         }
         
         @Override
-        public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+        public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             
             this.categoryName.setPosition(NewKeyBindsList.this.width / 2 - this.categoryName.getWidth() / 2, this.getContentBottom() - 9 - 1);
-            this.categoryName.render(guiGraphics, mouseX, mouseY, partialTicks);
-            //            guiGraphics.drawString(NewKeyBindsList.this.mc.font, this.name, Objects.requireNonNull(minecraft.screen).width / 2 - this.labelWidth / 2, this.getY() + getRowWidth() - 9 - 1, -1);
+            this.categoryName.extractRenderState(graphics, mouseX, mouseY, partialTicks);
         }
         
         public List<? extends NarratableEntry> narratables() {
@@ -146,7 +145,7 @@ public class NewKeyBindsList extends CustomList {
         /**
          * The localized key description for this KeyEntry
          */
-        private final Component keyDesc;
+        private final Component name;
         private final Button btnChangeKeyBinding;
         private final Button btnResetKeyBinding;
         
@@ -154,23 +153,23 @@ public class NewKeyBindsList extends CustomList {
         
         private final Component categoryName;
         
-        public KeyEntry(final KeyMapping key, final Component keyDesc) {
+        public KeyEntry(final KeyMapping key, final Component name) {
             
             this.key = key;
-            this.keyDesc = keyDesc;
-            this.btnChangeKeyBinding = Button.builder(this.keyDesc, (btn) -> {
+            this.name = name;
+            this.btnChangeKeyBinding = Button.builder(this.name, _ -> {
                         NewKeyBindsList.this.controlsScreen.selectedKey = key;
                         NewKeyBindsList.this.resetMappingAndUpdateButtons();
                     })
                     .bounds(0, 0, 75, 20)
-                    .createNarration(supp -> key.isUnbound() ? Component.translatable("narrator.controls.unbound", keyDesc) : Component.translatable("narrator.controls.bound", keyDesc, supp.get()))
+                    .createNarration(supp -> key.isUnbound() ? Component.translatable("narrator.controls.unbound", name) : Component.translatable("narrator.controls.bound", name, supp.get()))
                     .build();
             
-            this.btnResetKeyBinding = Button.builder(ControllingConstants.COMPONENT_CONTROLS_RESET, btn -> {
+            this.btnResetKeyBinding = Button.builder(ControllingConstants.COMPONENT_CONTROLS_RESET, _ -> {
                         Services.PLATFORM.setToDefault(minecraft.options, key);
                         NewKeyBindsList.this.resetMappingAndUpdateButtons();
                     }).bounds(0, 0, 50, 20)
-                    .createNarration(supp -> Component.translatable("narrator.controls.reset", keyDesc))
+                    .createNarration(_ -> Component.translatable("narrator.controls.reset", name))
                     .build();
             
             this.categoryName = this.key.getCategory().label();
@@ -178,30 +177,30 @@ public class NewKeyBindsList extends CustomList {
         }
         
         @Override
-        public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+        public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             
-            Services.EVENT.fireKeyEntryRenderEvent(this, guiGraphics, this.getContentX(), this.getContentY(), getRowLeft(), getRowWidth(), hovered, partialTicks);
+            Services.EVENT.fireKeyEntryRenderEvent(this, graphics, this.getContentX(), this.getContentY(), getRowLeft(), getRowWidth(), hovered, partialTicks);
             
             int resetKeyX = NewKeyBindsList.this.scrollBarX() - this.btnResetKeyBinding.getWidth() - 10;
             int top = this.getContentY() - 2;
             this.btnResetKeyBinding.setPosition(resetKeyX, top);
-            this.btnResetKeyBinding.render(guiGraphics, mouseX, mouseY, partialTicks);
+            this.btnResetKeyBinding.extractRenderState(graphics, mouseX, mouseY, partialTicks);
             
             this.btnChangeKeyBinding.setPosition(resetKeyX - 5 - this.btnChangeKeyBinding.getWidth(), top);
-            this.btnChangeKeyBinding.render(guiGraphics, mouseX, mouseY, partialTicks);
-            guiGraphics.drawString(NewKeyBindsList.this.mc.font, this.keyDesc, this.getContentX(), this.getContentYMiddle() - 9 / 2, -1);
+            this.btnChangeKeyBinding.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+            graphics.text(NewKeyBindsList.this.mc.font, this.name, this.getContentX(), this.getContentYMiddle() - 9 / 2, -1);
             
             if(this.hasCollision) {
                 int markerWidth = 3;
                 int minX = this.btnChangeKeyBinding.getX() - 6;
-                guiGraphics.fill(minX, this.getContentY() - 1, minX + markerWidth, this.getContentBottom(), CommonColors.YELLOW);
+                graphics.fill(minX, this.getContentY() - 1, minX + markerWidth, this.getContentBottom(), CommonColors.YELLOW);
             }
         }
         
         public List<GuiEventListener> children() {
             
             return Services.EVENT.fireKeyEntryListenersEvent(this)
-                    .map(IKeyEntryListenersEvent::getListeners, UnaryOperator.identity());
+                    .map(IKeyEntryListenersEvent::listeners, UnaryOperator.identity());
         }
         
         public List<? extends NarratableEntry> narratables() {
@@ -209,12 +208,11 @@ public class NewKeyBindsList extends CustomList {
             return ImmutableList.of(this.btnChangeKeyBinding, this.btnResetKeyBinding);
         }
         
-        
         @Override
         public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
             
             if(Services.EVENT.fireKeyEntryMouseClickedEvent(this, event, doubleClick)
-                    .map(IKeyEntryMouseClickedEvent::isHandled, UnaryOperator.identity())) {
+                    .map(IKeyEntryMouseClickedEvent::handled, UnaryOperator.identity())) {
                 return true;
             }
             return super.mouseClicked(event, doubleClick);
@@ -224,7 +222,7 @@ public class NewKeyBindsList extends CustomList {
         public boolean mouseReleased(MouseButtonEvent event) {
             
             if(Services.EVENT.fireKeyEntryMouseReleasedEvent(this, event)
-                    .map(IKeyEntryMouseReleasedEvent::isHandled, UnaryOperator.identity())) {
+                    .map(IKeyEntryMouseReleasedEvent::handled, UnaryOperator.identity())) {
                 return true;
             }
             
@@ -236,9 +234,9 @@ public class NewKeyBindsList extends CustomList {
             return key;
         }
         
-        public Component getKeyDesc() {
+        public Component getName() {
             
-            return keyDesc;
+            return name;
         }
         
         public Component categoryName() {

@@ -1,73 +1,73 @@
 package com.blamejared.controlling.api.events;
 
 import com.blamejared.controlling.api.entries.IKeyEntry;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.neoforged.bus.api.Event;
 
 /**
- * RenderKeyEntryEvent is called at the top of {@link IKeyEntry#renderContent(GuiGraphics, int, int, boolean, float)}
+ * RenderKeyEntryEvent is called at the top of {@link IKeyEntry#extractContent(GuiGraphicsExtractor, int, int, boolean, float)}}
  * is called, allowing mods to render additional info.
  */
 public class KeyEntryRenderEvent extends Event implements IKeyEntryRenderEvent {
     
     private final IKeyEntry entry;
     
-    private final GuiGraphics guiGraphics;
-    private final int y;
+    private final GuiGraphicsExtractor extractor;
     private final int x;
+    private final int y;
     private final int rowLeft;
     private final int rowWidth;
     private final boolean hovered;
     private final float partialTicks;
     
-    public KeyEntryRenderEvent(IKeyEntry entry, GuiGraphics guiGraphics, int y, int x, int rowLeft, int rowWidth, boolean hovered, float partialTicks) {
+    public KeyEntryRenderEvent(IKeyEntry entry, GuiGraphicsExtractor graphics, int x, int y, int rowLeft, int rowWidth, boolean hovered, float partialTicks) {
         
         this.entry = entry;
-        this.guiGraphics = guiGraphics;
-        this.y = y;
+        this.extractor = graphics;
         this.x = x;
+        this.y = y;
         this.rowLeft = rowLeft;
         this.rowWidth = rowWidth;
         this.hovered = hovered;
         this.partialTicks = partialTicks;
     }
     
-    public IKeyEntry getEntry() {
+    public IKeyEntry entry() {
         
         return entry;
     }
     
-    public GuiGraphics getGuiGraphics() {
+    public GuiGraphicsExtractor graphics() {
         
-        return guiGraphics;
+        return extractor;
     }
     
-    public int getY() {
+    public int y() {
         
         return y;
     }
     
-    public int getX() {
+    public int x() {
         
         return x;
     }
     
-    public int getRowLeft() {
+    public int rowLeft() {
         
         return rowLeft;
     }
     
-    public int getRowWidth() {
+    public int rowWidth() {
         
         return rowWidth;
     }
     
-    public boolean isHovered() {
+    public boolean hovered() {
         
         return hovered;
     }
     
-    public float getPartialTicks() {
+    public float partialTicks() {
         
         return partialTicks;
     }

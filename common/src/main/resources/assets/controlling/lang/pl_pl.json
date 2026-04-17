@@ -1,14 +1,14 @@
 {
-  "options.showAll": "Wszystkie",
-  "options.showConflicts": "Konfliktujące",
-  "options.showNone": "Nieprzypisane",
+  "options.showAll": "Pokaż wszystkie",
+  "options.showConflicts": "Pokaż konflikty",
+  "options.showNone": "Pokaż nieprzypisane",
   "options.availableKeys": "Dostępne klawisze",
   "options.sort": "Sortuj",
-  "options.sortNone": "Nie",
+  "options.sortNone": "Brak",
   "options.sortAZ": "A->Z",
   "options.sortZA": "Z->A",
   "options.sortKeyAZ": "Klawisz A->Z",
   "options.sortKeyZA": "Klawisz Z->A",
-  "options.toggleFree": "Wolne",
-  "options.confirmReset": "Na pewno?"
+  "options.toggleFree": "Przełącz wolne",
+  "options.confirmReset": "Potwierdzić?"
 }

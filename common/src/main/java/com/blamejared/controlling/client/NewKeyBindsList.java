@@ -55,7 +55,7 @@ public class NewKeyBindsList extends CustomList {
             KeyMapping.Category category = keybinding.getCategory();
             if(!category.equals(lastCategory)) {
                 lastCategory = category;
-                if(!shouldShow(category.label())) {
+                if(shouldShow(category.label())) {
                     addEntry(new NewKeyBindsList.CategoryEntry(category));
                 }
             }

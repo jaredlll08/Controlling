@@ -52,6 +52,7 @@ tasks.register('publishCurseForge', TaskPublishCurseForge) {
     mainFile.addGameVersion(minecraft)
     mainFile.addModLoader('NeoForge')
     mainFile.addRequirement('searchables')
+    mainFile.addEnvironment('Client')
 
     doLast {
         project.ext.set('curse_file_url', "${curse_homepage}/files/${mainFile.curseFileId}")

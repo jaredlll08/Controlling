@@ -122,7 +122,7 @@ public class FreeKeysList extends CustomList {
         }
         
         @Override
-        protected void refreshEntry() {
+        public void refreshEntry() {
         
         }
         
@@ -152,12 +152,12 @@ public class FreeKeysList extends CustomList {
         @Override
         public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             
-            graphics.centeredText(mc.font, ControllingConstants.COMPONENT_OPTIONS_AVAILABLE_KEYS, (Objects.requireNonNull(mc.screen).width / 2 - this.text.length() / 2), (mouseY + height - 9 - 1), 16777215);
+            graphics.centeredText(mc.font, ControllingConstants.COMPONENT_OPTIONS_AVAILABLE_KEYS, (Objects.requireNonNull(mc.gui.screen()).width / 2 - this.text.length() / 2), (mouseY + height - 9 - 1), 16777215);
             
         }
         
         @Override
-        protected void refreshEntry() {
+        public void refreshEntry() {
         
         }
         

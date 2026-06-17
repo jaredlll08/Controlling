@@ -119,7 +119,7 @@ public class NewKeyBindsList extends CustomList {
         }
         
         @Override
-        protected void refreshEntry() {
+        public void refreshEntry() {
             
         }
         
@@ -255,7 +255,7 @@ public class NewKeyBindsList extends CustomList {
         }
         
         @Override
-        protected void refreshEntry() {
+        public void refreshEntry() {
             
             this.btnChangeKeyBinding.setMessage(this.key.getTranslatedKeyMessage());
             this.btnResetKeyBinding.active = !this.key.isDefault();

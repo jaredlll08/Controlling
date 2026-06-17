@@ -3,12 +3,17 @@ pluginManagement {
         maven {
             url = 'https://maven.blamejared.com'
         }
-        maven {
-            url = 'https://maven.neoforged.net/releases'
-        }
         gradlePluginPortal()
-        maven {
-            url = 'https://maven.fabricmc.net/'
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = 'Fabric'
+                    url = 'https://maven.fabricmc.net'
+                }
+            }
+            filter {
+                includeGroupAndSubgroups('net.fabricmc')
+            }
         }
     }
 }

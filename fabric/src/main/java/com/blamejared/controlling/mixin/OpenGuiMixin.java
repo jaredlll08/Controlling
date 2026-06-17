@@ -2,6 +2,7 @@ package com.blamejared.controlling.mixin;
 
 import com.blamejared.controlling.client.NewKeyBindsScreen;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import org.jspecify.annotations.Nullable;
@@ -10,18 +11,18 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-@Mixin(Minecraft.class)
+@Mixin(Gui.class)
 public class OpenGuiMixin {
     
     @Shadow
-    public Screen screen;
+    private Screen screen;
     
-    @ModifyVariable(method = "setScreen", at = @At("HEAD"), argsOnly = true)
-    private Screen upgradeControlScreen(@Nullable Screen opened) {
+    @ModifyVariable(method = "setScreen", at = @At("HEAD"), argsOnly = true, name = "screen")
+    private Screen upgradeControlScreen(@Nullable Screen screen) {
         // Swap the control options screen with our own instance whenever something tries to open one
-        if(opened != null && KeyBindsScreen.class.equals(opened.getClass())) {
+        if(screen != null && KeyBindsScreen.class.equals(screen.getClass())) {
             return new NewKeyBindsScreen(this.screen, Minecraft.getInstance().options);
         }
-        return opened;
+        return screen;
     }
 }

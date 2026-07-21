@@ -1,11 +1,14 @@
 {
-  "options.showAll": "ꞁꞁⱯ ʍoɥS",
-  "options.showConflicts": "sʇɔılɟuoƆ ʍoɥS",
+  "options.showAll": "ll∀ ʍoɥS",
+  "options.showConflicts": "sʇɔᴉlɟuoƆ ʍoɥS",
   "options.showNone": "punoqu∩ ʍoɥS",
-  "options.availableKeys": "sʎǝꞰ ǝlqɐlᴉɐʌ∀",
+  "options.availableKeys": "sʎǝʞ ǝlqɐlᴉɐʌ∀",
   "options.sort": "ʇɹoS",
   "options.sortNone": "ǝuoN",
-  "options.sortAZ": "Z<-Ɐ",
-  "options.sortZA": "Ɐ<-Z",
-  "options.confirmReset": "¡ʇǝsǝɹ ɯɹıɟuoɔ oʇ ʞɔᴉꞁƆ"
+  "options.sortAZ": "Z<-∀",
+  "options.sortZA": "∀<-Z",
+  "options.sortKeyAZ": "Z<-∀ ʎǝʞ",
+  "options.sortKeyZA": "∀<-Z ʎǝʞ",
+  "options.toggleFree": "ǝǝɹℲ ǝlƃƃo┴",
+  "options.confirmReset": "¿ɯɹᴉɟuoƆ"
 }

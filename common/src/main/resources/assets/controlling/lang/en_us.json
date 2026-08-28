@@ -10,5 +10,7 @@
   "options.sortKeyAZ": "Key A->Z",
   "options.sortKeyZA": "Key Z->A",
   "options.toggleFree": "Toggle Free",
-  "options.confirmReset": "Confirm?"
+  "options.confirmReset": "Confirm?",
+  "options.exactMatch": "Search: Exact",
+  "options.fuzzyMatch": "Search: Fuzzy"
 }

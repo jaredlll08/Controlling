@@ -38,11 +38,11 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     private AutoCompletingEditBox<KeyBindsList.Entry> search;
     private DisplayMode displayMode;
     private SortOrder sortOrder = SortOrder.NONE;
-    private Button buttonNone;
-    private Button buttonConflicting;
+    private Button buttonDisplayMode;
     private Button buttonSort;
     private final DisplayableBoolean confirmingReset = new DisplayableBoolean(false, ControllingConstants.COMPONENT_OPTIONS_CONFIRM_RESET, ControllingConstants.COMPONENT_CONTROLS_RESET_ALL);
     private boolean showFree;
+    private boolean exactMatch;
     private Supplier<NewKeyBindsList> newKeyList;
     private Supplier<FreeKeysList> freeKeyList;
     
@@ -91,8 +91,13 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     @Override
     protected void addFooter() {
         
-        int btnWidth = Button.DEFAULT_WIDTH / 2 - 1;
+        int controlsWidth = 340;
+        int controlSpacing = 4;
+        int btnWidth = (controlsWidth - controlSpacing * 3) / 4;
+        int actionSpacing = 8;
+        int actionBtnWidth = (controlsWidth - actionSpacing) / 2;
         this.resetButton(Button.builder(confirmingReset.currentDisplay(), PRESS_RESET)
+                .width(actionBtnWidth)
                 .build());
         resetButton().active = canReset();
         
@@ -104,31 +109,32 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
                 .size(btnWidth, Button.DEFAULT_HEIGHT)
                 .build();
         
-        this.buttonNone = Button.builder(ControllingConstants.COMPONENT_OPTIONS_SHOW_NONE, PRESS_NONE)
+        this.buttonDisplayMode = Button.builder(displayModeDisplay(), PRESS_DISPLAY_MODE)
                 .size(btnWidth, Button.DEFAULT_HEIGHT)
                 .build();
         
-        this.buttonConflicting = Button.builder(ControllingConstants.COMPONENT_OPTIONS_SHOW_CONFLICTS, PRESS_CONFLICTING)
+        Button buttonExactMatch = Button.builder(exactMatch ?
+                        ControllingConstants.COMPONENT_OPTIONS_EXACT_MATCH
+                        : ControllingConstants.COMPONENT_OPTIONS_FUZZY_MATCH, PRESS_EXACT_MATCH)
                 .size(btnWidth, Button.DEFAULT_HEIGHT)
                 .build();
-        
         
         GridLayout grid = this.layout.addToFooter(new GridLayout());
         grid.rowSpacing(4);
-        grid.columnSpacing(8);
-        GridLayout.RowHelper rowHelper = grid.createRowHelper(2);
-        LinearLayout topLeft = rowHelper.addChild(LinearLayout.horizontal());
-        topLeft.spacing(4);
-        topLeft.addChild(toggleFreeButton);
-        topLeft.addChild(this.buttonSort);
-        
-        LinearLayout topRight = rowHelper.addChild(LinearLayout.horizontal());
-        topRight.spacing(4);
-        topRight.addChild(this.buttonNone);
-        topRight.addChild(this.buttonConflicting);
-        
-        rowHelper.addChild(resetButton());
-        rowHelper.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> this.onClose()).build());
+        GridLayout.RowHelper rowHelper = grid.createRowHelper(1);
+        LinearLayout filters = rowHelper.addChild(LinearLayout.horizontal());
+        filters.spacing(controlSpacing);
+        filters.addChild(toggleFreeButton);
+        filters.addChild(this.buttonSort);
+        filters.addChild(this.buttonDisplayMode);
+        filters.addChild(buttonExactMatch);
+
+        LinearLayout actions = rowHelper.addChild(LinearLayout.horizontal());
+        actions.spacing(actionSpacing);
+        actions.addChild(resetButton());
+        actions.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> this.onClose())
+                .width(actionBtnWidth)
+                .build());
     }
     
     @Override
@@ -184,7 +190,8 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
                 list.sort(sortOrder);
             };
         }
-        List<KeyBindsList.Entry> entries = ControllingConstants.SEARCHABLE_KEYBINDINGS.filterEntries(list.getAllEntries(), lastSearch, extraPredicate);
+        List<KeyBindsList.Entry> entries = (exactMatch ? ControllingConstants.EXACT_SEARCHABLE_KEYBINDINGS : ControllingConstants.SEARCHABLE_KEYBINDINGS)
+                .filterEntries(list.getAllEntries(), lastSearch, extraPredicate);
         for(KeyBindsList.Entry entry : entries) {
             list.addEntryInternal(entry);
         }
@@ -284,6 +291,14 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         }
         return false;
     }
+
+    private Component displayModeDisplay() {
+        return switch(displayMode) {
+            case ALL -> ControllingConstants.COMPONENT_OPTIONS_SHOW_ALL;
+            case NONE -> ControllingConstants.COMPONENT_OPTIONS_SHOW_NONE;
+            case CONFLICTING -> ControllingConstants.COMPONENT_OPTIONS_SHOW_CONFLICTS;
+        };
+    }
     
     private final Button.OnPress PRESS_RESET = btn -> {
         NewKeyBindsScreen screen = NewKeyBindsScreen.this;
@@ -299,15 +314,13 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         btn.setMessage(confirmingReset.currentDisplay());
     };
     
-    private final Button.OnPress PRESS_NONE = _ -> {
-        if(displayMode == DisplayMode.NONE) {
-            buttonNone.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_NONE);
-            displayMode = DisplayMode.ALL;
-        } else {
-            displayMode = DisplayMode.NONE;
-            buttonNone.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_ALL);
-            buttonConflicting.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_CONFLICTS);
-        }
+    private final Button.OnPress PRESS_DISPLAY_MODE = btn -> {
+        displayMode = switch(displayMode) {
+            case ALL -> DisplayMode.CONFLICTING;
+            case CONFLICTING -> DisplayMode.NONE;
+            case NONE -> DisplayMode.ALL;
+        };
+        btn.setMessage(displayModeDisplay());
         filterKeys();
     };
     
@@ -317,31 +330,17 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         filterKeys();
     };
     
-    private final Button.OnPress PRESS_CONFLICTING = _ -> {
-        if(displayMode == DisplayMode.CONFLICTING) {
-            buttonConflicting.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_CONFLICTS);
-            displayMode = DisplayMode.ALL;
-        } else {
-            displayMode = DisplayMode.CONFLICTING;
-            buttonConflicting.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_ALL);
-            buttonNone.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_NONE);
-        }
-        filterKeys();
-    };
-    
     private final Button.OnPress PRESS_FREE = _ -> {
         removeWidget(getKeyBindsList());
         if(showFree) {
             buttonSort.active = true;
-            buttonNone.active = true;
-            buttonConflicting.active = true;
+            buttonDisplayMode.active = true;
             resetButton().active = canReset(); // Fixes
             setKeyBindsList(newKeyList.get());
         } else {
             freeKeyList.get().recalculate();
             buttonSort.active = false;
-            buttonNone.active = false;
-            buttonConflicting.active = false;
+            buttonDisplayMode.active = false;
             resetButton().active = false;
             setKeyBindsList(freeKeyList.get());
         }
@@ -351,4 +350,13 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
         showFree = !showFree;
     };
     
+    private final Button.OnPress PRESS_EXACT_MATCH = btn -> {
+        exactMatch = !exactMatch;
+        btn.setMessage(exactMatch ?
+                ControllingConstants.COMPONENT_OPTIONS_EXACT_MATCH
+                : ControllingConstants.COMPONENT_OPTIONS_FUZZY_MATCH
+        );
+        filterKeys();
+    };
+
 }

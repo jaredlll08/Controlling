@@ -25,7 +25,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLScancode;
 
 import java.util.List;
 import java.util.Objects;
@@ -217,7 +217,7 @@ public class NewKeyBindsScreen extends KeyBindsScreen {
     public boolean keyPressed(KeyEvent event) {
         
         if(!search.isFocused() && this.selectedKey == null) {
-            if(event.hasControlDown() && event.key() == GLFW.GLFW_KEY_F) {
+            if(event.hasControlDown() && event.key() == SDLScancode.SDL_SCANCODE_F) {
                 search.setFocused(true);
                 return true;
             }

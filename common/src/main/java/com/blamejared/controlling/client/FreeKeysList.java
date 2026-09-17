@@ -106,7 +106,7 @@ public class FreeKeysList extends CustomList {
             graphics.text(FreeKeysList.this.mc.font, str, this.getContentX(), this.getContentYMiddle() - 9 / 2, ARGB.opaque(16777215));
             
             graphics.tooltip(FreeKeysList.this.mc.font, List.of(ClientTooltipComponent.create(input.getDisplayName()
-                    .getVisualOrderText())), this.getContentX() + this.getContentWidth() - (length) - 10, this.getContentYMiddle() - 9 / 2 + mc.font.lineHeight, DefaultTooltipPositioner.INSTANCE, null);
+                    .getVisualOrderText())), this.getContentX() + this.getContentWidth() - (length) - 10, this.getContentYMiddle() - 9 / 2 + mc.font.lineHeight, DefaultTooltipPositioner.INSTANCE, null, false);
         }
         
         @Override

@@ -9,7 +9,7 @@ version = "${VERSION}"
 displayName = "${NAME}"
 displayURL = "${CURSE_HOMEPAGE}"
 authors = "${AUTHOR}"
-logoFile = "icon.png"
+iconFile = "icon.png"
 description = '''${DESCRIPTION}'''
 itemIcon = "${ITEM_ICON}"
 [[mixins]]

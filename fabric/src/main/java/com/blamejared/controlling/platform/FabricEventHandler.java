@@ -25,7 +25,7 @@ public class FabricEventHandler implements IEventHelper {
     public Either<IKeyEntryListenersEvent, List<GuiEventListener>> fireKeyEntryListenersEvent(IKeyEntry entry) {
         
         KeyEntryListenersEvent event = new KeyEntryListenersEvent(entry);
-        if(FabricLoader.getInstance().isModLoaded("fabric")) {
+        if(FabricLoader.getInstance().isModLoaded("fabric-api-base")) {
             return Either.right(ControllingEvents.KEY_ENTRY_LISTENERS_EVENT.invoker().handle(event));
         }
         
@@ -36,7 +36,7 @@ public class FabricEventHandler implements IEventHelper {
     public Either<IKeyEntryMouseClickedEvent, Boolean> fireKeyEntryMouseClickedEvent(IKeyEntry entry, MouseButtonEvent event, boolean doubleClick) {
         
         KeyEntryMouseClickedEvent clickEvent = new KeyEntryMouseClickedEvent(entry, event, doubleClick);
-        if(FabricLoader.getInstance().isModLoaded("fabric")) {
+        if(FabricLoader.getInstance().isModLoaded("fabric-api-base")) {
             return Either.right(ControllingEvents.KEY_ENTRY_MOUSE_CLICKED_EVENT.invoker().handle(clickEvent));
         }
         
@@ -47,7 +47,7 @@ public class FabricEventHandler implements IEventHelper {
     public Either<IKeyEntryMouseReleasedEvent, Boolean> fireKeyEntryMouseReleasedEvent(IKeyEntry entry, MouseButtonEvent event) {
         
         KeyEntryMouseReleasedEvent releaseEvent = new KeyEntryMouseReleasedEvent(entry, event);
-        if(FabricLoader.getInstance().isModLoaded("fabric")) {
+        if(FabricLoader.getInstance().isModLoaded("fabric-api-base")) {
             return Either.right(ControllingEvents.KEY_ENTRY_MOUSE_RELEASED_EVENT.invoker().handle(releaseEvent));
         }
         
@@ -57,7 +57,7 @@ public class FabricEventHandler implements IEventHelper {
     @Override
     public Either<IKeyEntryRenderEvent, Unit> fireKeyEntryRenderEvent(IKeyEntry entry, GuiGraphicsExtractor graphics, int x, int y, int rowLeft, int rowWidth, boolean hovered, float partialTicks) {
         
-        if(FabricLoader.getInstance().isModLoaded("fabric")) {
+        if(FabricLoader.getInstance().isModLoaded("fabric-api-base")) {
             return Either.right(ControllingEvents.KEY_ENTRY_RENDER_EVENT.invoker()
                     .handle(new KeyEntryRenderEvent(entry, graphics, x, y, rowLeft, rowWidth, hovered, partialTicks)));
         }

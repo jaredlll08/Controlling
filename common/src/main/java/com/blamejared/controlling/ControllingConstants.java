@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 public class ControllingConstants {
     
@@ -22,32 +23,52 @@ public class ControllingConstants {
     public static final MutableComponent COMPONENT_OPTIONS_SORT = Component.translatable("options.sort");
     public static final MutableComponent COMPONENT_OPTIONS_TOGGLE_FREE = Component.translatable("options.toggleFree");
     public static final MutableComponent COMPONENT_OPTIONS_AVAILABLE_KEYS = Component.translatable("options.availableKeys");
+    public static final MutableComponent COMPONENT_OPTIONS_EXACT_MATCH = Component.translatable("options.exactMatch");
+    public static final MutableComponent COMPONENT_OPTIONS_FUZZY_MATCH = Component.translatable("options.fuzzyMatch");
     
     
-    public static final SearchableType<KeyBindsList.Entry> SEARCHABLE_KEYBINDINGS = new SearchableType.Builder<KeyBindsList.Entry>()
-            .component(SearchableComponent.create("category", entry -> {
-                if(entry instanceof ICategoryEntry cat) {
-                    return Optional.of(cat.category().label().getString());
-                } else if(entry instanceof IKeyEntry key) {
-                    return Optional.of(key.categoryName().getString());
-                }
-                return Optional.empty();
-            }))
-            .component(SearchableComponent.create("key", entry -> {
-                if(entry instanceof IKeyEntry key && !key.getKey().isUnbound()) {
-                    return Optional.of(key.getKey().getTranslatedKeyMessage().getString());
-                }
-                return Optional.empty();
-            }))
-            .defaultComponent(SearchableComponent.create("name", entry -> {
-                if(entry instanceof IKeyEntry key) {
-                    return Optional.of(key.getName().getString());
-                } else if(entry instanceof IInputEntry input) {
-                    return Optional.of(input.getInput().getName());
-                }
-                return Optional.empty();
-            }))
+    private static final Function<KeyBindsList.Entry, Optional<String>> KEYBINDING_CATEGORY = entry -> {
+        if(entry instanceof ICategoryEntry cat) {
+            return Optional.of(cat.category().label().getString());
+        } else if(entry instanceof IKeyEntry key) {
+            return Optional.of(key.categoryName().getString());
+        }
+        return Optional.empty();
+    };
+    private static final Function<KeyBindsList.Entry, Optional<String>> KEYBINDING_KEY = entry -> {
+        if(entry instanceof IKeyEntry key && !key.getKey().isUnbound()) {
+            return Optional.of(key.getKey().getTranslatedKeyMessage().getString());
+        }
+        return Optional.empty();
+    };
+    private static final Function<KeyBindsList.Entry, Optional<String>> KEYBINDING_NAME = entry -> {
+        if(entry instanceof IKeyEntry key) {
+            return Optional.of(key.getName().getString());
+        } else if(entry instanceof IInputEntry input) {
+            return Optional.of(input.getInput().getName());
+        }
+        return Optional.empty();
+    };
+
+    public static final SearchableType<KeyBindsList.Entry> SEARCHABLE_KEYBINDINGS = createSearchableKeybindings(false);
+    public static final SearchableType<KeyBindsList.Entry> EXACT_SEARCHABLE_KEYBINDINGS = createSearchableKeybindings(true);
+
+    private static SearchableType<KeyBindsList.Entry> createSearchableKeybindings(boolean exactMatch) {
+        return new SearchableType.Builder<KeyBindsList.Entry>()
+            .component(createSearchableComponent("category", KEYBINDING_CATEGORY, exactMatch))
+            .component(createSearchableComponent("key", KEYBINDING_KEY, exactMatch))
+            .defaultComponent(createSearchableComponent("name", KEYBINDING_NAME, exactMatch))
             .build();
+    }
+
+    private static SearchableComponent<KeyBindsList.Entry> createSearchableComponent(String key, Function<KeyBindsList.Entry, Optional<String>> value, boolean exactMatch) {
+        if(exactMatch) {
+            return SearchableComponent.create(key, value, (entry, search) -> value.apply(entry)
+                    .map(componentValue -> componentValue.equalsIgnoreCase(search))
+                    .orElse(false));
+        }
+        return SearchableComponent.create(key, value);
+    }
     
     
 }

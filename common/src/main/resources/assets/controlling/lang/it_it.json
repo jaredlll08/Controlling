@@ -7,6 +7,8 @@
   "options.sortNone": "no",
   "options.sortAZ": "A->Z",
   "options.sortZA": "Z->A",
+  "options.sortKeyAZ": "Tasto A->Z",
+  "options.sortKeyZA": "Tasto Z->A",
   "options.toggleFree": "Tasti liberi",
-  "options.confirmReset": "Conferma ripristino"
+  "options.confirmReset": "Conferma ripristino?"
 }
